@@ -195,8 +195,24 @@ public class SRList<T> : IList<T>
 
 	public T this[int index]
 	{
-		get { return Buffer[index]; }
-		set { Buffer[index] = value; }
+		get
+		{
+
+			if(Buffer == null)
+				throw new IndexOutOfRangeException();
+
+			return Buffer[index];
+
+		}
+		set
+		{
+
+			if(Buffer == null)
+				throw new IndexOutOfRangeException();
+
+			Buffer[index] = value;
+
+		}
 	}
 
 	/// <summary>

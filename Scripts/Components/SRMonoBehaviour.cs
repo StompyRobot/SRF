@@ -45,6 +45,23 @@ public abstract class SRMonoBehaviour : MonoBehaviour
 	}
 
 	/// <summary>
+	/// Get the Collider component, using a cached reference if possible.
+	/// </summary>
+	public Collider2D CachedCollider2D
+	{
+		[DebuggerStepThrough]
+		[DebuggerNonUserCode]
+		get
+		{
+			if (_collider2D == null) {
+				_collider2D = base.collider2D;
+			}
+
+			return _collider2D;
+		}
+	}
+
+	/// <summary>
 	/// Get the Rigidbody component, using a cached reference if possible.
 	/// </summary>
 	public Rigidbody CachedRigidBody
@@ -58,6 +75,23 @@ public abstract class SRMonoBehaviour : MonoBehaviour
 			}
 
 			return _rigidBody;
+		}
+	}
+	
+	/// <summary>
+	/// Get the Rigidbody2D component, using a cached reference if possible.
+	/// </summary>
+	public Rigidbody2D CachedRigidBody2D
+	{
+		[DebuggerStepThrough]
+		[DebuggerNonUserCode]
+		get
+		{
+			if (_rigidbody2D == null) {
+				_rigidbody2D = base.rigidbody2D;
+			}
+
+			return _rigidbody2D;
 		}
 	}
 
@@ -83,7 +117,9 @@ public abstract class SRMonoBehaviour : MonoBehaviour
 	// ReSharper disable InconsistentNaming
 	public new Transform transform { get { return CachedTransform; } }
 	public new Collider collider { get { return CachedCollider; } }
+	public new Collider2D collider2D { get { return CachedCollider2D; } }
 	public new Rigidbody rigidbody { get { return CachedRigidBody; } }
+	public new Rigidbody2D rigidbody2D { get { return CachedRigidBody2D; } }
 	public new GameObject gameObject { get { return CachedGameObject; } }
 	// ReSharper restore InconsistentNaming
 
@@ -91,6 +127,8 @@ public abstract class SRMonoBehaviour : MonoBehaviour
 	private Transform _transform;
 	private Rigidbody _rigidBody;
 	private GameObject _gameObject;
+	private Rigidbody2D _rigidbody2D;
+	private Collider2D _collider2D;
 
 	/// <summary>
 	/// Assert that the value is not null, disable the object and print a debug error message if it is.
