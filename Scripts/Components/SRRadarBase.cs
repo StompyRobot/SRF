@@ -6,7 +6,7 @@ public abstract class SRRadarBase<T> : SRMonoBehaviour where T : SRMonoBehaviour
 {
 
 	private const float CacheCheckFrequency = 60f;
-	private static float NextCacheCheck = RealTime.time + CacheCheckFrequency;
+	private static float NextCacheCheck = CacheCheckFrequency;
 
 	/// <summary>
 	/// Ship detected by radar
