@@ -9,6 +9,11 @@ public static class FloatExtensions
 		return f * f;
 	}
 
+	public static float SqrRt(this float f)
+	{
+		return Mathf.Sqrt(f);
+	}
+
 	public static bool ApproxZero(this float f)
 	{
 		return Mathf.Approximately(0, f);

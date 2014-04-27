@@ -117,6 +117,9 @@ public abstract class SRRadarBase<T> : SRMonoBehaviour where T : SRMonoBehaviour
 
 		}
 
+		if (HasFound(unit))
+			return;
+
 		var b = GetBandit();
 		b.Unit = unit;
 		b.Distance = (unit.CachedTransform.position - CachedTransform.position).magnitude;

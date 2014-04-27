@@ -11,7 +11,7 @@ public class SRRadar2D<T> : SRRadarBase<T> where T : SRMonoBehaviour
 	{
 
 		if (ColliderCache == null)
-			ColliderCache = new Collider2D[128];
+			ColliderCache = new Collider2D[512];
 
 		var count = Physics2D.OverlapCircleNonAlloc(CachedTransform.position, Range, ColliderCache, Mask);
 

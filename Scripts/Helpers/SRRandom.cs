@@ -20,5 +20,14 @@ namespace Scripts.Framework.Helpers
 
 		}
 
+		public static Vector2 RandomPosition2D(float minMag, float maxMag)
+		{
+
+			var mag = Random.Range(minMag, maxMag);
+
+			return mag*Random.insideUnitCircle.normalized;
+
+		}
+
 	}
 }
