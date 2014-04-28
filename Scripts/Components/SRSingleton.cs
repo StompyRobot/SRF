@@ -29,9 +29,7 @@ public abstract class SRSingleton<T> : SRMonoBehaviour where T : SRSingleton<T>
 		get { return _instance != null; }
 	}
 
-	// If no other monobehaviour request the instance in an awake function
-	// executing before this one, no need to search the object.
-	protected virtual void Awake()
+	private void Register()
 	{
 
 		if (_instance != null) {
@@ -48,7 +46,23 @@ public abstract class SRSingleton<T> : SRMonoBehaviour where T : SRSingleton<T>
 			return;
 		}
 
-		_instance = (T) this;
+		_instance = (T)this;
+
+	}
+
+	// If no other monobehaviour request the instance in an awake function
+	// executing before this one, no need to search the object.
+	protected virtual void Awake()
+	{
+		Register();
+	}
+
+	protected virtual void OnEnable()
+	{
+
+		// In case of code-reload, this should restore the single instance
+		if (_instance == null)
+			Register();
 
 	}
 
