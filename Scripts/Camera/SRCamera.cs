@@ -61,8 +61,24 @@ public sealed class SRCamera : SRMonoBehaviour
 	/// </summary>
 	public float Zoom
 	{
-		get { return -CameraZoomTransform.localPosition.z; }
-		set { CameraZoomTransform.localPosition = new Vector3(0,0,-value); }
+		get
+		{
+
+			if (Camera.isOrthoGraphic)
+				return Camera.orthographicSize;
+			
+			return -CameraZoomTransform.localPosition.z;
+
+		}
+		set
+		{
+
+			if(Camera.isOrthoGraphic)
+				Camera.orthographicSize = value;
+			else
+				CameraZoomTransform.localPosition = new Vector3(0,0,-value);
+
+		}
 	}
 
 	public Quaternion Rotation
