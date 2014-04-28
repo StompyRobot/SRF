@@ -10,6 +10,15 @@ public class PositionAttach : SRMonoBehaviour
 	public Transform Attach;
 	public Vector3 Offset;
 
+	public void AttachWithCurrentOffset(Transform to)
+	{
+
+		var diff = CachedTransform.position - to.position;
+		Offset = diff;
+		Attach = to;
+
+	}
+
 	void Update()
 	{
 		UpdatePosition();
