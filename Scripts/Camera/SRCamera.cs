@@ -14,6 +14,22 @@ public sealed class SRCamera : SRMonoBehaviour
 
 	private static readonly SRList<SRCamera> _cameras = new SRList<SRCamera>();
 
+	private static SRCamera _mainCam;
+
+	public static SRCamera Main
+	{
+		get
+		{
+
+			if (_mainCam == null) {
+				_mainCam = _cameras.FirstOrDefault(p => p.Tag.ToLower() == "main");
+			}
+
+			return _mainCam;
+
+		}
+	}
+
 	public string Tag = "";
 
 	/// <summary>
