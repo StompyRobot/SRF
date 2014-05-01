@@ -2,7 +2,7 @@
 
 namespace Scripts.Framework.Behaviours
 {
-	public class SmoothFollow2D : SRMonoBehaviourEx<SmoothFollow2D>
+	public class SmoothFollow2D : SRMonoBehaviourEx
 	{
 
 		[RequiredField(AutoSearch = false)]

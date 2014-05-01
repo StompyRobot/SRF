@@ -26,7 +26,7 @@ public sealed class RequiredFieldAttribute : Attribute
 
 }
 
-public abstract class SRMonoBehaviourEx<T> : SRMonoBehaviour where T : SRMonoBehaviourEx<T>
+public abstract class SRMonoBehaviourEx : SRMonoBehaviour
 {
 
 	private struct FieldInfo
@@ -38,16 +38,21 @@ public abstract class SRMonoBehaviourEx<T> : SRMonoBehaviour where T : SRMonoBeh
 
 	}
 
-	private static List<FieldInfo> _checkedFields;
+	private static Dictionary<Type, IList<FieldInfo>> _checkedFields;
 
-	private static void CheckFields(T instance)
+	private static void CheckFields(SRMonoBehaviourEx instance)
 	{
 
-		if (_checkedFields == null) {
+		if (_checkedFields == null)
+			_checkedFields = new Dictionary<Type, IList<FieldInfo>>();
 
-			_checkedFields = new List<FieldInfo>();
+		var t = instance.GetType();
 
-			var t = typeof (T);
+		IList<FieldInfo> cache;
+
+		if (!_checkedFields.TryGetValue(instance.GetType(), out cache)) {
+
+			cache = new List<FieldInfo>();
 
 			// Check for attribute added to the class
 			var globalAttr = t.GetCustomAttributes(typeof (RequiredFieldAttribute), true).FirstOrDefault() as RequiredFieldAttribute;
@@ -65,7 +70,7 @@ public abstract class SRMonoBehaviourEx<T> : SRMonoBehaviour where T : SRMonoBeh
 
 #if !UNITY_EDITOR
 
-					if((c == null && globalAttr.EditorOnly) || (c != null && c.EditorOnly))
+					if((c == null && globalAttr.EditorOnly && !globalAttr.AutoSearch) || (c != null && c.EditorOnly && !c.AutoSearch))
 						continue;
 
 #endif
@@ -76,19 +81,21 @@ public abstract class SRMonoBehaviourEx<T> : SRMonoBehaviour where T : SRMonoBeh
 					// Set from field attribute if it exists, falling back on the class attr
 					info.AutoSet = (c == null) ? globalAttr.AutoSearch : c.AutoSearch;
 
-					_checkedFields.Add(info);
+					cache.Add(info);
 
 				}
 
 			}
 
+			_checkedFields.Add(t, cache);
+
 		}
 
-		for (var i = 0; i < _checkedFields.Count; i++) {
+		for (var i = 0; i < cache.Count; i++) {
 
-			var f = _checkedFields[i];
+			var f = cache[i];
 
-			if(f.Field.GetValue(instance) != null)
+			if (!EqualityComparer<System.Object>.Default.Equals(f.Field.GetValue(instance), null))
 				continue;
 
 			// If autoset is enabled on field, try and find the component on the GameObject
@@ -113,7 +120,7 @@ public abstract class SRMonoBehaviourEx<T> : SRMonoBehaviour where T : SRMonoBeh
 	protected virtual void Awake()
 	{
 
-		CheckFields((T)this);
+		CheckFields(this);
 
 	}
 
