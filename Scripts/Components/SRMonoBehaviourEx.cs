@@ -24,6 +24,15 @@ public sealed class RequiredFieldAttribute : Attribute
 		set { _editorOnly = value; }
 	}
 
+	public RequiredFieldAttribute(bool autoSearch)
+	{
+		AutoSearch = autoSearch;
+	}
+
+	public RequiredFieldAttribute()
+	{
+	}
+
 }
 
 public abstract class SRMonoBehaviourEx : SRMonoBehaviour
@@ -40,7 +49,7 @@ public abstract class SRMonoBehaviourEx : SRMonoBehaviour
 
 	private static Dictionary<Type, IList<FieldInfo>> _checkedFields;
 
-	private static void CheckFields(SRMonoBehaviourEx instance)
+	private static void CheckFields(SRMonoBehaviourEx instance, bool justSet = false)
 	{
 
 		if (_checkedFields == null)
@@ -110,6 +119,9 @@ public abstract class SRMonoBehaviourEx : SRMonoBehaviour
 
 			}
 
+			if(justSet)
+				continue;
+
 			throw new UnassignedReferenceException(
 				"Field {0} is unassigned, but marked with RequiredFieldAttribute".Fmt(f.Field.Name));
 
@@ -131,7 +143,7 @@ public abstract class SRMonoBehaviourEx : SRMonoBehaviour
 
 	protected virtual void Update()
 	{
-		
+
 	}
 
 	protected virtual void FixedUpdate()
