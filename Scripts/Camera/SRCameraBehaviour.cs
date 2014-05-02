@@ -43,8 +43,8 @@ public abstract class SRCameraBehaviour : SRMonoBehaviour
 	protected virtual void Awake()
 	{
 		_camera = GetComponent<SRCamera>();
-		_camera.RegisterCameraBehaviour(this);
 		enabled = false;
+		_camera.RegisterCameraBehaviour(this);
 		AssertNotNull(_camera, "Camera");
 	}
 
