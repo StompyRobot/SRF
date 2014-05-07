@@ -69,47 +69,18 @@ public abstract class SRMonoBehaviourEx : SRMonoBehaviour
 
 		if (!_checkedFields.TryGetValue(instance.GetType(), out cache)) {
 
-			cache = new List<FieldInfo>();
-
-			// Check for attribute added to the class
-			var globalAttr = t.GetCustomAttributes(typeof (RequiredFieldAttribute), true).FirstOrDefault() as RequiredFieldAttribute;
-
-			// Check each field for the attribute
-			var fields = t.GetFields(BindingFlags.Public | BindingFlags.Instance);
-
-			for (var i = 0; i < fields.Length; i++) {
-
-				var f = fields[i];
-
-				var c = f.GetCustomAttributes(typeof (RequiredFieldAttribute), false).FirstOrDefault() as RequiredFieldAttribute;
-
-				if (globalAttr != null || c != null) {
-
-#if !UNITY_EDITOR
-
-					if((c == null && globalAttr.EditorOnly && !globalAttr.AutoSearch) || (c != null && c.EditorOnly && !c.AutoSearch))
-						continue;
-
-#endif
-
-					var info = new FieldInfo();
-					info.Field = f;
-
-					// Set from field attribute if it exists, falling back on the class attr
-					info.AutoSet = (c == null) ? globalAttr.AutoSearch : c.AutoSearch;
-
-					if (c != null)
-						info.AutoCreate = c.AutoCreate;
-
-					cache.Add(info);
-
-				}
-
-			}
+			cache = ScanType(t);
 
 			_checkedFields.Add(t, cache);
 
 		}
+
+		PopulateObject(cache, instance, justSet);
+
+	}
+
+	private static void PopulateObject(IList<FieldInfo> cache, SRMonoBehaviourEx instance, bool justSet)
+	{
 
 		for (var i = 0; i < cache.Count; i++) {
 
@@ -130,7 +101,7 @@ public abstract class SRMonoBehaviourEx : SRMonoBehaviour
 
 			}
 
-			if(justSet)
+			if (justSet)
 				continue;
 
 			if (f.AutoCreate) {
@@ -146,6 +117,52 @@ public abstract class SRMonoBehaviourEx : SRMonoBehaviour
 		}
 
 	}
+
+	private static List<FieldInfo> ScanType(Type t)
+	{
+
+		var cache = new List<FieldInfo>();
+
+		// Check for attribute added to the class
+		var globalAttr =
+			t.GetCustomAttributes(typeof (RequiredFieldAttribute), true).FirstOrDefault() as RequiredFieldAttribute;
+
+		// Check each field for the attribute
+		var fields = t.GetFields(BindingFlags.Public | BindingFlags.Instance);
+
+		for (var i = 0; i < fields.Length; i++) {
+
+			var f = fields[i];
+
+			var c = f.GetCustomAttributes(typeof (RequiredFieldAttribute), false).FirstOrDefault() as RequiredFieldAttribute;
+
+			if (globalAttr != null || c != null) {
+
+#if !UNITY_EDITOR
+
+					if((c == null && globalAttr.EditorOnly && !globalAttr.AutoSearch) || (c != null && c.EditorOnly && !c.AutoSearch))
+						continue;
+
+#endif
+
+				var info = new FieldInfo();
+				info.Field = f;
+
+				// Set from field attribute if it exists, falling back on the class attr
+				info.AutoSet = (c == null) ? globalAttr.AutoSearch : c.AutoSearch;
+
+				if (c != null)
+					info.AutoCreate = c.AutoCreate;
+
+				cache.Add(info);
+
+			}
+
+		}
+
+		return cache;
+
+	} 
 
 	protected virtual void Awake()
 	{
