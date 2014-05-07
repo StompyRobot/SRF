@@ -11,11 +11,18 @@ public sealed class RequiredFieldAttribute : Attribute
 
 	private bool _editorOnly = true;
 	private bool _autoSearch;
+	private bool _autoCreate;
 
 	public bool AutoSearch
 	{
 		get { return _autoSearch; }
 		set { _autoSearch = value; }
+	}
+
+	public bool AutoCreate
+	{
+		get { return _autoCreate; }
+		set { _autoCreate = value; }
 	}
 
 	public bool EditorOnly
@@ -44,6 +51,7 @@ public abstract class SRMonoBehaviourEx : SRMonoBehaviour
 		public System.Reflection.FieldInfo Field;
 
 		public bool AutoSet;
+		public bool AutoCreate;
 
 	}
 
@@ -90,6 +98,9 @@ public abstract class SRMonoBehaviourEx : SRMonoBehaviour
 					// Set from field attribute if it exists, falling back on the class attr
 					info.AutoSet = (c == null) ? globalAttr.AutoSearch : c.AutoSearch;
 
+					if (c != null)
+						info.AutoCreate = c.AutoCreate;
+
 					cache.Add(info);
 
 				}
@@ -112,7 +123,7 @@ public abstract class SRMonoBehaviourEx : SRMonoBehaviour
 
 				var newValue = instance.GetComponent(f.Field.FieldType);
 
-				if (newValue != null) {
+				if (!EqualityComparer<System.Object>.Default.Equals(newValue, null)) {
 					f.Field.SetValue(instance, newValue);
 					continue;
 				}
@@ -121,6 +132,13 @@ public abstract class SRMonoBehaviourEx : SRMonoBehaviour
 
 			if(justSet)
 				continue;
+
+			if (f.AutoCreate) {
+
+				var newValue = instance.CachedGameObject.AddComponent(f.Field.FieldType);
+				f.Field.SetValue(instance, newValue);
+
+			}
 
 			throw new UnassignedReferenceException(
 				"Field {0} is unassigned, but marked with RequiredFieldAttribute".Fmt(f.Field.Name));
