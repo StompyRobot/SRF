@@ -128,7 +128,7 @@ public abstract class SRMonoBehaviourEx : SRMonoBehaviour
 			t.GetCustomAttributes(typeof (RequiredFieldAttribute), true).FirstOrDefault() as RequiredFieldAttribute;
 
 		// Check each field for the attribute
-		var fields = t.GetFields(BindingFlags.Public | BindingFlags.Instance);
+		var fields = t.GetFields(BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic);
 
 		for (var i = 0; i < fields.Length; i++) {
 
