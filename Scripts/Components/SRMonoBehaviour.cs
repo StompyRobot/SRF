@@ -135,43 +135,22 @@ public abstract class SRMonoBehaviour : MonoBehaviour
 	/// </summary>
 	/// <param name="value">Object to check</param>
 	/// <param name="fieldName">Debug name to pass in</param>
-	/// <returns>True if object is not null</returns>
 	[DebuggerNonUserCode]
 	[DebuggerStepThrough]
 	protected void AssertNotNull(object value, string fieldName = null)
 	{
-
-		if (!EqualityComparer<System.Object>.Default.Equals(value, null))
-			return;
-
-		string message;
-
-		if (fieldName != null)
-			message = "Field {0} is null".Fmt(fieldName);
-		else
-			message = "NotNull assert failed";
-
-		Debug.LogError(message, this);
-		enabled = false;
-
-		throw new NullReferenceException(message);
-
+		SRDebug.AssertNotNull(value, fieldName, this);
 	}
+
+
 
 	[DebuggerNonUserCode]
 	[DebuggerStepThrough]
 	protected void Assert(bool condition, string message = null)
 	{
-
-		if (condition)
-			return;
-
-		message = message != null ? "Assert Failed: {0}".Fmt(message) : "Assert Failed";
-
-		Debug.LogError(message, this);
-		throw new Exception(message);
-
+		SRDebug.Assert(condition, message, this);
 	}
+
 
 	/// <summary>
 	/// Assert that the value is not null, disable the object and print a debug error message if it is.
