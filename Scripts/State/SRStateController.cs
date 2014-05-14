@@ -126,7 +126,7 @@ public abstract class SRStateController<TState, TTrigger> : SRMonoBehaviour, IHa
 
 	private static string _nameCache;
 
-	void OnGUI()
+	protected virtual void OnGUI()
 	{
 
 		if (!ShowDebug)
