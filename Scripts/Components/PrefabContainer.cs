@@ -1,22 +1,28 @@
 ﻿using System.Linq;
 using SRF;
+using SRF.Helpers;
 using UnityEngine;
 
-public abstract class PrefabContainer<T> : SRSingleton<PrefabContainer<T>> where T : MonoBehaviour
+namespace SRF.Components
 {
 
-	public T[] Prefabs;
-	
-#if UNITY_EDITOR
-
-	[ContextMenu("Refresh List")]
-	public void RefreshList()
+	public abstract class PrefabContainer<T> : SRSingleton<PrefabContainer<T>> where T : MonoBehaviour
 	{
 
-		Prefabs = PrefabUtil.FindPrefabs<T>().ToArray();
+		public T[] Prefabs;
 
-	}
+#if UNITY_EDITOR
+
+		[ContextMenu("Refresh List")]
+		public void RefreshList()
+		{
+
+			Prefabs = PrefabUtil.FindPrefabs<T>().ToArray();
+
+		}
 
 #endif
+
+	}
 
 }
