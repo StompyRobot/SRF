@@ -11,7 +11,7 @@ namespace SRF.Helpers
 
 #if !UNITY_EDITOR
 
-			Debug.LogError("FindPrefabs() can not be used at runtime (Editor Only)")
+			Debug.LogError("FindPrefabs() can not be used at runtime (Editor Only)");
 			return new List<T>();
 #else
 
