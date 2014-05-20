@@ -196,4 +196,9 @@ public abstract class SRMonoBehaviourEx : SRMonoBehaviour
 		
 	}
 
+	protected virtual void OnDestroy()
+	{
+		
+	}
+
 }

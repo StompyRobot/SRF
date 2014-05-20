@@ -1,15 +1,17 @@
 ﻿namespace Scripts.Framework.Service
 {
-	public class SRServiceBase<T> : SRMonoBehaviour where T : class 
+	public class SRServiceBase<T> : SRMonoBehaviourEx where T : class 
 	{
 
-		protected virtual void Awake()
+		protected override void Awake()
 		{
+			base.Awake();
 			SRServiceManager.RegisterService<T>(this);
 		}
 
-		protected virtual void OnDestroy()
+		protected override void OnDestroy()
 		{
+			base.OnDestroy();
 			SRServiceManager.UnRegisterService<T>();
 		}
 
