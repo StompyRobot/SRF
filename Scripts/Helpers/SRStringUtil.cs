@@ -14,7 +14,7 @@ public static class SRStringUtil
 		_intBuffer = new string[IntToStringBufferSize];
 
 		for (int i = 0; i < IntToStringBufferSize; i++) {
-			_intBuffer[i] = i.ToString();
+			_intBuffer[i] = i.ToString("000");
 		}
 
 	}
@@ -32,7 +32,7 @@ public static class SRStringUtil
 
 		if (i < 0 || i >= _intBuffer.Length) {
 			Debug.LogWarning("Int exceeds buffer size ({0} > {1})".Fmt(i, IntToStringBufferSize));
-			return i.ToString();
+			return i.ToString("000");
 		}
 
 		return _intBuffer[i];
