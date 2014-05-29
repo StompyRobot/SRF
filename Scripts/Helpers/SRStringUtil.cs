@@ -4,7 +4,7 @@ using System.Collections;
 public static class SRStringUtil
 {
 
-	private const int IntToStringBufferSize = 512;
+	public const int IntToStringBufferSize = 512;
 
 	private static string[] _intBuffer;
 
