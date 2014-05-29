@@ -191,7 +191,8 @@ namespace Scripts.Framework.Service
 			var serviceStrings =
 				_serviceStubs.Select(p => "	{0} ({1})".Fmt(p.Type, p.InterfaceType.Name)).ToArray();
 
-			Debug.Log("Services Discovered: \n " + string.Join("\n", serviceStrings));
+			Debug.Log("[SRServiceManager] Services Discovered: {0} \n  {1}".Fmt(serviceStrings.Length,
+				string.Join("\n  ", serviceStrings)));
 
 		}
 
@@ -215,7 +216,7 @@ namespace Scripts.Framework.Service
 					if(!HasService(t))
 						RegisterService(t, s);
 
-					Debug.Log("Auto-created service: {0} ({1})".Fmt(stub.Type, stub.InterfaceType), go);
+					Debug.Log("[SRServiceManager] Auto-created service: {0} ({1})".Fmt(stub.Type, stub.InterfaceType), go);
 
 					return s;
 
