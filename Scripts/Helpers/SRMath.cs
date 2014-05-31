@@ -360,4 +360,9 @@ public static class SRMath
 
 	}
 
+	public static float Average(float v1, float v2)
+	{
+		return (v1 + v2)*0.5f;
+	}
+
 }
