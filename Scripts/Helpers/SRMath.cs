@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Runtime.Remoting.Metadata;
 using Holoville.HOTween;
 using UnityEngine;
 using System.Collections;
@@ -330,6 +331,32 @@ public static class SRMath
 			return angle1;
 
 		}
+
+	}
+
+	public static int Wrap(int max, int value)
+	{
+
+		while (value < 0)
+			value += max;
+
+		while (value >= max)
+			value -= max;
+
+		return value;
+
+	}
+
+	public static float Wrap(float max, float value)
+	{
+
+		while (value < 0)
+			value += max;
+
+		while (value >= max)
+			value -= max;
+
+		return value;
 
 	}
 
