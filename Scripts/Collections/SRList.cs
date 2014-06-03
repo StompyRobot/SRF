@@ -9,7 +9,7 @@ using UnityEngine;
 /// </summary>
 /// <typeparam name="T"></typeparam>
 [Serializable]
-public class SRList<T> : IList<T>
+public class SRList<T> : IList<T>, ISerializationCallbackReceiver
 {
 
 	public T[] Buffer
@@ -101,6 +101,32 @@ public class SRList<T> : IList<T>
 	{
 
 		Count = 0;
+
+	}
+
+	/// <summary>
+	/// Clear the list, optionally setting each element to default(T)
+	/// </summary>
+	public void Clear(bool clean)
+	{
+		
+		Clear();
+
+		if (!clean)
+			return;
+
+		Clean();
+
+	}
+
+	public void Clean()
+	{
+
+		for (var i = Count; i < _buffer.Length; i++) {
+
+			_buffer[i] = default(T);
+
+		}
 
 	}
 
@@ -266,5 +292,15 @@ public class SRList<T> : IList<T>
 			}
 		}
 	}
+
+	public void OnBeforeSerialize()
+	{
+
+		// Clean buffer of unused elements before serializing
+		Clean();
+
+	}
+
+	public void OnAfterDeserialize() { }
 
 }
