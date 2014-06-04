@@ -16,7 +16,7 @@ namespace Scripts.Framework.Service
 			var s = GetServiceInternal(typeof(T)) as T;
 
 			if(s == null)
-				UnityEngine.Debug.LogWarning("Service " + typeof(T).Name + " not found.");
+				Debug.LogWarning("Service {0} not found. (HasQuit: {1})".Fmt(typeof(T).Name, _hasQuit));
 
 			return s;
 
@@ -25,8 +25,10 @@ namespace Scripts.Framework.Service
 		private static object GetServiceInternal(Type t)
 		{
 
-			var services = Instance._services;
+			if (_hasQuit)
+				return null;
 
+			var services = Instance._services;
 
 			for (int i = 0; i < services.Count; i++) {
 
@@ -61,6 +63,9 @@ namespace Scripts.Framework.Service
 		public static bool HasService(Type t)
 		{
 
+			if (_hasQuit)
+				return false;
+
 			var services = Instance._services;
 
 			for (int i = 0; i < services.Count; i++) {
@@ -85,6 +90,9 @@ namespace Scripts.Framework.Service
 
 		private static void RegisterService(Type t, object service)
 		{
+
+			if (_hasQuit)
+				return;
 
 			if (HasService(t)) {
 
@@ -116,7 +124,7 @@ namespace Scripts.Framework.Service
 		private static void UnRegisterService(Type t)
 		{
 
-			if (!HasInstance)
+			if (_hasQuit || !HasInstance)
 				return;
 
 			if (!HasService(t)) {
@@ -154,12 +162,15 @@ namespace Scripts.Framework.Service
 
 		}
 
-		private SRList<Service> _services = new SRList<Service>();
+		private readonly SRList<Service> _services = new SRList<Service>();
 
-		private List<ServiceStub> _serviceStubs; 
+		private List<ServiceStub> _serviceStubs;
+
+		private static bool _hasQuit;
 
 		protected override void Awake()
 		{
+			_hasQuit = false;
 			base.Awake();
 			DontDestroyOnLoad(CachedGameObject);
 		}
@@ -226,6 +237,12 @@ namespace Scripts.Framework.Service
 
 			return null;
 
+		}
+
+		protected void OnApplicationQuit()
+		{
+			Debug.Log("OnApplicationQuit");
+			_hasQuit = true;
 		}
 
 	}
