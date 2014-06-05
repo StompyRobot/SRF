@@ -7,6 +7,8 @@ using System.Collections;
 public class SRInputCameraBehaviour : SRCameraBehaviour
 {
 
+	protected bool IsDragging {get { return _isDragging; }}
+
 	public bool EnableEdgeSmoothing = false;
 
 	public float Drag = 15f;
@@ -26,16 +28,20 @@ public class SRInputCameraBehaviour : SRCameraBehaviour
 
 	public Vector3 Velocity { get; set; }
 
+	private bool _isDragging;
+
 	public virtual void MoveStart()
 	{
 		Velocity = Vector3.zero;
 		_springForce = 30f;
+		_isDragging = true;
 	}
 
 	public virtual void MoveComplete()
 	{
 		_springForce = 10f;
 		TargetPosition = PositionLimit(TargetPosition);
+		_isDragging = false;
 	}
 
 	public virtual void MoveDiff(Vector3 diff)
@@ -44,6 +50,7 @@ public class SRInputCameraBehaviour : SRCameraBehaviour
 		var newPos = TargetPosition + diff;
 		diff *= EdgeSpring(newPos);
 		TargetPosition = TargetPosition + diff;
+		_isDragging = true;
 
 	}
 
@@ -129,7 +136,7 @@ public class SRInputCameraBehaviour : SRCameraBehaviour
 	/// <param name="targetPosition"></param>
 	/// <param name="smooth">Enable t</param>
 	/// <returns></returns>
-	protected Vector3 PositionLimit(Vector3 targetPosition)
+	protected virtual Vector3 PositionLimit(Vector3 targetPosition)
 	{
 
 		return Origin + Vector3.ClampMagnitude(LocalPosition(targetPosition), MaxRadius);
@@ -151,7 +158,7 @@ public class SRInputCameraBehaviour : SRCameraBehaviour
 	/// </summary>
 	/// <param name="pos"></param>
 	/// <returns></returns>
-	protected float EdgeSpring(Vector3 pos)
+	protected virtual float EdgeSpring(Vector3 pos)
 	{
 
 		var exceeds = Mathf.Clamp01((LocalMagnitude(pos) - MaxRadius) / (MaxRadius * 0.5f));
