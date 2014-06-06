@@ -7,11 +7,14 @@ using System.Collections;
 public class SRInputCameraBehaviour : SRCameraBehaviour
 {
 
+	protected bool UseVelocitySmoothing;
+	protected float SmoothTime = 1f;
+
 	protected bool IsDragging {get { return _isDragging; }}
 
 	public bool EnableEdgeSmoothing = false;
 
-	public float Drag = 15f;
+	public float Drag = 1f;
 
 	public float MaxRadius = 1500f;
 
@@ -29,6 +32,7 @@ public class SRInputCameraBehaviour : SRCameraBehaviour
 	public Vector3 Velocity { get; set; }
 
 	private bool _isDragging;
+	private Vector3 _posVelocity;
 
 	public virtual void MoveStart()
 	{
@@ -84,7 +88,13 @@ public class SRInputCameraBehaviour : SRCameraBehaviour
 
 		var t = Quaternion.Euler(targetRotation);
 
-		Camera.Position = NGUIMath.SpringLerp(Camera.Position, TargetPosition, _springForce, RealTime.deltaTime);
+		if (UseVelocitySmoothing) {
+			Camera.Position = Vector3.SmoothDamp(Camera.Position, TargetPosition, ref _posVelocity, SmoothTime, 10000f,
+				RealTime.deltaTime);
+		} else {
+			Camera.Position = NGUIMath.SpringLerp(Camera.Position, TargetPosition, _springForce, RealTime.deltaTime);
+		}
+
 		Camera.Rotation = NGUIMath.SpringLerp(Camera.Rotation, t, 15f, RealTime.deltaTime);
 		Camera.Zoom = NGUIMath.SpringLerp(Camera.Zoom, Zoom, 15f, RealTime.deltaTime);
 
