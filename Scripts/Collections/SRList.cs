@@ -122,6 +122,9 @@ public class SRList<T> : IList<T>, ISerializationCallbackReceiver
 	public void Clean()
 	{
 
+		if (Buffer == null)
+			return;
+
 		for (var i = Count; i < _buffer.Length; i++) {
 
 			_buffer[i] = default(T);
