@@ -1,4 +1,4 @@
-﻿#define ENABLE_LOGGING
+﻿//#define ENABLE_LOGGING
 using System.Collections;
 using UnityEngine;
 
@@ -31,13 +31,6 @@ namespace Scripts.Framework.Service
 		protected bool IsLoaded { get { return _rootObject != null; } }
 
 		private TImpl _rootObject;
-
-		protected override void Awake()
-		{
-
-			base.Awake();
-
-		}
 
 		protected override void Start()
 		{
