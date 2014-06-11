@@ -6,7 +6,7 @@ namespace Scripts.Framework.Service
 {
 	public abstract class SRSceneServiceBase<T, TImpl> : SRServiceBase<T>
 		where T : class
-		where TImpl : MonoBehaviour
+		where TImpl : Component
 	{
 
 #if ENABLE_LOGGING
