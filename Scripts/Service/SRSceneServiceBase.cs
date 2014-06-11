@@ -41,6 +41,15 @@ namespace Scripts.Framework.Service
 
 		}
 
+		protected override void OnDestroy()
+		{
+
+			if(IsLoaded)
+				Destroy(_rootObject.gameObject);
+
+			base.OnDestroy();
+		}
+
 		protected virtual void OnSceneLoaded() {}
 
 		private IEnumerator LoadCoroutine()
@@ -48,6 +57,8 @@ namespace Scripts.Framework.Service
 
 			if (_rootObject != null)
 				yield break;
+
+			SRServiceManager.LoadingCount++;
 
 			if (Logging)
 				Debug.Log("[Service] Loading scene ({0})".Fmt(SceneName), this);
@@ -70,8 +81,10 @@ namespace Scripts.Framework.Service
 			_rootObject = timpl;
 			_rootObject.transform.parent = CachedTransform;
 
-			if (Logging)
-				Debug.Log("[Service] Complete", this);
+			DontDestroyOnLoad(go);
+
+			Debug.Log("[Service] Loading {0} complete. (Scene: {1})".Fmt(GetType().Name, SceneName), this);
+			SRServiceManager.LoadingCount--;
 
 			OnSceneLoaded();
 
@@ -79,6 +92,7 @@ namespace Scripts.Framework.Service
 
 			Error:
 
+			SRServiceManager.LoadingCount--;
 			Debug.LogError("[Service] Root object ({0}) not found".Fmt(SceneName), this);
 			enabled = false;
 

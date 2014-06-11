@@ -10,6 +10,13 @@ namespace Scripts.Framework.Service
 	public class SRServiceManager : SRAutoSingleton<SRServiceManager>
 	{
 
+		/// <summary>
+		/// Is there a service loading?
+		/// </summary>
+		public static bool IsLoading { get { return LoadingCount > 0; } }
+
+		public static int LoadingCount = 0;
+
 		public static T GetService<T>() where T : class
 		{
 
