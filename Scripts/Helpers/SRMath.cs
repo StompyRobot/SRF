@@ -353,7 +353,7 @@ public static class SRMath
 		while (value < 0)
 			value += max;
 
-		while (value >= max)
+		while (value > max)
 			value -= max;
 
 		return value;
