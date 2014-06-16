@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Holoville.HOTween;
 using UnityEngine;
@@ -22,12 +23,17 @@ public sealed class SRCamera : SRMonoBehaviour
 		{
 
 			if (_mainCam == null) {
-				_mainCam = _cameras.FirstOrDefault(p => p.Tag.ToLower() == "main");
+				_mainCam = GetCamera("main");
 			}
 
 			return _mainCam;
 
 		}
+	}
+
+	public static SRCamera GetCamera(string tag)
+	{
+		return _cameras.FirstOrDefault(p => String.Equals(p.Tag, tag, StringComparison.CurrentCultureIgnoreCase));
 	}
 
 	public string Tag = "";

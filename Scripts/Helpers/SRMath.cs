@@ -365,4 +365,21 @@ public static class SRMath
 		return (v1 + v2)*0.5f;
 	}
 
+	/// <summary>
+	/// Return an angle in range -180, 180 based on direction vector
+	/// </summary>
+	/// <param name="direction"></param>
+	/// <returns></returns>
+	public static float Angle(Vector2 direction)
+	{
+
+		var angle = Vector3.Angle(Vector3.up, direction);
+
+		if (Vector3.Cross(direction, Vector3.up).z > 0f)
+			angle *= -1;
+
+		return angle;
+
+	}
+
 }

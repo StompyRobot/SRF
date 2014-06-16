@@ -35,7 +35,10 @@ public abstract class SRCameraBehaviour : SRMonoBehaviour
 		set { _targetZoom = value; }
 	}
 
-	protected readonly Plane GamePlane = new Plane(Vector3.up, Vector3.zero);
+	protected virtual Plane GamePlane { get { return _defaultGamePlane; } }
+
+	private readonly Plane _defaultGamePlane = new Plane(Vector3.up, Vector3.zero);
+
 	private Vector3 _targetPosition;
 	private float _targetZoom;
 	private Quaternion _targetRotation;
