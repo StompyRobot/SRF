@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Scripts.Framework.Service
 {
-	public abstract class SRSceneServiceBase<T, TImpl> : SRServiceBase<T>
+	public abstract class SRSceneServiceBase<T, TImpl> : SRServiceBase<T>, IAsyncService
 		where T : class
 		where TImpl : Component
 	{
@@ -28,7 +28,7 @@ namespace Scripts.Framework.Service
 			get { return _rootObject; }
 		}
 
-		protected bool IsLoaded { get { return _rootObject != null; } }
+		public bool IsLoaded { get { return _rootObject != null; } }
 
 		private TImpl _rootObject;
 
@@ -50,7 +50,7 @@ namespace Scripts.Framework.Service
 			base.OnDestroy();
 		}
 
-		protected virtual void OnSceneLoaded() {}
+		protected virtual void OnLoaded() {}
 
 		private IEnumerator LoadCoroutine()
 		{
@@ -86,7 +86,7 @@ namespace Scripts.Framework.Service
 			Debug.Log("[Service] Loading {0} complete. (Scene: {1})".Fmt(GetType().Name, SceneName), this);
 			SRServiceManager.LoadingCount--;
 
-			OnSceneLoaded();
+			OnLoaded();
 
 			yield break;
 

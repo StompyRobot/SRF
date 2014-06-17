@@ -29,6 +29,18 @@ namespace Scripts.Framework.Service
 
 		}
 
+		public static object GetService(Type t)
+		{
+
+			var s = GetServiceInternal(t);
+
+			if(s == null)
+				Debug.LogWarning("Service {0} not found. (HasQuit: {1})".Fmt(t.Name, _hasQuit));
+
+			return s;
+
+		}
+
 		private static object GetServiceInternal(Type t)
 		{
 
