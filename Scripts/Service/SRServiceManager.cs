@@ -179,6 +179,27 @@ namespace Scripts.Framework.Service
 			public Type InterfaceType;
 			public Type Type;
 
+			public Func<Type> Selector;
+			public Func<object> Constructor;
+
+			public override string ToString()
+			{
+
+				var s = InterfaceType.Name + " (";
+
+				if (Type != null)
+					s += "Type: " + Type.Name;
+				else if (Selector != null)
+					s += "Selector: " + Selector.Method;
+				else if (Constructor != null)
+					s += "Constructor: " + Constructor.Method;
+
+				s += ")";
+
+				return s;
+
+			}
+
 		}
 
 		private readonly SRList<Service> _services = new SRList<Service>();
@@ -208,18 +229,22 @@ namespace Scripts.Framework.Service
 
 				var attrib = Attribute.GetCustomAttribute(type, typeof (ServiceAttribute)) as ServiceAttribute;
 
-				if(attrib == null)
-					continue;
+				if (attrib != null) {
 
-				_serviceStubs.Add(new ServiceStub {
-					Type = type,
-					InterfaceType = attrib.ServiceType
-				});
+					_serviceStubs.Add(new ServiceStub {
+						Type = type,
+						InterfaceType = attrib.ServiceType
+					});
+
+				}
+
+				ScanTypeForConstructors(type, _serviceStubs);
+				ScanTypeForSelectors(type, _serviceStubs);
 
 			}
 
 			var serviceStrings =
-				_serviceStubs.Select(p => "	{0} ({1})".Fmt(p.Type, p.InterfaceType.Name)).ToArray();
+				_serviceStubs.Select(p => "	{0}".Fmt(p)).ToArray();
 
 			Debug.Log("[SRServiceManager] Services Discovered: {0} \n  {1}".Fmt(serviceStrings.Length,
 				string.Join("\n  ", serviceStrings)));
@@ -233,25 +258,33 @@ namespace Scripts.Framework.Service
 
 			foreach (var stub in _serviceStubs) {
 
-				if (stub.InterfaceType == t) {
+				if (stub.InterfaceType != t)
+					continue;
 
-					//var serviceContainer = Hierarchy.Instance["/_Services"];
-					//DontDestroyOnLoad(serviceContainer.gameObject);
+				object service = null;
 
-					var go = new GameObject("_S_" + t.Name);
-					//go.transform.parent = serviceContainer;
+				if (stub.Constructor != null) {
 
-					var s = (object)go.AddComponent(stub.Type);
+					service = stub.Constructor();
 
-					if(!HasService(t))
-						RegisterService(t, s);
+				} else {
 
-					Debug.Log("[SRServiceManager] Auto-created service: {0} ({1})".Fmt(stub.Type, stub.InterfaceType), go);
+					Type serviceType = stub.Type;
 
-					return s;
+					if (serviceType == null) {
+						serviceType = stub.Selector();
+					}
+
+					service = DefaultServiceConstructor(t, serviceType);
 
 				}
 
+				if(!HasService(t))
+					RegisterService(t, service);
+
+				Debug.Log("[SRServiceManager] Auto-created service: {0} ({1})".Fmt(stub.Type, stub.InterfaceType), service as UnityEngine.Object);
+
+				return service;
 			}
 
 			return null;
@@ -262,6 +295,94 @@ namespace Scripts.Framework.Service
 		{
 			Debug.Log("OnApplicationQuit");
 			_hasQuit = true;
+		}
+
+		private static object DefaultServiceConstructor(Type serviceIntType, Type implType)
+		{
+
+			var go = new GameObject("_S_" + serviceIntType.Name);
+			return go.AddComponent(implType);
+
+		}
+
+		private static void ScanTypeForSelectors(Type t, List<ServiceStub> stubs)
+		{
+
+			var methods = t.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+
+			foreach (var method in methods) {
+
+				var attrib = Attribute.GetCustomAttribute(method, typeof(ServiceSelectorAttribute)) as ServiceSelectorAttribute;
+
+				if (attrib == null)
+					continue;
+
+				if (method.ReturnType != typeof (Type)) {
+					Debug.LogError("ServiceSelector must have return type of Type ({0}.{1}())".Fmt(t.Name, method.Name));
+					continue;
+				}
+
+				if (method.GetParameters().Length > 0) {
+					Debug.LogError("ServiceSelector must have no parameters ({0}.{1}())".Fmt(t.Name, method.Name));
+					continue;
+				}
+
+				var stub = stubs.FirstOrDefault(p => p.InterfaceType == attrib.ServiceType);
+
+				if (stub == null) {
+
+					stub = new ServiceStub() {
+						InterfaceType = attrib.ServiceType
+					};
+
+					stubs.Add(stub);
+
+				}
+
+				stub.Selector = (Func<Type>) Delegate.CreateDelegate(typeof(Func<Type>), method);
+
+			}
+
+		}
+
+		private static void ScanTypeForConstructors(Type t, List<ServiceStub> stubs)
+		{
+
+			var methods = t.GetMethods(BindingFlags.Static);
+
+			foreach (var method in methods) {
+
+				var attrib = Attribute.GetCustomAttribute(method, typeof(ServiceConstructorAttribute)) as ServiceConstructorAttribute;
+
+				if (attrib == null)
+					continue;
+
+				if (method.ReturnType != attrib.ServiceType) {
+					Debug.LogError("ServiceConstructor must have return type of {2} ({0}.{1}())".Fmt(t.Name, method.Name, attrib.ServiceType));
+					continue;
+				}
+
+				if (method.GetParameters().Length > 0) {
+					Debug.LogError("ServiceConstructor must have no parameters ({0}.{1}())".Fmt(t.Name, method.Name));
+					continue;
+				}
+
+				var stub = stubs.FirstOrDefault(p => p.InterfaceType == attrib.ServiceType);
+
+				if (stub == null) {
+
+					stub = new ServiceStub() {
+						InterfaceType = attrib.ServiceType
+					};
+
+					stubs.Add(stub);
+
+				}
+
+				stub.Constructor = (Func<object>)Delegate.CreateDelegate(t, method);
+
+			}
+
 		}
 
 	}
