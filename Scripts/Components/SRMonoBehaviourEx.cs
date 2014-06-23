@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Scripts.Framework.Service;
 using UnityEngine;
 using System.Collections;
 
@@ -25,6 +26,7 @@ public sealed class RequiredFieldAttribute : Attribute
 		set { _autoCreate = value; }
 	}
 
+	[Obsolete]
 	public bool EditorOnly
 	{
 		get { return _editorOnly; }
@@ -42,6 +44,27 @@ public sealed class RequiredFieldAttribute : Attribute
 
 }
 
+/// <summary>
+/// Add to a field to attempt to use SRServiceManager to get an instance of the field type
+/// </summary>
+[AttributeUsage(AttributeTargets.Field)]
+public class ImportAttribute : Attribute
+{
+
+	public readonly Type Service;
+
+	public ImportAttribute()
+	{
+
+	}
+
+	public ImportAttribute(Type serviceType)
+	{
+		Service = serviceType;
+	}
+
+}
+
 public abstract class SRMonoBehaviourEx : SRMonoBehaviour
 {
 
@@ -49,6 +72,9 @@ public abstract class SRMonoBehaviourEx : SRMonoBehaviour
 	{
 
 		public System.Reflection.FieldInfo Field;
+
+		public bool Import;
+		public Type ImportType;
 
 		public bool AutoSet;
 		public bool AutoCreate;
@@ -89,8 +115,29 @@ public abstract class SRMonoBehaviourEx : SRMonoBehaviour
 			if (!EqualityComparer<System.Object>.Default.Equals(f.Field.GetValue(instance), null))
 				continue;
 
+			// If import is enabled, use SRServiceManager to import the reference
+			if (f.Import) {
+
+				var t = f.ImportType ?? f.Field.FieldType;
+
+				var service = SRServiceManager.GetService(t);
+
+				if (service == null) {
+
+					Debug.LogWarning("Field {0} import failed (Type {1})".Fmt(f.Field.Name, t));
+					continue;
+
+				}
+
+				f.Field.SetValue(instance, service);
+
+				continue;
+
+			}
+
 			// If autoset is enabled on field, try and find the component on the GameObject
-			if (f.AutoSet) {
+
+			if (f.AutoSet) {	
 
 				var newValue = instance.GetComponent(f.Field.FieldType);
 
@@ -134,29 +181,33 @@ public abstract class SRMonoBehaviourEx : SRMonoBehaviour
 
 			var f = fields[i];
 
-			var c = f.GetCustomAttributes(typeof (RequiredFieldAttribute), false).FirstOrDefault() as RequiredFieldAttribute;
+			var requiredFieldAttribute = f.GetCustomAttributes(typeof (RequiredFieldAttribute), false).FirstOrDefault() as RequiredFieldAttribute;
+			var importAttribute = f.GetCustomAttributes(typeof (ImportAttribute), false).FirstOrDefault() as ImportAttribute;
 
-			if (globalAttr != null || c != null) {
+			if(globalAttr == null && requiredFieldAttribute == null && importAttribute == null)
+				continue; // Early out if no attributes found.
 
-#if !UNITY_EDITOR
+			var info = new FieldInfo();
+			info.Field = f;
 
-					if((c == null && globalAttr.EditorOnly && !globalAttr.AutoSearch) || (c != null && c.EditorOnly && !c.AutoSearch))
-						continue;
+			if (importAttribute != null) {
 
-#endif
+				info.Import = true;
+				info.ImportType = importAttribute.Service;
 
-				var info = new FieldInfo();
-				info.Field = f;
+			} else if (requiredFieldAttribute != null) {
 
-				// Set from field attribute if it exists, falling back on the class attr
-				info.AutoSet = (c == null) ? globalAttr.AutoSearch : c.AutoSearch;
+				info.AutoSet = requiredFieldAttribute.AutoSearch;
+				info.AutoCreate = requiredFieldAttribute.AutoCreate;
 
-				if (c != null)
-					info.AutoCreate = c.AutoCreate;
+			} else {
 
-				cache.Add(info);
+				info.AutoSet = globalAttr.AutoSearch;
+				info.AutoCreate = globalAttr.AutoCreate;
 
 			}
+
+			cache.Add(info);
 
 		}
 
