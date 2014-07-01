@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Collections;
+using UnityEngine;
 using Debug = UnityEngine.Debug;
 
 public static class SRDebug
@@ -9,7 +9,7 @@ public static class SRDebug
 
 	[DebuggerNonUserCode]
 	[DebuggerStepThrough]
-	public static void AssertNotNull(object value, string message = null, SRMonoBehaviour instance = null)
+	public static void AssertNotNull(object value, string message = null, MonoBehaviour instance = null)
 	{ 
 
 		if (!EqualityComparer<System.Object>.Default.Equals(value, null))
@@ -28,7 +28,7 @@ public static class SRDebug
 
 	[DebuggerNonUserCode]
 	[DebuggerStepThrough]
-	public static void Assert(bool condition, string message = null, SRMonoBehaviour instance = null)
+	public static void Assert(bool condition, string message = null, MonoBehaviour instance = null)
 	{
 
 		if (condition)
@@ -44,7 +44,7 @@ public static class SRDebug
 	[Conditional("UNITY_EDITOR")]
 	[DebuggerNonUserCode]
 	[DebuggerStepThrough]
-	public static void EditorAssertNotNull(object value, string message = null, SRMonoBehaviour instance = null)
+	public static void EditorAssertNotNull(object value, string message = null, MonoBehaviour instance = null)
 	{
 		AssertNotNull(value, message, instance);
 	}
@@ -52,7 +52,7 @@ public static class SRDebug
 	[Conditional("UNITY_EDITOR")]
 	[DebuggerNonUserCode]
 	[DebuggerStepThrough]
-	public static void EditorAssert(bool condition, string message = null, SRMonoBehaviour instance = null)
+	public static void EditorAssert(bool condition, string message = null, MonoBehaviour instance = null)
 	{
 		Assert(condition, message, instance);
 	}
