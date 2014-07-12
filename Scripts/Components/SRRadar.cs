@@ -2,7 +2,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class SRRadar<T> : SRRadarBase<T> where T : SRMonoBehaviour
+public class SRRadar<T> : SRRadarBase<T> where T : class, IHasTransform
 {
 
 	protected override void PerformScan()

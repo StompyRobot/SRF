@@ -2,7 +2,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class SRRadar2D<T> : SRRadarBase<T> where T : SRMonoBehaviour
+public class SRRadar2D<T> : SRRadarBase<T> where T : class, IHasTransform
 {
 
 	private static Collider2D[] ColliderCache;

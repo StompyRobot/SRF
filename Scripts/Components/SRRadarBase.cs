@@ -1,9 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using System.Collections;
 
-public abstract class SRRadarBase<T> : SRMonoBehaviour where T : SRMonoBehaviour
+public abstract class SRRadarBase<T> : SRMonoBehaviour where T : class, IHasTransform
 {
+
+	protected static readonly Type Type = typeof (T);
 
 	private const float CacheCheckFrequency = 60f;
 	private static float NextCacheCheck = CacheCheckFrequency;
@@ -103,7 +106,7 @@ public abstract class SRRadarBase<T> : SRMonoBehaviour where T : SRMonoBehaviour
 		var id = go.GetInstanceID();
 
 		if (!Cache.TryGetValue(id, out unit)) {
-			unit = SearchParents ? NGUITools.FindInParents<T>(go) : go.GetComponent<T>();
+			unit = (SearchParents ? go.GetComponentInParent(Type) : go.GetComponent(Type)) as T;
 			Cache.Add(id, unit);
 		}
 
