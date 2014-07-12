@@ -7,7 +7,7 @@ using Debug = UnityEngine.Debug;
 /// <summary>
 /// Base MonoBehaviour which provides useful common functionality
 /// </summary>
-public abstract class SRMonoBehaviour : MonoBehaviour
+public abstract class SRMonoBehaviour : MonoBehaviour, IHasTransform
 {
 
 	/// <summary>
