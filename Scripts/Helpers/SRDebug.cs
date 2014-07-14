@@ -119,10 +119,10 @@ public static class SRDebug
 		_m.SetPass(0);
 		GL.LoadOrtho();
 
+		GL.Begin(GL.LINES);
 
 		for (var i = 0; i < _currentFrameLines; i++) {
 
-			GL.Begin(GL.LINES);
 
 			GL.Color(_lineBuffer[i].Color);
 			GL.Vertex(c.WorldToViewportPoint(_lineBuffer[i].Source).xy());
@@ -130,13 +130,9 @@ public static class SRDebug
 			GL.Color(_lineBuffer[i].Color);
 			GL.Vertex(c.WorldToViewportPoint(_lineBuffer[i].Dest).xy());
 
-			GL.End();
-
 		}
 
 		for (var i = 0; i < _currentFixedFrameLines; i++) {
-
-			GL.Begin(GL.LINES);
 
 			GL.Color(_fixedUpdateBuffer[i].Color);
 			GL.Vertex(c.WorldToViewportPoint(_fixedUpdateBuffer[i].Source).xy());
@@ -144,9 +140,9 @@ public static class SRDebug
 			GL.Color(_fixedUpdateBuffer[i].Color);
 			GL.Vertex(c.WorldToViewportPoint(_fixedUpdateBuffer[i].Dest).xy());
 
-			GL.End();
-
 		}
+		
+		GL.End();
 
 		GL.PopMatrix();
 
