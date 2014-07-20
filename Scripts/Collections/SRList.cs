@@ -48,11 +48,6 @@ public class SRList<T> : IList<T>, ISerializationCallbackReceiver
 		AddRange(source);
 	} 
 
-	public SRList(IList<T> source)
-	{
-		AddRange(source);
-	} 
-
 	public IEnumerator<T> GetEnumerator()
 	{
 		if (Buffer != null) {
@@ -84,15 +79,6 @@ public class SRList<T> : IList<T>, ISerializationCallbackReceiver
 
 		foreach (var item in range) {
 			Add(item);
-		}
-
-	}
-
-	public void AddRange(IList<T> range)
-	{
-
-		for (int i = 0; i < range.Count; i++) {
-			Add(range[i]);
 		}
 
 	}
