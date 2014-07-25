@@ -31,6 +31,13 @@ public static class Vector3Extensions
 
 	}
 
+	public static Vector3 Average(Vector3 one, Vector3 two, Vector3 three)
+	{
+
+		return (one + two + three)/3f;
+
+	}
+
 	public static Vector3 Average(params Vector3[] vectors)
 	{
 
