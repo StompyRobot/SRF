@@ -337,6 +337,9 @@ public static class SRMath
 	public static int Wrap(int max, int value)
 	{
 
+		if (max < 0)
+			throw new ArgumentOutOfRangeException("max", "max must be greater than 0");
+
 		while (value < 0)
 			value += max;
 
