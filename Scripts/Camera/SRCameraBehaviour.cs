@@ -6,7 +6,18 @@ public abstract class SRCameraBehaviour : SRMonoBehaviour
 
 	private SRCamera _camera;
 
-	public SRCamera Camera { get { return _camera; } }
+	public SRCamera Camera
+	{
+		get
+		{
+
+			if (_camera == null)
+				_camera = GetComponent<SRCamera>();
+
+			return _camera;
+
+		}
+	}
 
 	/// <summary>
 	/// Position the camera is interpolating towards
@@ -45,10 +56,9 @@ public abstract class SRCameraBehaviour : SRMonoBehaviour
 
 	protected virtual void Awake()
 	{
-		_camera = GetComponent<SRCamera>();
 		enabled = false;
-		_camera.RegisterCameraBehaviour(this);
-		AssertNotNull(_camera, "Camera");
+		Camera.RegisterCameraBehaviour(this);
+		AssertNotNull(Camera, "Camera");
 	}
 
 	protected virtual void OnEnable()

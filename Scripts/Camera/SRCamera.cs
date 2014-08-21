@@ -275,8 +275,8 @@ public sealed class SRCamera : SRMonoBehaviour
 
 		_cameraBehaviours.Add(behaviour);
 
-		if(_activeBehavour == null)
-			behaviour.Activate();
+		//if(_activeBehavour == null)
+		//	behaviour.Activate();
 
 	}
 
