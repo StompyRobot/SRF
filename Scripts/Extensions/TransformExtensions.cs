@@ -56,6 +56,12 @@ public static class TransformExtensions
 	public static void SetParentMaintainLocals(this Transform t, Transform parent)
 	{
 
+#if UNITY_4_6
+
+		t.SetParent(parent, false);
+
+#else
+
 		var p = t.localPosition;
 		var r = t.localRotation;
 		var s = t.localScale;
@@ -65,6 +71,8 @@ public static class TransformExtensions
 		t.localPosition = p;
 		t.localRotation = r;
 		t.localScale = s;
+
+#endif
 
 	}
 
