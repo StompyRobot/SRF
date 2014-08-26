@@ -67,6 +67,7 @@ namespace Scripts.Framework.Service
 				yield return Application.LoadLevelAdditiveAsync(SceneName);
 			#else
 				Application.LoadLevelAdditive(SceneName);
+				yield return new WaitForEndOfFrame();
 			#endif
 
 			if (Logging)
