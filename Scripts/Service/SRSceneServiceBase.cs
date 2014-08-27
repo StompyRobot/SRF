@@ -66,16 +66,25 @@ namespace Scripts.Framework.Service
 
 			SRServiceManager.LoadingCount++;
 
-			if (Logging)
-				Debug.Log("[Service] Loading scene ({0})".Fmt(SceneName), this);
+			if (Application.loadedLevelName == SceneName) {
 
-			if(IsPro)
-				yield return Application.LoadLevelAdditiveAsync(SceneName);
-			else
-				Application.LoadLevelAdditive(SceneName);
+				if (Logging)
+					Debug.Log("[Service] Already in service scene {0}. Searching for root object...".Fmt(SceneName), this);
 
-			if (Logging)
-				Debug.Log("[Service] Scene loaded. Searching for root object...", this);
+			} else {
+
+				if (Logging)
+					Debug.Log("[Service] Loading scene ({0})".Fmt(SceneName), this);
+
+				if (IsPro)
+					yield return Application.LoadLevelAdditiveAsync(SceneName);
+				else
+					Application.LoadLevelAdditive(SceneName);
+
+				if (Logging)
+					Debug.Log("[Service] Scene loaded. Searching for root object...", this);
+
+			}
 
 			var go = GameObject.Find(SceneName);
 
