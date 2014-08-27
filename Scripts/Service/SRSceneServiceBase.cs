@@ -15,12 +15,6 @@ namespace Scripts.Framework.Service
 		private const bool Logging = false;
 #endif
 
-#if UNITY_PRO_LICENSE
-		private const bool IsPro = true;
-#else
-		private const bool IsPro = false;
-#endif
-
 		/// <summary>
 		/// Name of the scene this service's contents are within
 		/// </summary>
@@ -76,12 +70,13 @@ namespace Scripts.Framework.Service
 				if (Logging)
 					Debug.Log("[Service] Loading scene ({0})".Fmt(SceneName), this);
 
-				if (IsPro)
+#if UNITY_PRO_LICENSE
 					yield return Application.LoadLevelAdditiveAsync(SceneName);
-				else
+#else
 					Application.LoadLevelAdditive(SceneName);
 
-				if (Logging)
+#endif
+
 					Debug.Log("[Service] Scene loaded. Searching for root object...", this);
 
 			}
