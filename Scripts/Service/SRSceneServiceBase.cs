@@ -77,6 +77,7 @@ namespace Scripts.Framework.Service
 
 #endif
 
+				if(Logging)
 					Debug.Log("[Service] Scene loaded. Searching for root object...", this);
 
 			}
