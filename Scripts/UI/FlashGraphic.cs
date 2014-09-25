@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 namespace SRF.UI
 {
+
+	[ExecuteInEditMode]
 	public class FlashGraphic : UIBehaviour, IPointerDownHandler, IPointerUpHandler
 	{
 
@@ -22,6 +24,28 @@ namespace SRF.UI
 			Target.CrossFadeColor(DefaultColor, 0f, true, true);
 		}
 
+		protected void Update()
+		{
+			
+#if UNITY_EDITOR
+
+			if (!Application.isPlaying && Target != null) {
+
+				Target.CrossFadeColor(DefaultColor, 0, true, true);
+
+			}
+				
+
+#endif
+
+		}
+
+		public void Flash()
+		{
+			Target.CrossFadeColor(FlashColor, 0f, true, true);
+			Target.CrossFadeColor(DefaultColor, DecayTime, true, true);
+		}
+
 		public void OnPointerDown(PointerEventData eventData)
 		{
 			Target.CrossFadeColor(FlashColor, 0f, true, true);
@@ -33,6 +57,7 @@ namespace SRF.UI
 		}
 
 	}
+
 }
 
 #endif
