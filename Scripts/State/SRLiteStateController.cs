@@ -2,7 +2,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class SRLiteStateController<T> : SRMonoBehaviour where T : struct
+public class SRLiteStateController<T> : SRMonoBehaviourEx where T : struct
 {
 
 	protected SimpleStateMachine<T> StateMachine { get { return _stateMachine; }}
