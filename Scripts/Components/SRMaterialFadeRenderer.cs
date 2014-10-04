@@ -38,6 +38,8 @@ namespace Scripts.Framework.Components
 
 			if (Mathf.Approximately(1.0f, Alpha)) {
 
+				Renderer.enabled = true;
+
 				if (_activeMaterial != _defaultMaterial) {
 
 					Renderer.enabled = true;
