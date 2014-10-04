@@ -44,7 +44,7 @@ namespace Scripts.Framework.Service
 		private static object GetServiceInternal(Type t)
 		{
 
-			if (_hasQuit)
+			if (_hasQuit || !Application.isPlaying)
 				return null;
 
 			var services = Instance._services;
@@ -82,7 +82,7 @@ namespace Scripts.Framework.Service
 		public static bool HasService(Type t)
 		{
 
-			if (_hasQuit)
+			if (_hasQuit || !Application.isPlaying)
 				return false;
 
 			var services = Instance._services;

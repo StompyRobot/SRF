@@ -31,7 +31,7 @@ public abstract class SRAutoSingleton<T> : SRAutoSingletonBase where T : SRAutoS
 		get
 		{
 			// Instance required for the first time, we look for it
-			if (_instance == null) {
+			if (_instance == null && Application.isPlaying) {
 				var go = new GameObject("_" + typeof (T).Name);
 				go.AddComponent<T>(); // _instance set by Awake() constructor
 			}
