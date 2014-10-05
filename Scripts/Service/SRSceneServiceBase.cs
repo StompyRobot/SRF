@@ -1,6 +1,8 @@
 ﻿//#define ENABLE_LOGGING
 using System.Collections;
+using System.Diagnostics;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 namespace Scripts.Framework.Service
 {
@@ -9,11 +11,13 @@ namespace Scripts.Framework.Service
 		where TImpl : Component
 	{
 
-#if ENABLE_LOGGING
-		private const bool Logging = true;
-#else
-		private const bool Logging = false;
-#endif
+		[Conditional("ENABLE_LOGGING")]
+		private void Log(string msg, UnityEngine.Object target)
+		{
+			//#if ENABLE_LOGGING
+			Debug.Log(msg, target);
+			//#endif
+		}
 
 		/// <summary>
 		/// Name of the scene this service's contents are within
@@ -62,13 +66,11 @@ namespace Scripts.Framework.Service
 
 			if (Application.loadedLevelName == SceneName) {
 
-				if (Logging)
-					Debug.Log("[Service] Already in service scene {0}. Searching for root object...".Fmt(SceneName), this);
+				Log("[Service] Already in service scene {0}. Searching for root object...".Fmt(SceneName), this);
 
 			} else {
 
-				if (Logging)
-					Debug.Log("[Service] Loading scene ({0})".Fmt(SceneName), this);
+				Log("[Service] Loading scene ({0})".Fmt(SceneName), this);
 
 #if UNITY_PRO_LICENSE
 					yield return Application.LoadLevelAdditiveAsync(SceneName);
@@ -77,8 +79,7 @@ namespace Scripts.Framework.Service
 
 #endif
 
-				if(Logging)
-					Debug.Log("[Service] Scene loaded. Searching for root object...", this);
+				Log("[Service] Scene loaded. Searching for root object...", this);
 
 			}
 

@@ -19,14 +19,10 @@ public class SRLiteStateController<T> : SRMonoBehaviourEx where T : struct
 
 	private SimpleStateMachine<T> _stateMachine;
 
-	protected virtual void OnEnable()
+	protected override void OnEnable()
 	{
+		base.OnEnable();
 		EnsureStateMachine();
-	}
-
-	protected virtual void OnDisable()
-	{
-
 	}
 
 	void EnsureStateMachine()
@@ -41,8 +37,9 @@ public class SRLiteStateController<T> : SRMonoBehaviourEx where T : struct
 
 	}
 
-	protected virtual void Update()
+	protected override void Update()
 	{
+		base.Update();
 		_stateMachine.Update();
 	}
 

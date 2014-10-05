@@ -1,7 +1,9 @@
 ﻿//#define ENABLE_LOGGING
 using System;
 using System.Collections;
+using System.Diagnostics;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 namespace Scripts.Framework.Service
 {
@@ -13,11 +15,13 @@ namespace Scripts.Framework.Service
 	public abstract class SRDependencyServiceBase<T> : SRServiceBase<T>, IAsyncService where T : class
 	{
 
-#if ENABLE_LOGGING
-		private const bool Logging = true;
-#else
-		private const bool Logging = false;
-#endif
+		[Conditional("ENABLE_LOGGING")]
+		private void Log(string msg, UnityEngine.Object target)
+		{
+//#if ENABLE_LOGGING
+		Debug.Log(msg, target);
+//#endif
+		}
 
 		public bool IsLoaded
 		{
@@ -49,15 +53,13 @@ namespace Scripts.Framework.Service
 
 			SRServiceManager.LoadingCount++;
 
-			if (Logging)
-				Debug.Log("[Service] Loading service ({0})".Fmt(GetType().Name), this);
+			Log("[Service] Loading service ({0})".Fmt(GetType().Name), this);
 
 			foreach (var d in Dependencies) {
 
 				var hasService = SRServiceManager.HasService(d);
 
-				if (Logging)
-					Debug.Log("[Service] Resolving Service ({0}) HasService: {1}".Fmt(d.Name, hasService), this);
+				Log("[Service] Resolving Service ({0}) HasService: {1}".Fmt(d.Name, hasService), this);
 
 				if(hasService)
 					continue;
@@ -81,8 +83,7 @@ namespace Scripts.Framework.Service
 
 			}
 
-			if (Logging)
-				Debug.Log("[Service] Loading service ({0}) complete.".Fmt(GetType().Name), this);
+			Log("[Service] Loading service ({0}) complete.".Fmt(GetType().Name), this);
 
 			_isLoaded = true;
 			SRServiceManager.LoadingCount--;
