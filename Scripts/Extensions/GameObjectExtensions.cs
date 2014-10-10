@@ -6,6 +6,11 @@ using System.Collections;
 public static class GameObjectExtensions
 {
 
+	public static T GetIComponent<T>(this GameObject t) where T : class
+	{
+		return t.GetComponent(typeof (T)) as T;
+	}
+
 	/// <summary>
 	/// Get the component T, or add it to the GameObject if none exists
 	/// </summary>
