@@ -19,12 +19,20 @@ namespace Assets.SRF.Scripts.Helpers
 			var t = typeof (T);
 			var results = new List<Type>();
 
-			var types = Assembly.GetExecutingAssembly().GetTypes();
+			var assemblies = AppDomain.CurrentDomain.GetAssemblies();
 
-			foreach (var type in types) {
+			foreach (var assembly in assemblies) {
 
-				if (!type.IsAbstract && t.IsAssignableFrom(type)) {
-					results.Add(type);
+				var types = assembly.GetTypes();
+
+				foreach (var type in types)
+				{
+
+					if (!type.IsAbstract && t.IsAssignableFrom(type))
+					{
+						results.Add(type);
+					}
+
 				}
 
 			}
