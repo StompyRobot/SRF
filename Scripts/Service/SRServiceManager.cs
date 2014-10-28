@@ -124,7 +124,7 @@ namespace Scripts.Framework.Service
 
 			UnRegisterService(t);
 
-			if (service.GetType().IsAssignableFrom(t)) {
+			if (!t.IsInstanceOfType(service)) {
 				throw new ArgumentException("service {0} must be assignable from type {1}".Fmt(service.GetType(), t));
 			}
 
