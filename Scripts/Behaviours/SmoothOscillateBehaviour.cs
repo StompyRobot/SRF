@@ -15,10 +15,15 @@ namespace SRF.Behaviours
 
 		private float _time;
 
+		public bool SeedTime = true;
+
 		protected void Start()
 		{
 
 			_defaultLocalPosition = CachedTransform.localPosition;
+
+			if (SeedTime)
+				_time = Time.realtimeSinceStartup * Random.value;
 
 		}
 
