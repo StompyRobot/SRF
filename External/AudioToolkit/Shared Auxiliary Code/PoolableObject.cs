@@ -724,18 +724,18 @@ static public class ObjectPoolController
                     poolObj._destroyMessageFromPoolController = true;
                 }
 
-                objTransform.parent = null; // object could still be parented, so detach
+                objTransform.SetParent(null, false); // object could still be parented, so detach
 
                 _RecursivelySetInactiveAndSendMessages( poolObj.gameObject, poolObj, false );
 
-                objTransform.parent = poolObj._myPool.poolParentDummy; // attach to dummy Parent
+                objTransform.SetParent(poolObj._myPool.poolParentDummy, false); // attach to dummy Parent
 
                 //poolObj.gameObject.name = "pooled:" + poolObj._myPool._prefabPoolObj.name;
 
             }
             else
             {
-                objTransform.parent = null; // detach from poolParentDummy
+                objTransform.SetParent(null, true); // detach from poolParentDummy
                 _SetActiveAndSendMessages( poolObj.gameObject, poolObj );
 
                 //poolObj.gameObject.name = poolObj._myPool._prefabPoolObj.name;
