@@ -21,7 +21,7 @@ namespace SRF.UI
 		{
 			get
 			{
-				if (CopySource == null || !IsActive())
+				if (CopySource == null)
 					return -1f;
 				return LayoutUtility.GetMinWidth(CopySource.rectTransform) + Padding.x;
 			}
@@ -31,7 +31,7 @@ namespace SRF.UI
 		{
 			get
 			{
-				if (CopySource == null || !IsActive())
+				if (CopySource == null)
 					return -1f;
 				return LayoutUtility.GetPreferredWidth(CopySource.rectTransform) + Padding.x;
 			}
@@ -41,7 +41,7 @@ namespace SRF.UI
 		{
 			get
 			{
-				if (CopySource == null || !IsActive())
+				if (CopySource == null)
 					return -1f;
 				return LayoutUtility.GetFlexibleWidth(CopySource.rectTransform);
 			}
@@ -51,7 +51,7 @@ namespace SRF.UI
 		{
 			get
 			{
-				if (CopySource == null || !IsActive())
+				if (CopySource == null)
 					return -1f;
 				return LayoutUtility.GetFlexibleHeight(CopySource.rectTransform) + Padding.y;
 			}
@@ -61,7 +61,7 @@ namespace SRF.UI
 		{
 			get
 			{
-				if (CopySource == null || !IsActive())
+				if (CopySource == null)
 					return -1f;
 				return LayoutUtility.GetPreferredHeight(CopySource.rectTransform) + Padding.y;
 			}
@@ -71,7 +71,7 @@ namespace SRF.UI
 		{
 			get
 			{
-				if (CopySource == null || !IsActive())
+				if (CopySource == null)
 					return -1f;
 				return LayoutUtility.GetFlexibleHeight(CopySource.rectTransform);
 			}
