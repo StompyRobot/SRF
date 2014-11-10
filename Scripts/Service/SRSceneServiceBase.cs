@@ -76,7 +76,7 @@ namespace Scripts.Framework.Service
 					yield return Application.LoadLevelAdditiveAsync(SceneName);
 #else
 					Application.LoadLevelAdditive(SceneName);
-
+					yield return new WaitForEndOfFrame();
 #endif
 
 				Log("[Service] Scene loaded. Searching for root object...", this);
