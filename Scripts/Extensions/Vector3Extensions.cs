@@ -74,4 +74,17 @@ public static class Vector3Extensions
 		return diff;
 	}
 
+	public static Vector3 Multiply(Vector3 one, Vector3 two)
+	{
+
+		var result = one;
+
+		result.x *= two.x;
+		result.y *= two.y;
+		result.z *= two.z;
+
+		return result;
+
+	}
+
 }
