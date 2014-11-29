@@ -1,5 +1,6 @@
 ﻿#if ENABLE_4_6_FEATURES
 
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -66,9 +67,11 @@ namespace Assets.SRF.Scripts.UI
 				_targetRotation = Quaternion.identity;
 
 			}
-
-			CachedTransform.localRotation = NGUIMath.SpringLerp(CachedTransform.localRotation, _targetRotation, speed,
-				Time.unscaledDeltaTime);
+			
+			// TODO: Implement tweening in SRF
+			throw new NotImplementedException();
+			/*CachedTransform.localRotation = NGUIMath.SpringLerp(CachedTransform.localRotation, _targetRotation, speed,
+				Time.unscaledDeltaTime);*/
 
 		}
 

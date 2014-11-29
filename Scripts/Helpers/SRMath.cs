@@ -281,7 +281,8 @@ public static class SRMath
 	/// </summary>
 	public static float SpringClamp(float value, float min, float max, float springStrength, float dt)
 	{
-
+		throw new NotImplementedException();
+		/*
 		if (value < min) {
 			return value + (min - value)*NGUIMath.SpringLerp(springStrength, dt);
 		}
@@ -291,7 +292,7 @@ public static class SRMath
 		}
 
 		return value;
-
+		*/
 	}
 
 	/// <summary>

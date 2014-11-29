@@ -1,25 +1,31 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-/// <summary>
-/// Set localPosition as soon as this object is created. (Useful for setting up UI workspaces in editor)
-/// </summary>
-public class RuntimePosition : MonoBehaviour
+namespace SRF.Behaviours
 {
 
-	public Vector3 RunPosition;
-
-	public bool UseLocal = true;
-
-	void Awake()
+	/// <summary>
+	/// Set localPosition as soon as this object is created. (Useful for setting up UI workspaces in editor)
+	/// </summary>
+	[AddComponentMenu(Internal.ComponentMenuPaths.RuntimePosition)]
+	public class RuntimePosition : MonoBehaviour
 	{
 
-		if (UseLocal)
-			transform.localPosition = RunPosition;
-		else
-			transform.position = RunPosition;
+		public Vector3 RunPosition;
 
-		Destroy(this);
+		public bool UseLocal = true;
+
+		private void Awake()
+		{
+
+			if (UseLocal)
+				transform.localPosition = RunPosition;
+			else
+				transform.position = RunPosition;
+
+			Destroy(this);
+
+		}
 
 	}
 

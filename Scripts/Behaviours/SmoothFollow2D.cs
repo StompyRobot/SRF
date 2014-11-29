@@ -1,7 +1,12 @@
 ﻿using UnityEngine;
 
-namespace Scripts.Framework.Behaviours
+namespace SRF.Behaviours
 {
+
+	/// <summary>
+	/// Smoothly follow the target transform, on the x and y axis only.
+	/// </summary>
+	[AddComponentMenu(Internal.ComponentMenuPaths.SmoothFollow2D)]
 	public class SmoothFollow2D : SRMonoBehaviourEx
 	{
 

@@ -1,35 +1,52 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class SmoothMatchTransform : SRMonoBehaviour
+namespace SRF.Behaviours
 {
 
-	public Transform Target;
-
-	public bool MatchPosition = true;
-	public bool MatchRotation = true;
-	public bool MatchScale = true;
-
-	public float SmoothStrength = 15f;
-
-	public bool IgnoreTimeScale = false;
-
-	void Update()
+	/// <summary>
+	/// Smoothly interpolate position/rotation/scale to match another transform
+	/// </summary>
+	[AddComponentMenu(Internal.ComponentMenuPaths.SmoothMatchTransform)]
+	public class SmoothMatchTransform : SRMonoBehaviour
 	{
 
-		if (Target == null)
-			return;
+		public Transform Target;
 
-		var dt = IgnoreTimeScale ? RealTime.deltaTime : Time.deltaTime;
+		public bool MatchPosition = true;
+		public bool MatchRotation = true;
+		public bool MatchScale = true;
 
-		if(MatchPosition)
-			CachedTransform.position = NGUIMath.SpringLerp(CachedTransform.position, Target.position, SmoothStrength, dt);
+		public float SmoothStrength = 15f;
 
-		if(MatchRotation)
-			CachedTransform.rotation = NGUIMath.SpringLerp(CachedTransform.rotation, Target.rotation, SmoothStrength, dt);
+		public bool IgnoreTimeScale = false;
 
-		if(MatchScale)
-			CachedTransform.localScale = NGUIMath.SpringLerp(CachedTransform.localScale, Target.localScale, SmoothStrength, dt);
+		private Vector3 _positionVelocity;
+		private Vector3 _scaleVelocity;
+
+		private void Update()
+		{
+
+			if (Target == null)
+				return;
+
+			var dt = IgnoreTimeScale ? RealTime.deltaTime : Time.deltaTime;
+
+			if (MatchPosition)
+				CachedTransform.position = Vector3.SmoothDamp(CachedTransform.position, Target.position, ref _positionVelocity,
+					SmoothStrength,
+					float.MaxValue, dt);
+
+			// TODO: Implement rotation smoothing
+			/*if(MatchRotation)
+				CachedTransform.rotation = NGUIMath.SpringLerp(CachedTransform.rotation, Target.rotation, SmoothStrength, dt);*/
+
+			if (MatchScale)
+				CachedTransform.localScale = Vector3.SmoothDamp(CachedTransform.localScale, Target.localScale, ref _scaleVelocity,
+					SmoothStrength,
+					float.MaxValue, dt);
+
+		}
 
 	}
 

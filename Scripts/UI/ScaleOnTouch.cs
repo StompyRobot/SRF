@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.EventSystems;
 
 #if ENABLE_4_6_FEATURES
@@ -47,9 +48,10 @@ namespace SRF.UI
 					targetScale = Scale;
 
 			}
-
-			CachedTransform.localScale = NGUIMath.SpringLerp(CachedTransform.localScale, targetScale, speed,
-				Time.unscaledDeltaTime);
+			// TODO: Implement tweening in SRF
+			throw new NotImplementedException();
+			/*CachedTransform.localScale = NGUIMath.SpringLerp(CachedTransform.localScale, targetScale, speed,
+				Time.unscaledDeltaTime);*/
 
 		}
 

@@ -1,30 +1,41 @@
 ﻿using UnityEngine;
-using System.Collections;
 
-/// <summary>
-/// Match the target transform until it is destroyed.
-/// </summary>
-[ExecuteInEditMode]
-public class MatchTransform : SRMonoBehaviour
+namespace SRF.Behaviours
 {
 
-	public Transform Target;
-
-	public Vector3 PositionOffset;
-
-	public bool ExecuteInEditMode = false;
-
-	void LateUpdate()
+	/// <summary>
+	/// Match the target transform until it is destroyed.
+	/// </summary>
+	[ExecuteInEditMode]
+	[AddComponentMenu(Internal.ComponentMenuPaths.MatchTransform)]
+	public class MatchTransform : SRMonoBehaviour
 	{
 
-		if (Target == null)
-			return;
+		public Transform Target;
 
-		if (Application.isEditor && !Application.isPlaying && !ExecuteInEditMode)
-			return;
 
-		CachedTransform.position = Target.position + PositionOffset;
-		CachedTransform.rotation = Target.transform.rotation;
+		public bool ExecuteInEditMode = false;
+		public bool MatchRotation = true;
+		public bool MatchPosition = true;
+
+		public Vector3 PositionOffset;
+
+		private void LateUpdate()
+		{
+
+			if (Target == null)
+				return;
+
+			if (Application.isEditor && !Application.isPlaying && !ExecuteInEditMode)
+				return;
+
+			if (MatchPosition)
+				CachedTransform.position = Target.position + PositionOffset;
+
+			if (MatchRotation)
+				CachedTransform.rotation = Target.transform.rotation;
+
+		}
 
 	}
 

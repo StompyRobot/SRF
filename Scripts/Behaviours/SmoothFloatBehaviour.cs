@@ -1,27 +1,58 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class SmoothFloatBehaviour : SRMonoBehaviour
+namespace SRF.Behaviours
 {
 
-	public Vector2 FloatLimits;
-
-	public float FloatSpeed = 3;
-	public float Smooth = 3.5f;
-
-	public float TimeOffset;
-
-	private Vector3 _targetPosition;
-
-	private void Update()
+	/// <summary>
+	/// Smoothly floats the attached transform on the x and y axis based on a smoothing value.
+	/// </summary>
+	[AddComponentMenu(Internal.ComponentMenuPaths.SmoothFloatBehaviour)]
+	public class SmoothFloatBehaviour : SRMonoBehaviour
 	{
 
-		_targetPosition = Vector3.zero;
-		_targetPosition.x += FloatLimits.x * Mathf.Sin(Time.realtimeSinceStartup + TimeOffset)*FloatSpeed;
-		_targetPosition.y += FloatLimits.y * Mathf.Cos(Time.realtimeSinceStartup + TimeOffset)*FloatSpeed;
+		public Vector2 FloatLimits;
 
-		CachedTransform.localPosition = Vector3.Lerp(CachedTransform.localPosition, _targetPosition,
-		                                             Smooth*RealTime.deltaTime);
+		public float FloatSpeed = 3;
+		public float Smooth = 3.5f;
+
+		public float TimeOffset;
+		public bool IgnoreTimeScale = true;
+
+		public bool SeedTime = false;
+
+		private Vector3 _targetPosition;
+		private Vector3 _startPosition;
+
+		private float _time;
+
+		private void Start()
+		{
+
+			_startPosition = CachedTransform.localPosition;
+
+			if (SeedTime)
+				_time = Time.realtimeSinceStartup * Random.value;
+
+			_time += TimeOffset;
+
+		}
+
+		private void Update()
+		{
+
+			var t = IgnoreTimeScale ? RealTime.deltaTime : Time.deltaTime;
+
+			_time += t;
+
+			_targetPosition = _startPosition;
+			_targetPosition.x += FloatLimits.x*Mathf.Sin(_time)*FloatSpeed;
+			_targetPosition.y += FloatLimits.y*Mathf.Cos(_time)*FloatSpeed;
+
+			CachedTransform.localPosition = Vector3.Lerp(CachedTransform.localPosition, _targetPosition,
+				Smooth*t);
+
+		}
 
 	}
 

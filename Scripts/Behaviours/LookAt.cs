@@ -1,16 +1,21 @@
 ﻿using UnityEngine;
-using System.Collections;
 
-public class LookAt : SRMonoBehaviour
+namespace SRF.Behaviours
 {
 
-	public Transform Target;
-
-	void LateUpdate()
+	[AddComponentMenu(Internal.ComponentMenuPaths.LookAt)]
+	public class LookAt : SRMonoBehaviour
 	{
 
-		if(Target != null)
-			CachedTransform.LookAt(Target, Vector3.up);
+		public Transform Target;
 
+		void LateUpdate()
+		{
+
+			if (Target != null)
+				CachedTransform.LookAt(Target, Vector3.up);
+
+		}
 	}
+	
 }

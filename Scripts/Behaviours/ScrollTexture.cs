@@ -3,6 +3,10 @@
 namespace SRF.Behaviours
 {
 
+	/// <summary>
+	/// Scrolls the material texture UVs
+	/// </summary>
+	[AddComponentMenu(Internal.ComponentMenuPaths.ScrollTexture)]
 	public class ScrollTexture : MonoBehaviour
 	{
 
@@ -12,6 +16,7 @@ namespace SRF.Behaviours
 		public Vector2 ScrollSpeed;
 
 		public bool Shared = true;
+		public bool IgnoreTimeScale = false;
 
 		private Renderer _renderer;
 
@@ -28,7 +33,7 @@ namespace SRF.Behaviours
 			else
 				m = _renderer.materials[Material];
 
-			var dt = Time.time;
+			var dt = IgnoreTimeScale ? RealTime.time : Time.time;
 
 			m.SetTextureOffset(TextureName, ScrollSpeed*dt);
 

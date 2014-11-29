@@ -1,12 +1,17 @@
 ﻿using UnityEngine;
-using System.Collections;
 
-public class DontDestroyOnLoad : MonoBehaviour
+namespace SRF.Behaviours
 {
 
-	void Awake()
+	[AddComponentMenu(Internal.ComponentMenuPaths.DontDestroyOnLoad)]
+	public class DontDestroyOnLoad : MonoBehaviour
 	{
-		DontDestroyOnLoad(this.gameObject);
+
+		void Awake()
+		{
+			DontDestroyOnLoad(this.gameObject);
+		}
+
 	}
 
 }
