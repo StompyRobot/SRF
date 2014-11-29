@@ -6,6 +6,8 @@ using UnityEngine.EventSystems;
 
 namespace SRF.UI
 {
+
+	[AddComponentMenu(Internal.ComponentMenuPaths.ScaleOnTouch)]
 	public class ScaleOnTouch : SRMonoBehaviourEx, IPointerDownHandler, IPointerUpHandler, IPointerExitHandler, IDragHandler
 	{
 
@@ -48,10 +50,9 @@ namespace SRF.UI
 					targetScale = Scale;
 
 			}
-			// TODO: Implement tweening in SRF
-			throw new NotImplementedException();
-			/*CachedTransform.localScale = NGUIMath.SpringLerp(CachedTransform.localScale, targetScale, speed,
-				Time.unscaledDeltaTime);*/
+
+			CachedTransform.localScale = SRMath.SpringLerp(CachedTransform.localScale, targetScale, speed,
+				Time.unscaledDeltaTime);
 
 		}
 

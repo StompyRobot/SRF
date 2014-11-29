@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
 
-namespace Scripts.Framework.Components
+namespace SRF.Components
 {
 	/// <summary>
 	/// Handles fading the Alpha on a material. Only uses an instance material if alpha is modified
 	/// </summary>
+	[AddComponentMenu(Internal.ComponentMenuPaths.SRMaterialFadeRenderer)]
 	public class SRMaterialFadeRenderer : SRFadeRenderer
 	{
 

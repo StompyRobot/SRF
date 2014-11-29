@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace SRF.Helpers
+namespace SRF
 {
 	public static class PrefabUtil
 	{

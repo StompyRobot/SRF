@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Scripts.Framework.Service;
+using SRF.Service;
 using UnityEngine;
-using System.Collections;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
 public sealed class RequiredFieldAttribute : Attribute

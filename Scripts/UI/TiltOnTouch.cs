@@ -1,12 +1,12 @@
 ﻿#if ENABLE_4_6_FEATURES
 
-using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace Assets.SRF.Scripts.UI
+namespace SRF.UI
 {
 
+	[AddComponentMenu(Internal.ComponentMenuPaths.TiltOnTouch)]
 	[RequireComponent(typeof(RectTransform))]
 	public class TiltOnTouch : SRMonoBehaviourEx, IPointerDownHandler, IPointerUpHandler, IPointerExitHandler, IDragHandler
 	{
@@ -68,10 +68,8 @@ namespace Assets.SRF.Scripts.UI
 
 			}
 			
-			// TODO: Implement tweening in SRF
-			throw new NotImplementedException();
-			/*CachedTransform.localRotation = NGUIMath.SpringLerp(CachedTransform.localRotation, _targetRotation, speed,
-				Time.unscaledDeltaTime);*/
+			CachedTransform.localRotation = SRMath.SpringLerp(CachedTransform.localRotation, _targetRotation, speed,
+				Time.unscaledDeltaTime);
 
 		}
 

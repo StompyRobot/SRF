@@ -1,26 +1,29 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
-using System.Collections;
+﻿using UnityEngine;
 
-public class SRRadar<T> : SRRadarBase<T> where T : class, IHasTransform
+namespace SRF.Components
 {
 
-	protected override void PerformScan()
+	public abstract class SRRadar<T> : SRRadarBase<T> where T : class, IHasTransform
 	{
-		
-		var nearby = Physics.OverlapSphere(CachedTransform.position, Range, Mask);
 
-		if (nearby.Length == 0) {
-			return;
-		}
+		protected override void PerformScan()
+		{
 
-		for (int i = 0; i < nearby.Length; i++) {
+			var nearby = Physics.OverlapSphere(CachedTransform.position, Range, Mask);
 
-			var n = nearby[i];
-			var go = n.gameObject;
+			if (nearby.Length == 0) {
+				return;
+			}
 
-			HandleDiscoveredObject(go);
-	
+			for (int i = 0; i < nearby.Length; i++) {
+
+				var n = nearby[i];
+				var go = n.gameObject;
+
+				HandleDiscoveredObject(go);
+
+			}
+
 		}
 
 	}

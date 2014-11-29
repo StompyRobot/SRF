@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using Scripts.Framework.Components;
+using SRF.Components;
 using UnityEngine;
 
-namespace Scripts.Framework.Helpers
+namespace SRF
 {
 	public static class SRLineUtil
 	{
@@ -70,27 +70,10 @@ namespace Scripts.Framework.Helpers
 
 		}
 	
-		public static void CreateCircle(ExLineRenderer line, float radius, int segments)
+		public static void CreateCircle(SRLineRenderer line, float radius, int segments)
 		{
 
 			line.SetVertexCount(segments+1);
-
-			var radiusStep = 360.0f / segments * Mathf.Deg2Rad;
-
-			var p = 0.0f;
-
-			for (int i = 0; i <= segments; i++) {
-
-				line.SetPosition(i, new Vector3(Mathf.Cos(p)*radius, 0, Mathf.Sin(p)*radius));
-
-				p += radiusStep;
-
-			}
-
-		}	
-		
-		public static void CreateCircle(TangentLineRenderer line, float radius, int segments)
-		{
 
 			var radiusStep = 360.0f / segments * Mathf.Deg2Rad;
 

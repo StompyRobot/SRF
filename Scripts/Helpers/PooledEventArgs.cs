@@ -1,17 +1,10 @@
 ﻿using Smooth.Pools;
-using UnityEngine;
-using System.Collections;
 
-namespace SRF.Helpers
+namespace SRF
 {
 
 	public abstract class PooledEventArgs<T> where T : PooledEventArgs<T>, new()
 	{
-
-		protected PooledEventArgs()
-		{
-			
-		}
 
 		/// <summary>
 		/// Override in child classes to reset event args to default values

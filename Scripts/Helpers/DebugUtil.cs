@@ -1,29 +1,32 @@
-﻿using UnityEngine;
-using System.Collections;
-
-public static class DebugUtil
+﻿
+namespace SRF
 {
-	
-	/// <summary>
-	/// Simple helper function for creating debug toggles in unity inspectors
-	/// </summary>
-	/// <param name="boolean"></param>
-	/// <returns></returns>
-	public static bool DebugToggle(ref bool boolean)
+
+	public static class DebugUtil
 	{
+
+		/// <summary>
+		/// Simple helper function for creating debug toggles in unity inspectors
+		/// </summary>
+		/// <param name="boolean"></param>
+		/// <returns></returns>
+		public static bool DebugToggle(ref bool boolean)
+		{
 
 #if UNITY_EDITOR
 
-		if (boolean) {
-			boolean = false;
-			return true;
-		}
+			if (boolean) {
+				boolean = false;
+				return true;
+			}
 
 #endif
 
-		return false;
+			return false;
+
+		}
+
 
 	}
-
 
 }

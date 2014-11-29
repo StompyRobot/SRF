@@ -1,59 +1,63 @@
 ﻿using System.Collections.Generic;
-using UnityEngine;
-using System.Collections;
 
-public class SRLiteStateController<T> : SRMonoBehaviourEx where T : struct
+
+namespace SRF.State
 {
 
-	protected SimpleStateMachine<T> StateMachine { get { return _stateMachine; }}
-
-	public bool ShowDebug;
-
-	public T State
-	{
-		get { return StateMachine.CurrentState; }
-		set { StateMachine.SetState(value); }
-	}
-
-	protected virtual T DefaultState { get { return default(T); } }
-
-	private SimpleStateMachine<T> _stateMachine;
-
-	protected override void OnEnable()
-	{
-		base.OnEnable();
-		EnsureStateMachine();
-	}
-
-	void EnsureStateMachine()
+	public abstract class SRLiteStateController<T> : SRMonoBehaviourEx where T : struct
 	{
 
-		// Ensure state machine exists. (Can be destroyed by script reload)
-		if (_stateMachine != null)
-			return;
+		protected SimpleStateMachine<T> StateMachine { get { return _stateMachine; } }
 
-		_stateMachine = new SimpleStateMachine<T>(DefaultState);
-		Configure();
+		public bool ShowDebug;
 
-	}
+		public T State
+		{
+			get { return StateMachine.CurrentState; }
+			set { StateMachine.SetState(value); }
+		}
 
-	protected override void Update()
-	{
-		base.Update();
-		_stateMachine.Update();
-	}
+		protected virtual T DefaultState { get { return default(T); } }
 
-	/// <summary>
-	/// Override in subclasses to configure state machine
-	/// </summary>
-	protected virtual void Configure()
-	{
+		private SimpleStateMachine<T> _stateMachine;
 
-	}
+		protected override void OnEnable()
+		{
+			base.OnEnable();
+			EnsureStateMachine();
+		}
 
-	public bool IsInState(T state)
-	{
-		return EqualityComparer<T>.Default.Equals(_stateMachine.CurrentState,  state);
+		void EnsureStateMachine()
+		{
+
+			// Ensure state machine exists. (Can be destroyed by script reload)
+			if (_stateMachine != null)
+				return;
+
+			_stateMachine = new SimpleStateMachine<T>(DefaultState);
+			Configure();
+
+		}
+
+		protected override void Update()
+		{
+			base.Update();
+			_stateMachine.Update();
+		}
+
+		/// <summary>
+		/// Override in subclasses to configure state machine
+		/// </summary>
+		protected virtual void Configure()
+		{
+
+		}
+
+		public bool IsInState(T state)
+		{
+			return EqualityComparer<T>.Default.Equals(_stateMachine.CurrentState, state);
+		}
+
 	}
 
 }

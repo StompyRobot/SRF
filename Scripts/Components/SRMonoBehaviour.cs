@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
+using SRF;
 using UnityEngine;
-using Debug = UnityEngine.Debug;
 
 /// <summary>
 /// Base MonoBehaviour which provides useful common functionality

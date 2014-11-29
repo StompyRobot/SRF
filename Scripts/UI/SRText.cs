@@ -6,6 +6,11 @@ using UnityEngine.UI;
 
 namespace SRF.UI
 {
+
+	/// <summary>
+	/// Adds a LayoutDirty callback to the default Text component.
+	/// </summary>
+	[AddComponentMenu(Internal.ComponentMenuPaths.SRText)]
 	public class SRText : Text
 	{
 

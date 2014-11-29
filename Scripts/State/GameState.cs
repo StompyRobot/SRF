@@ -1,55 +1,59 @@
 ﻿using System;
-using UnityEngine;
-using System.Collections;
 
-public abstract class GameState<TStates, TTriggers> : SRMonoBehaviour
+
+namespace SRF.State
 {
 
-	public abstract TStates State { get; }
-
-	public class StateMachine : Stateless.StateMachine<TStates, TTriggers>
+	public abstract class GameState<TStates, TTriggers> : SRMonoBehaviour
 	{
 
-		public StateMachine(Func<TStates> stateAccessor, Action<TStates> stateMutator) : base(stateAccessor, stateMutator) {}
+		public abstract TStates State { get; }
 
-		public StateMachine(TStates initialState) : base(initialState) {}
+		public class StateMachine : Stateless.StateMachine<TStates, TTriggers>
+		{
 
-	}
+			public StateMachine(Func<TStates> stateAccessor, Action<TStates> stateMutator) : base(stateAccessor, stateMutator) { }
 
-	protected StateMachine ActiveStateMachine { get; private set; }
+			public StateMachine(TStates initialState) : base(initialState) { }
 
-	protected virtual void Awake()
-	{
-		// Default to disabled. We get enabled in OnEntry later
-		enabled = false;
-	}
+		}
 
-	public void Configure(StateMachine machine)
-	{
+		protected StateMachine ActiveStateMachine { get; private set; }
 
-		ActiveStateMachine = machine;
-		var config = machine.Configure(State);
-		Setup(config);
+		protected virtual void Awake()
+		{
+			// Default to disabled. We get enabled in OnEntry later
+			enabled = false;
+		}
 
-	}
+		public void Configure(StateMachine machine)
+		{
 
-	protected virtual void Update()
-	{
-	}
+			ActiveStateMachine = machine;
+			var config = machine.Configure(State);
+			Setup(config);
 
-	protected virtual void Setup(StateMachine.StateConfiguration configuration)
-	{
-		configuration.OnEntry(OnEntry).OnExit(OnExit);
-	}
+		}
 
-	protected virtual void OnEntry(StateMachine.Transition transition)
-	{
-		enabled = true;
-	}
+		protected virtual void Update()
+		{
+		}
 
-	protected virtual void OnExit(StateMachine.Transition transition)
-	{
-		enabled = false;
+		protected virtual void Setup(StateMachine.StateConfiguration configuration)
+		{
+			configuration.OnEntry(OnEntry).OnExit(OnExit);
+		}
+
+		protected virtual void OnEntry(StateMachine.Transition transition)
+		{
+			enabled = true;
+		}
+
+		protected virtual void OnExit(StateMachine.Transition transition)
+		{
+			enabled = false;
+		}
+
 	}
 
 }

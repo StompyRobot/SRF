@@ -1,29 +1,32 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
-using System.Collections;
+﻿using UnityEngine;
 
-public class SRRadar2D<T> : SRRadarBase<T> where T : class, IHasTransform
+namespace SRF.Components
 {
 
-	private static Collider2D[] ColliderCache;
-
-	protected override void PerformScan()
+	public abstract class SRRadar2D<T> : SRRadarBase<T> where T : class, IHasTransform
 	{
 
-		if (ColliderCache == null)
-			ColliderCache = new Collider2D[512];
+		private static Collider2D[] ColliderCache;
 
-		var count = Physics2D.OverlapCircleNonAlloc(CachedTransform.position, Range, ColliderCache, Mask);
+		protected override void PerformScan()
+		{
 
-		if (count == 0)
-			return;
+			if (ColliderCache == null)
+				ColliderCache = new Collider2D[512];
 
-		for (int i = 0; i < count; i++) {
+			var count = Physics2D.OverlapCircleNonAlloc(CachedTransform.position, Range, ColliderCache, Mask);
 
-			var n = ColliderCache[i];
-			var go = n.gameObject;
+			if (count == 0)
+				return;
 
-			HandleDiscoveredObject(go);
+			for (int i = 0; i < count; i++) {
+
+				var n = ColliderCache[i];
+				var go = n.gameObject;
+
+				HandleDiscoveredObject(go);
+
+			}
 
 		}
 

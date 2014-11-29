@@ -1,8 +1,12 @@
 ﻿using UnityEngine;
 
-namespace Scripts.Framework.Components
+namespace SRF.Components
 {
 
+	/// <summary>
+	/// Handles fading the alpha on a sprite
+	/// </summary>
+	[AddComponentMenu(Internal.ComponentMenuPaths.SRSpriteFadeRenderer)]
 	public class SRSpriteFadeRenderer : SRFadeRenderer
 	{
 

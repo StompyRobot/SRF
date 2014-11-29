@@ -30,6 +30,34 @@ namespace SRF.Internal
 
 		#endregion
 
+		#region Components
+
+		public const string ComponentsRoot = PathRoot + "/Components";
+
+		public const string SRLineRenderer = ComponentsRoot + "/SRLineRenderer";
+		public const string SelectionRoot = ComponentsRoot + "/Selection Root";
+
+		public const string SRSpriteFadeRenderer = ComponentsRoot + "/Fade Renderer (Sprite)";
+		public const string SRMaterialFadeRenderer = ComponentsRoot + "/Fade Renderer (Material)";
+		public const string SRCompositeFadeRenderer = ComponentsRoot + "/Fade Renderer (Composite)";
+
+		#endregion
+
+		public const string SRServiceManager = PathRoot + "/Service/Service Manager";
+
+		#region UI
+
+		public const string UIRoot = PathRoot + "/UI";
+
+		public const string TiltOnTouch = ComponentsRoot + "/Tilt On Touch";
+		public const string ScaleOnTouch = ComponentsRoot + "/Scale On Touch";
+		public const string InheritColour = ComponentsRoot + "/Inherit Colour";
+		public const string FlashGraphic = ComponentsRoot + "/Flash Graphic";
+		public const string CopyPreferredSize = ComponentsRoot + "/Copy Preferred Size";
+		public const string SRText = ComponentsRoot + "/SRText";
+
+		#endregion
+
 	}
 
 }

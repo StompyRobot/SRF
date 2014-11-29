@@ -5,8 +5,10 @@ using UnityEngine.UI;
 
 namespace SRF.UI
 {
+
 	[RequireComponent(typeof(Graphic))]
 	[ExecuteInEditMode]
+	[AddComponentMenu(Internal.ComponentMenuPaths.InheritColour)]
 	public class InheritColour : SRMonoBehaviour
 	{
 
@@ -48,6 +50,7 @@ namespace SRF.UI
 		}
 
 	}
+
 }
 
 #endif

@@ -148,6 +148,16 @@ public static partial class SRMath
 		return Mathf.Lerp(from, to, SpringLerp(strength, deltaTime));
 	}
 
+	public static Vector3 SpringLerp(Vector3 from, Vector3 to, float strength, float deltaTime)
+	{
+		return Vector3.Lerp(from, to, SpringLerp(strength, deltaTime));
+	}
+
+	public static Quaternion SpringLerp(Quaternion from, Quaternion to, float strength, float deltaTime)
+	{
+		return Quaternion.Slerp(from, to, SpringLerp(strength, deltaTime));
+	}
+
 	/// <summary>
 	/// Smoothly clamp value between 0 and max, smoothing between min and max
 	/// </summary>

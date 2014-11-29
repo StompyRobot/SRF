@@ -1,81 +1,85 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Collections;
 
-public abstract class SRRadarBase<T> : SRMonoBehaviour where T : class, IHasTransform
+namespace SRF.Components
 {
 
-	protected static readonly Type Type = typeof (T);
-
-	private const float CacheCheckFrequency = 60f;
-	private static float NextCacheCheck = CacheCheckFrequency;
-
-	/// <summary>
-	/// Ship detected by radar
-	/// </summary>
-	public interface IBandit
+	public abstract class SRRadarBase<T> : SRMonoBehaviour where T : class, IHasTransform
 	{
 
-		float Distance { get; }
-		T Unit { get; }
+		protected static readonly Type Type = typeof(T);
 
-	}
+		private const float CacheCheckFrequency = 60f;
+		private static float NextCacheCheck = CacheCheckFrequency;
 
-	protected class Bandit : IBandit
-	{
+		/// <summary>
+		/// Ship detected by radar
+		/// </summary>
+		public interface IBandit
+		{
 
-		public float Distance { get; set; }
+			float Distance { get; }
+			T Unit { get; }
 
-		public T Unit { get; set; }
+		}
 
-	}
+		protected class Bandit : IBandit
+		{
 
-	private static readonly SRList<Bandit> BanditCache = new SRList<Bandit>(); 
+			public float Distance { get; set; }
 
-	private static readonly Dictionary<int, T> Cache = new Dictionary<int, T>();
+			public T Unit { get; set; }
 
-	/// <summary>
-	/// Set to true, will update on FixedUpdate instead of by update frequency
-	/// </summary>
-	public bool UseFixedUpdate = false;
+		}
 
-	[Range(0.01f, 2)]
-	public float UpdateFrequency = 0.5f;
+		private static readonly SRList<Bandit> BanditCache = new SRList<Bandit>();
 
-	private float _nextUpdate;
+		private static readonly Dictionary<int, T> Cache = new Dictionary<int, T>();
 
-	public IList<IBandit> NearUnits
-	{
-		get { return _nearUnits.AsReadOnly(); }
-	}
+		/// <summary>
+		/// Set to true, will update on FixedUpdate instead of by update frequency
+		/// </summary>
+		public bool UseFixedUpdate = false;
 
-	public float Range = 10;
+		[Range(0.01f, 2)]
+		public float UpdateFrequency = 0.5f;
 
-	public LayerMask Mask;
+		private float _nextUpdate;
 
-	public bool SearchParents = false;
+		public IList<IBandit> NearUnits
+		{
+			get { return _nearUnits.AsReadOnly(); }
+		}
 
-	private readonly SRList<IBandit> _nearUnits = new SRList<IBandit>(16);
+		public float Range = 10;
 
-	void Update()
-	{
+		public LayerMask Mask;
 
-		if (!UseFixedUpdate && RealTime.time > _nextUpdate) {
+		public bool SearchParents = false;
 
-			InternalPerformScan();
-			_nextUpdate = RealTime.time + UpdateFrequency;
+		private readonly SRList<IBandit> _nearUnits = new SRList<IBandit>(16);
 
-		} else {
+		void Update()
+		{
 
-			// Check for null entries (ships destroyed)
-			for (int i = _nearUnits.Count - 1; i >= 0; --i) {
+			if (!UseFixedUpdate && RealTime.time > _nextUpdate) {
 
-				if (_nearUnits[i].Unit == null) {
+				InternalPerformScan();
+				_nextUpdate = RealTime.time + UpdateFrequency;
 
-					var b = _nearUnits[i];
-					_nearUnits.RemoveAt(i);
-					RecycleBandit((Bandit) b);
+			} else {
+
+				// Check for null entries (ships destroyed)
+				for (int i = _nearUnits.Count - 1; i >= 0; --i) {
+
+					if (_nearUnits[i].Unit == null) {
+
+						var b = _nearUnits[i];
+						_nearUnits.RemoveAt(i);
+						RecycleBandit((Bandit)b);
+
+					}
 
 				}
 
@@ -83,108 +87,108 @@ public abstract class SRRadarBase<T> : SRMonoBehaviour where T : class, IHasTran
 
 		}
 
-	}
+		void FixedUpdate()
+		{
 
-	void FixedUpdate()
-	{
+			if (!UseFixedUpdate)
+				return;
 
-		if (!UseFixedUpdate)
-			return;
-
-		InternalPerformScan();
-
-	}
-
-	protected void HandleDiscoveredObject(GameObject go)
-	{
-
-		if (go == CachedGameObject)
-			return;
-
-		T unit;
-
-		var id = go.GetInstanceID();
-
-		if (!Cache.TryGetValue(id, out unit)) {
-			unit = (SearchParents ? go.GetComponentInParent(Type) : go.GetComponent(Type)) as T;
-			Cache.Add(id, unit);
-		}
-
-		if (unit == null) {
-
-			Debug.LogWarning(
-				"SRRadar: Object on radar layer missing target type. Layer: {0} Target: {1}".Fmt(LayerMask.LayerToName(Mask),
-					typeof (T)), go);
-
-			return;
+			InternalPerformScan();
 
 		}
 
-		if (HasFound(unit))
-			return;
+		protected void HandleDiscoveredObject(GameObject go)
+		{
 
-		var b = GetBandit();
-		b.Unit = unit;
-		b.Distance = (unit.CachedTransform.position - CachedTransform.position).magnitude;
+			if (go == CachedGameObject)
+				return;
 
-		_nearUnits.Add(b);
+			T unit;
 
-	}
+			var id = go.GetInstanceID();
 
-	protected bool HasFound(T t)
-	{
+			if (!Cache.TryGetValue(id, out unit)) {
+				unit = (SearchParents ? go.GetComponentInParent(Type) : go.GetComponent(Type)) as T;
+				Cache.Add(id, unit);
+			}
 
-		for (int i = 0; i < _nearUnits.Count; i++) {
-			if (_nearUnits[i].Unit == t)
-				return true;
+			if (unit == null) {
+
+				Debug.LogWarning(
+					"SRRadar: Object on radar layer missing target type. Layer: {0} Target: {1}".Fmt(LayerMask.LayerToName(Mask),
+						typeof(T)), go);
+
+				return;
+
+			}
+
+			if (HasFound(unit))
+				return;
+
+			var b = GetBandit();
+			b.Unit = unit;
+			b.Distance = (unit.CachedTransform.position - CachedTransform.position).magnitude;
+
+			_nearUnits.Add(b);
+
 		}
 
-		return false;
+		protected bool HasFound(T t)
+		{
 
-	}
+			for (int i = 0; i < _nearUnits.Count; i++) {
+				if (_nearUnits[i].Unit == t)
+					return true;
+			}
 
-	private void InternalPerformScan()
-	{
+			return false;
 
-		while (_nearUnits.Count > 0) {
-			RecycleBandit((Bandit)_nearUnits.PopLast());
 		}
 
-		PerformScan();
+		private void InternalPerformScan()
+		{
 
-		_nearUnits.Sort((p, q) => p.Distance.CompareTo(q.Distance));
+			while (_nearUnits.Count > 0) {
+				RecycleBandit((Bandit)_nearUnits.PopLast());
+			}
 
-		if (RealTime.time > NextCacheCheck) {
-			CleanCache();
+			PerformScan();
+
+			_nearUnits.Sort((p, q) => p.Distance.CompareTo(q.Distance));
+
+			if (RealTime.time > NextCacheCheck) {
+				CleanCache();
+			}
+
 		}
 
-	}
+		protected abstract void PerformScan();
 
-	protected abstract void PerformScan();
+		static void CleanCache()
+		{
 
-	static void CleanCache()
-	{
+			// TODO: Iterate Dictionary and remove null elements instead of just clearing
+			Cache.Clear();
+			NextCacheCheck = RealTime.time + CacheCheckFrequency;
 
-		// TODO: Iterate Dictionary and remove null elements instead of just clearing
-		Cache.Clear();
-		NextCacheCheck = RealTime.time + CacheCheckFrequency;
+		}
 
-	}
+		protected static Bandit GetBandit()
+		{
 
-	protected static Bandit GetBandit()
-	{
-		
-		if(BanditCache.Count == 0)
-			return new Bandit();
+			if (BanditCache.Count == 0)
+				return new Bandit();
 
-		return BanditCache.PopLast();
+			return BanditCache.PopLast();
 
-	}
+		}
 
-	protected static void RecycleBandit(Bandit bandit)
-	{
-		
-		BanditCache.Add(bandit);
+		protected static void RecycleBandit(Bandit bandit)
+		{
+
+			BanditCache.Add(bandit);
+
+		}
 
 	}
 

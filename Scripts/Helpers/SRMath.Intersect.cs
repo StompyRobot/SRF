@@ -1,7 +1,5 @@
 ﻿using System.Linq;
 using UnityEngine;
-using System.Collections;
-using Smooth.Slinq
 
 public static partial class SRMath
 {

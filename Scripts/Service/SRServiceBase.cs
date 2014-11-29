@@ -1,6 +1,6 @@
-﻿namespace Scripts.Framework.Service
+﻿namespace SRF.Service
 {
-	public class SRServiceBase<T> : SRMonoBehaviourEx where T : class 
+	public abstract class SRServiceBase<T> : SRMonoBehaviourEx where T : class
 	{
 
 		protected override void Awake()

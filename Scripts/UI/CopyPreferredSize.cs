@@ -7,8 +7,13 @@ using UnityEngine.UI;
 namespace SRF.UI
 {
 
+	/// <summary>
+	/// Copies the preferred size of another layout element (useful for a parent object basing its sizing from a child element).
+	/// This does have very quirky behaviour, though.
+	/// </summary>
 	[RequireComponent(typeof(RectTransform))]
 	[ExecuteInEditMode]
+	[AddComponentMenu(Internal.ComponentMenuPaths.CopyPreferredSize)]
 	public class CopyPreferredSize : UIBehaviour, ILayoutElement
 	{
 

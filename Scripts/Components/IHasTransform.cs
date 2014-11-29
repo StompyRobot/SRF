@@ -1,9 +1,13 @@
 ﻿using UnityEngine;
-using System.Collections;
 
-public interface IHasTransform
+namespace SRF
 {
 
-	Transform CachedTransform { get; }
+	public interface IHasTransform
+	{
+
+		Transform CachedTransform { get; }
+
+	}
 
 }

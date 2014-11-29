@@ -2,7 +2,7 @@
 using UnityEngine;
 using System.Collections;
 
-namespace Scripts.Framework.Service
+namespace SRF.Service
 {
 
 	[AttributeUsage(AttributeTargets.Class)]

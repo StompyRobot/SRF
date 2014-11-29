@@ -4,7 +4,7 @@ using System.Diagnostics;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
-namespace Scripts.Framework.Service
+namespace SRF.Service
 {
 	public abstract class SRSceneServiceBase<T, TImpl> : SRServiceBase<T>, IAsyncService
 		where T : class

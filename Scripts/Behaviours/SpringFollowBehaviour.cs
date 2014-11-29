@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Assets.SRF.Scripts.Behaviours
+namespace SRF.Behaviours
 {
 	public class SpringFollowBehaviour : SRMonoBehaviourEx
 	{

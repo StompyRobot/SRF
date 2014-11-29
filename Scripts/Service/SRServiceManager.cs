@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using SRF.Components;
 using UnityEngine;
 
-namespace Scripts.Framework.Service
+namespace SRF.Service
 {
-	
+
+	[AddComponentMenu(Internal.ComponentMenuPaths.SRServiceManager)]
 	public class SRServiceManager : SRAutoSingleton<SRServiceManager>
 	{
 

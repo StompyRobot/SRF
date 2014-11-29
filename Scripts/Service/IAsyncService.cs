@@ -1,8 +1,7 @@
-﻿using Scripts.Framework.Service;
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 
-namespace Scripts.Framework.Service
+namespace SRF.Service
 {
 	public interface IAsyncService
 	{
