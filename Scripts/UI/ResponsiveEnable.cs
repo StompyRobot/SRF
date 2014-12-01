@@ -19,7 +19,8 @@ namespace SRF.UI
 			public float ThresholdWidth;
 			public float ThresholdHeight;
 
-			public GameObject GameObject;
+			public GameObject[] GameObjects;
+			public Behaviour[] Components;
 
 		}
 
@@ -42,8 +43,6 @@ namespace SRF.UI
 
 				var e = Entries[i];
 
-				if (e.GameObject == null)
-					continue;
 
 				var enable = true;
 
@@ -75,7 +74,31 @@ namespace SRF.UI
 
 				}
 
-				e.GameObject.SetActive(enable);
+				if (e.GameObjects != null) {
+
+					for (var j = 0; j < e.GameObjects.Length; j++) {
+
+						var go = e.GameObjects[j];
+
+						if (go != null)
+							go.SetActive(enable);
+
+					}
+
+				}
+
+				if (e.Components != null) {
+
+					for (var j = 0; j < e.Components.Length; j++) {
+
+						var go = e.Components[j];
+
+						if (go != null)
+							go.enabled = enable;
+
+					}
+
+				}
 
 			}
 
