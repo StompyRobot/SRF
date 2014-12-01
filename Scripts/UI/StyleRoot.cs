@@ -1,5 +1,6 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿#if ENABLE_4_6_FEATURES
+
+using UnityEngine;
 
 namespace SRF.UI
 {
@@ -24,6 +25,16 @@ namespace SRF.UI
 
 			return StyleSheet.GetStyle(key);
 
+		}
+
+		private void OnEnable()
+		{
+			OnStyleSheetChanged();
+		}
+
+		private void OnDisable()
+		{
+			OnStyleSheetChanged();
 		}
 
 		private void Update()
@@ -52,3 +63,5 @@ namespace SRF.UI
 	}
 
 }
+
+#endif

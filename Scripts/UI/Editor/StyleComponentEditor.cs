@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿#if ENABLE_4_6_FEATURES
+
+using System.Linq;
 using UnityEngine;
 using UnityEditor;
 
@@ -90,3 +92,5 @@ namespace SRF.UI.Editor
 	}
 
 }
+
+#endif

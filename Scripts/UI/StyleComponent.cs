@@ -1,13 +1,11 @@
-﻿using System.Runtime.InteropServices;
-#if ENABLE_4_6_FEATURES
+﻿#if ENABLE_4_6_FEATURES
+
 using UnityEngine;
-using System.Collections;
 using UnityEngine.UI;
 
 namespace SRF.UI
 {
 
-	[RequireComponent(typeof(Graphic))]
 	[ExecuteInEditMode]
 	public class StyleComponent : SRMonoBehaviour
 	{
@@ -50,11 +48,11 @@ namespace SRF.UI
 
 			}
 
-			var styleRoot = GetComponentInParent<StyleRoot>();
+			var styleRoot = GetStyleRoot();
 
 			if (styleRoot == null) {
 
-				Debug.LogWarning("[StyleComponent] No StyleRoot object found in parents.", this);
+				Debug.LogWarning("[StyleComponent] No active StyleRoot object found in parents.", this);
 				_activeStyle = null;
 				return;
 
@@ -72,6 +70,38 @@ namespace SRF.UI
 
 			_activeStyle = s;
 			ApplyStyle();
+
+		}
+
+		/// <summary>
+		/// Find the nearest enable style root component in parents
+		/// </summary>
+		/// <returns></returns>
+		private StyleRoot GetStyleRoot()
+		{
+
+			Transform t = CachedTransform;
+			StyleRoot root;
+
+			var i = 0;
+
+			do {
+
+				root = t.GetComponentInParent<StyleRoot>();
+
+				if (root != null)
+					t = root.transform.parent;
+
+				++i;
+
+				if (i > 100) {
+					Debug.LogWarning("Breaking Loop");
+					break;
+				}
+
+			} while ((root != null && !root.enabled) && t != null);
+
+			return root;
 
 		}
 
@@ -96,7 +126,7 @@ namespace SRF.UI
 
 			if (_button != null) {
 
-				var colours = new ColorBlock();
+				var colours = _button.colors;
 				colours.normalColor = _activeStyle.NormalColor;
 				colours.highlightedColor = _activeStyle.HoverColor;
 				colours.pressedColor = _activeStyle.ActiveColor;
@@ -104,7 +134,9 @@ namespace SRF.UI
 				colours.colorMultiplier = 1f;
 
 				_button.colors = colours;
-				_graphic.color = Color.white;
+
+				if(_graphic != null)
+					_graphic.color = Color.white;
 
 			} else {
 
@@ -116,10 +148,7 @@ namespace SRF.UI
 
 		private void SRStyleDirty()
 		{
-
-			Debug.Log("Style Dirty");
 			Refresh();
-
 		}
 
 	}

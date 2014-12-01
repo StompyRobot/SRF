@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if ENABLE_4_6_FEATURES
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using SRF.Collections;
@@ -121,3 +123,5 @@ namespace SRF.UI
 	}
 
 }
+
+#endif

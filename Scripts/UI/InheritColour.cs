@@ -35,7 +35,7 @@ namespace SRF.UI
 			if (From == null)
 				return;
 
-			Graphic.color = From.color;
+			Graphic.color = From.canvasRenderer.GetColor();
 
 		}
 
