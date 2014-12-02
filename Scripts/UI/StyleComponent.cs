@@ -32,7 +32,8 @@ namespace SRF.UI
 		private void Update()
 		{
 			
-			ApplyStyle();
+			if(!Application.isPlaying)
+				ApplyStyle();
 
 		}
 
