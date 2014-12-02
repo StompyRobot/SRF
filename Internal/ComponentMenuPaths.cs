@@ -56,6 +56,8 @@ namespace SRF.Internal
 		public const string CopyPreferredSize = ComponentsRoot + "/Copy Preferred Size";
 		public const string SRText = ComponentsRoot + "/SRText";
 
+		public const string FlowLayoutGroup = UIRoot + "Layout/Flow Layout Group";
+
 		#endregion
 
 	}
