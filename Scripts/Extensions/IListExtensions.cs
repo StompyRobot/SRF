@@ -18,6 +18,16 @@ public static class IListExtensions
 		return list[UnityEngine.Random.Range(0, list.Count)];
 		
 	}
+	
+	public static T RandomOrDefault<T>(this IList<T> list)
+	{
+
+		if (list.Count == 0)
+			return default(T);
+
+		return list.Random();
+
+	}
 
 	public static T PopLast<T>(this IList<T> list)
 	{
