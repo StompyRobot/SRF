@@ -60,7 +60,7 @@ namespace SRF.Service
 					if (s.Object == null) {
 
 						UnRegisterService(t);
-						return null;
+						break;
 
 					}
 
@@ -295,7 +295,6 @@ namespace SRF.Service
 
 		protected void OnApplicationQuit()
 		{
-			Debug.Log("OnApplicationQuit");
 			_hasQuit = true;
 		}
 
