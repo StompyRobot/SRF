@@ -15,6 +15,9 @@ namespace SRF.UI.Layout
 
 		public float Spacing = 0f;
 
+		public bool ChildForceExpandWidth = false;
+		public bool ChildForceExpandHeight = false;
+
 		public override void CalculateLayoutInputHorizontal()
 		{
 
@@ -184,12 +187,21 @@ namespace SRF.UI.Layout
 			else if (IsRightAlign)
 				xPos += (maxWidth - rowWidth);
 
+			var extraWidth = 0f;
+
+			if (ChildForceExpandWidth) {
+				extraWidth = (maxWidth - rowWidth)/_rowList.Count;
+			}
+
 			for (var j = 0; j < _rowList.Count; j++) {
 
 				var rowChild = _rowList[j];
 
-				var rowChildWidth = LayoutUtility.GetPreferredSize(rowChild, 0);
+				var rowChildWidth = LayoutUtility.GetPreferredSize(rowChild, 0) + extraWidth;
 				var rowChildHeight = LayoutUtility.GetPreferredSize(rowChild, 1);
+
+				if (ChildForceExpandHeight)
+					rowChildHeight = rowHeight;
 
 				rowChildWidth = Mathf.Min(rowChildWidth, maxWidth);
 
