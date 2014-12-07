@@ -20,6 +20,14 @@ namespace SRF.Behaviours
 
 		public Vector3 PositionOffset;
 
+		public void AttachWithCurrentOffset(Transform to)
+		{
+
+			var diff = CachedTransform.position - to.position;
+			PositionOffset = diff;
+			Target = to;
+
+		}
 		private void LateUpdate()
 		{
 
