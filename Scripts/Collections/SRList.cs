@@ -7,7 +7,6 @@ using UnityEngine;
 /// <summary>
 /// IList implementation which does not release the buffer when clearing/removing elements. Based on the NGUI BetterList
 /// </summary>
-/// <typeparam name="T"></typeparam>
 [Serializable]
 public class SRList<T> : IList<T>, ISerializationCallbackReceiver
 {
@@ -22,6 +21,21 @@ public class SRList<T> : IList<T>, ISerializationCallbackReceiver
 	{
 		get { return _count; }
 		private set { _count = value; }
+	}
+
+	private EqualityComparer<T> _equalityComparer; 
+
+	private EqualityComparer<T> EqualityComparer
+	{
+		get
+		{
+
+			if (_equalityComparer == null)
+				_equalityComparer = EqualityComparer<T>.Default;
+
+			return _equalityComparer;
+
+		}
 	}
 
 	private ReadOnlyCollection<T> _readOnlyWrapper;
@@ -64,9 +78,12 @@ public class SRList<T> : IList<T>, ISerializationCallbackReceiver
 
 	public void Add(T item)
 	{
+
 		if (Buffer == null || Count == Buffer.Length)
 			Expand();
+
 		Buffer[Count++] = item;
+
 	}
 
 	/// <summary>
@@ -125,19 +142,29 @@ public class SRList<T> : IList<T>, ISerializationCallbackReceiver
 	/// <returns></returns>
 	public ReadOnlyCollection<T> AsReadOnly()
 	{
+
 		if(_readOnlyWrapper == null)
 			_readOnlyWrapper = new ReadOnlyCollection<T>(this);
+
 		return _readOnlyWrapper;
+
 	}
 
 	public bool Contains(T item)
 	{
+
 		if (Buffer == null)
 			return false;
-		for (int i = 0; i < Count; ++i)
-			if (Buffer[i].Equals(item))
+
+		for (int i = 0; i < Count; ++i) {
+
+			if (EqualityComparer.Equals(Buffer[i], item))
 				return true;
+
+		}
+
 		return false;
+
 	}
 
 	public void CopyTo(T[] array, int arrayIndex)
@@ -149,10 +176,9 @@ public class SRList<T> : IList<T>, ISerializationCallbackReceiver
 	public bool Remove(T item)
 	{
 		if (Buffer != null) {
-			EqualityComparer<T> comp = EqualityComparer<T>.Default;
 
 			for (int i = 0; i < Count; ++i) {
-				if (comp.Equals(Buffer[i], item)) {
+				if (EqualityComparer.Equals(Buffer[i], item)) {
 					--Count;
 					Buffer[i] = default(T);
 					for (int b = i; b < Count; ++b)
@@ -172,16 +198,18 @@ public class SRList<T> : IList<T>, ISerializationCallbackReceiver
 
 	public int IndexOf(T item)
 	{
+
 		if (Buffer != null) {
-			EqualityComparer<T> comp = EqualityComparer<T>.Default;
 
 			for (int i = 0; i < Count; ++i) {
-				if (comp.Equals(Buffer[i], item))
+				if (EqualityComparer.Equals(Buffer[i], item))
 					return i;
 			}
+
 		}
 
 		return -1;
+
 	}
 
 	public void Insert(int index, T item)
@@ -284,12 +312,15 @@ public class SRList<T> : IList<T>, ISerializationCallbackReceiver
 
 	public void OnBeforeSerialize()
 	{
-
+		Debug.Log("[OnBeforeSerialize] Count: {0}".Fmt(_count));
 		// Clean buffer of unused elements before serializing
 		Clean();
 
 	}
 
-	public void OnAfterDeserialize() { }
+	public void OnAfterDeserialize()
+	{
+		Debug.Log("[OnAfterDeserialize] Count: {0}".Fmt(_count));
+	}
 
 }
