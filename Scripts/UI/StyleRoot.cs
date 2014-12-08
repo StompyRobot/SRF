@@ -29,7 +29,12 @@ namespace SRF.UI
 
 		private void OnEnable()
 		{
-			OnStyleSheetChanged();
+
+			_activeStyleSheet = null;
+
+			if(StyleSheet != null)
+				OnStyleSheetChanged();
+
 		}
 
 		private void OnDisable()

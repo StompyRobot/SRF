@@ -139,7 +139,7 @@ namespace SRF.UI
 				if(_graphic != null)
 					_graphic.color = Color.white;
 
-			} else {
+			} else if (_graphic != null) {
 
 				_graphic.color = _activeStyle.NormalColor;
 
