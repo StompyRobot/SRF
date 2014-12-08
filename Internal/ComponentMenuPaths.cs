@@ -57,6 +57,7 @@ namespace SRF.Internal
 		public const string SRText = ComponentsRoot + "/SRText";
 
 		public const string FlowLayoutGroup = UIRoot + "Layout/Flow Layout Group";
+		public const string VirtualVerticalLayoutGroup = UIRoot + "Layout/VerticalLayoutGroup (Virtualizing)";
 
 		#endregion
 
