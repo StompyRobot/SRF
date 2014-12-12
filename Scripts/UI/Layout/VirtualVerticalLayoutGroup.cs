@@ -272,6 +272,9 @@ namespace SRF.UI.Layout
 
 				ScrollUpdate();
 				_isDirty = false;
+
+				if (SelectedItem != null && !_itemList.Contains(SelectedItem))
+					SelectedItem = null;
 				
 				LayoutRebuilder.MarkLayoutForRebuild(rectTransform);
 
