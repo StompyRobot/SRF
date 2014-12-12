@@ -32,6 +32,7 @@ namespace SRF.UI.Layout
 			public RectTransform Rect;
 			public IVirtualView View;
 			public StyleRoot Root;
+			public object Data;
 
 		}
 
@@ -141,7 +142,21 @@ namespace SRF.UI.Layout
 
 		public void RemoveItem(object item)
 		{
+
+			var index = _itemList.IndexOf(item);
+
+			if (_visibleItemList.Contains(index)) {
+				
+			}
+
 			_itemList.Remove(item);
+			_isDirty = true;
+
+		}
+
+		public void ClearItems()
+		{
+			_itemList.Clear();
 			_isDirty = true;
 		}
 
@@ -177,8 +192,19 @@ namespace SRF.UI.Layout
 			}
 
 			if (_isDirty) {
+
+				for (var i = 0; i < _visibleRows.Count; i++) {
+					RecycleRow(_visibleRows[i]);
+				}
+
+				_visibleRows.Clear();
+				_visibleItemList.Clear();
+
 				ScrollUpdate();
 				_isDirty = false;
+
+				LayoutRebuilder.MarkLayoutForRebuild(rectTransform);
+
 			}
 
 			//Profiler.BeginSample("ScrollUpdate");
@@ -329,18 +355,21 @@ namespace SRF.UI.Layout
 
 			}
 
+			var data = _itemList[forIndex];
+
 			Row row = null;
 			Row altRow = null;
 
 			var target = forIndex%2;
 
-			// Try and find a row which previously had this index, so we can reuse it
+			// Try and find a row which previously had this data, so we can reuse it
 			for (var i = 0; i < _rowCache.Count; i++) {
 
 				row = _rowCache[i];
 
-				if (row.Index == forIndex) {
+				if (row.Data == data) {
 
+					row.Index = forIndex;
 					_rowCache.RemoveAt(i);
 					break;
 
@@ -352,7 +381,7 @@ namespace SRF.UI.Layout
 				row = null;
 
 			}
-
+			
 			if (row == null && altRow != null) {
 
 				_rowCache.Remove(altRow);
@@ -376,7 +405,6 @@ namespace SRF.UI.Layout
 		{
 
 			_rowCache.Add(row);
-			//row.Rect.gameObject.SetActive(false);
 
 		}
 
@@ -384,6 +412,7 @@ namespace SRF.UI.Layout
 		{
 
 			row.Index = index;
+			row.Data = _itemList[index];
 
 			if (row.View != null)
 				row.View.SetDataContext(_itemList[index]);
