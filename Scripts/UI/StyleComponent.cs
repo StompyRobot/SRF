@@ -15,7 +15,7 @@ namespace SRF.UI
 
 		[SerializeField]
 		[FormerlySerializedAs("StyleKey")]
-		//[HideInInspector]
+		[HideInInspector]
 		private string _styleKey;
 
 		[HideInInspector]
