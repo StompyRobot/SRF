@@ -1,6 +1,7 @@
 ﻿#if ENABLE_4_6_FEATURES
 
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace SRF.UI
@@ -12,18 +13,33 @@ namespace SRF.UI
 
 		public bool IgnoreImage = false;
 
+		[SerializeField]
+		[FormerlySerializedAs("StyleKey")]
+		//[HideInInspector]
+		private string _styleKey;
+
 		[HideInInspector]
-		public string StyleKey;
+		public string StyleKey
+		{
+			get { return _styleKey; }
+			set
+			{
+				_styleKey = value;
+				Refresh(false);
+			}
+		}
 
 		private Style _activeStyle;
 		private Graphic _graphic;
-		private Button _button;
+		private Selectable _selectable;
 		private Image _image;
+
+		private StyleRoot _cachedRoot;
 
 		private void Start()
 		{
-			
-			Refresh();
+
+			Refresh(true);
 
 		}
 
@@ -39,7 +55,7 @@ namespace SRF.UI
 
 #endif
 
-		public void Refresh()
+		public void Refresh(bool invalidateCache)
 		{
 
 			if (string.IsNullOrEmpty(StyleKey)) {
@@ -49,9 +65,10 @@ namespace SRF.UI
 
 			}
 
-			var styleRoot = GetStyleRoot();
+			if (_cachedRoot == null || invalidateCache)
+				_cachedRoot = GetStyleRoot();
 
-			if (styleRoot == null) {
+			if (_cachedRoot == null) {
 
 				Debug.LogWarning("[StyleComponent] No active StyleRoot object found in parents.", this);
 				_activeStyle = null;
@@ -59,7 +76,7 @@ namespace SRF.UI
 
 			}
 
-			var s = styleRoot.GetStyle(StyleKey);
+			var s = _cachedRoot.GetStyle(StyleKey);
 
 			if (s == null) {
 
@@ -115,8 +132,8 @@ namespace SRF.UI
 			if(_graphic == null)
 				_graphic = GetComponent<Graphic>();
 
-			if(_button == null)
-				_button = GetComponent<Button>();
+			if(_selectable == null)
+				_selectable = GetComponent<Selectable>();
 
 			if (_image == null)
 				_image = GetComponent<Image>();
@@ -125,16 +142,16 @@ namespace SRF.UI
 				_image.sprite = _activeStyle.Image;
 			}
 
-			if (_button != null) {
+			if (_selectable != null) {
 
-				var colours = _button.colors;
+				var colours = _selectable.colors;
 				colours.normalColor = _activeStyle.NormalColor;
 				colours.highlightedColor = _activeStyle.HoverColor;
 				colours.pressedColor = _activeStyle.ActiveColor;
 				colours.disabledColor = _activeStyle.DisabledColor;
 				colours.colorMultiplier = 1f;
 
-				_button.colors = colours;
+				_selectable.colors = colours;
 
 				if(_graphic != null)
 					_graphic.color = Color.white;
@@ -149,7 +166,7 @@ namespace SRF.UI
 
 		private void SRStyleDirty()
 		{
-			Refresh();
+			Refresh(true);
 		}
 
 	}

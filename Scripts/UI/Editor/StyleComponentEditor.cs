@@ -67,7 +67,7 @@ namespace SRF.UI.Editor
 					styleComponent.StyleKey = options[newIndex];
 
 				EditorUtility.SetDirty(styleComponent);
-				styleComponent.Refresh();
+				styleComponent.Refresh(true);
 
 			}
 
