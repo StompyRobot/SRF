@@ -175,20 +175,19 @@ public class SRList<T> : IList<T>, ISerializationCallbackReceiver
 
 	public bool Remove(T item)
 	{
-		if (Buffer != null) {
 
-			for (int i = 0; i < Count; ++i) {
-				if (EqualityComparer.Equals(Buffer[i], item)) {
-					--Count;
-					Buffer[i] = default(T);
-					for (int b = i; b < Count; ++b)
-						Buffer[b] = Buffer[b + 1];
-					return true;
-				}
-			}
-		}
+		if (Buffer == null)
+			return false;
 
-		return false;
+		var index = IndexOf(item);
+
+		if (index < 0)
+			return false;
+
+		RemoveAt(index);
+
+		return true;
+
 	}
 
 	public bool IsReadOnly
@@ -199,13 +198,12 @@ public class SRList<T> : IList<T>, ISerializationCallbackReceiver
 	public int IndexOf(T item)
 	{
 
-		if (Buffer != null) {
+		if (Buffer == null)
+			return -1;
 
-			for (int i = 0; i < Count; ++i) {
-				if (EqualityComparer.Equals(Buffer[i], item))
-					return i;
-			}
-
+		for (int i = 0; i < Count; ++i) {
+			if (EqualityComparer.Equals(Buffer[i], item))
+				return i;
 		}
 
 		return -1;
@@ -214,6 +212,7 @@ public class SRList<T> : IList<T>, ISerializationCallbackReceiver
 
 	public void Insert(int index, T item)
 	{
+
 		if (Buffer == null || Count == Buffer.Length)
 			Expand();
 
@@ -263,7 +262,7 @@ public class SRList<T> : IList<T>, ISerializationCallbackReceiver
 	/// </summary>
 	private void Expand()
 	{
-		T[] newList = (Buffer != null) ? new T[Mathf.Max(Buffer.Length << 1, 32)] : new T[32];
+		var newList = (Buffer != null) ? new T[Mathf.Max(Buffer.Length << 1, 32)] : new T[32];
 
 		if (Buffer != null && Count > 0)
 			Buffer.CopyTo(newList, 0);
@@ -277,15 +276,25 @@ public class SRList<T> : IList<T>, ISerializationCallbackReceiver
 	/// </summary>
 	public void Trim()
 	{
+
 		if (Count > 0) {
-			if (Count < Buffer.Length) {
-				var newList = new T[Count];
-				for (int i = 0; i < Count; ++i)
-					newList[i] = Buffer[i];
-				Buffer = newList;
-			}
-		} else
+
+			if (Count >= Buffer.Length)
+				return;
+
+			var newList = new T[Count];
+
+			for (int i = 0; i < Count; ++i)
+				newList[i] = Buffer[i];
+
+			Buffer = newList;
+
+		} else {
+
 			Buffer = new T[0];
+
+		}
+
 	}
 
 
