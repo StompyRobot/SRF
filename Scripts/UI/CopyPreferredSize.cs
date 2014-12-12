@@ -19,13 +19,16 @@ namespace SRF.UI
 
 		public RectTransform CopySource;
 
+		public float PaddingWidth;
+		public float PaddingHeight;
+
 		public float minWidth
 		{
 			get
 			{
 				if (CopySource == null || !IsActive())
 					return -1f;
-				return LayoutUtility.GetMinWidth(CopySource);
+				return LayoutUtility.GetMinWidth(CopySource) + PaddingWidth;
 			}
 		}
 
@@ -35,7 +38,7 @@ namespace SRF.UI
 			{
 				if (CopySource == null || !IsActive())
 					return -1f;
-				return LayoutUtility.GetPreferredWidth(CopySource);
+				return LayoutUtility.GetPreferredWidth(CopySource) + PaddingWidth;
 			}
 		}
 
@@ -55,7 +58,7 @@ namespace SRF.UI
 			{
 				if (CopySource == null || !IsActive())
 					return -1f;
-				return LayoutUtility.GetFlexibleHeight(CopySource);
+				return LayoutUtility.GetFlexibleHeight(CopySource) + PaddingHeight;
 			}
 		}
 
@@ -65,7 +68,7 @@ namespace SRF.UI
 			{
 				if (CopySource == null || !IsActive())
 					return -1f;
-				return LayoutUtility.GetPreferredHeight(CopySource);
+				return LayoutUtility.GetPreferredHeight(CopySource) + PaddingHeight;
 			}
 		}
 
