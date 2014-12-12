@@ -5,6 +5,8 @@
 using System;
 using SRF.Internal;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace SRF.UI.Layout
@@ -21,8 +23,11 @@ namespace SRF.UI.Layout
 	/// 
 	/// </summary>
 	[AddComponentMenu(ComponentMenuPaths.VirtualVerticalLayoutGroup)]
-	public class VirtualVerticalLayoutGroup : LayoutGroup
+	public class VirtualVerticalLayoutGroup : LayoutGroup, IPointerClickHandler
 	{
+
+		[Serializable]
+		public class SelectedItemChangedEvent : UnityEvent<object> { }
 
 		[Serializable]
 		private class Row
@@ -40,24 +45,109 @@ namespace SRF.UI.Layout
 
 		public StyleSheet RowStyleSheet;
 		public StyleSheet AltRowStyleSheet;
-
-		//public IList<object> Items { get { return _itemList.AsReadOnly(); } }
+		public StyleSheet SelectedRowStyleSheet;
 
 		/// <summary>
 		/// Rows to show above and below the visible rect to reduce pop-in
 		/// </summary>
 		public int RowPadding = 2;
 
+		/// <summary>
+		/// Spacing to add between rows
+		/// </summary>
 		public float Spacing;
 
-		private readonly SRList<object> _itemList = new SRList<object>();
-		private readonly SRList<int> _visibleItemList = new SRList<int>(); 
+		[SerializeField]
+		private SelectedItemChangedEvent _selectedItemChanged;
 
-		private SRList<Row> _visibleRows = new SRList<Row>(); 
-		private SRList<Row> _rowCache = new SRList<Row>();
+		public SelectedItemChangedEvent SelectedItemChanged { get { return _selectedItemChanged; } set { _selectedItemChanged = value; } }
 
-		private ScrollRect _scrollRect;
-		private bool _isDirty;
+		public object SelectedItem
+		{
+			get { return _selectedItem; }
+			set
+			{
+
+				if (_selectedItem == value)
+					return;
+
+				var newSelectedIndex = value == null ? -1 : _itemList.IndexOf(value);
+
+				// Ensure that the new selected item is present in the item list
+				if (value != null && newSelectedIndex < 0)
+					throw new InvalidOperationException("Cannot select item not present in layout");
+
+				// Invalidate old selected item row
+				if (_selectedItem != null) {
+					InvalidateItem(_selectedIndex);
+				}
+
+				_selectedItem = value;
+				_selectedIndex = newSelectedIndex;
+
+				// Invalidate the newly selected item
+				if (_selectedItem != null) {
+
+					InvalidateItem(_selectedIndex);
+
+				}
+
+				_isDirty = true;
+
+				if (_selectedItemChanged != null)
+					_selectedItemChanged.Invoke(_selectedItem);
+
+			}
+		}
+
+
+		public override float minHeight
+		{
+			get { return _itemList.Count * ItemHeight + padding.top + padding.bottom + Spacing * _itemList.Count; }
+		}
+
+		#region Public Data Methods
+
+		public void AddItem(object item)
+		{
+
+			_itemList.Add(item);
+			_isDirty = true;
+
+		}
+
+		public void RemoveItem(object item)
+		{
+
+			if (SelectedItem == item)
+				SelectedItem = null;
+
+			var index = _itemList.IndexOf(item);
+
+			InvalidateItem(index);
+			_itemList.Remove(item);
+
+			RefreshIndexCache();
+
+			_isDirty = true;
+
+		}
+
+		public void ClearItems()
+		{
+
+			for (var i = _visibleRows.Count - 1; i >= 0; i--) {
+				InvalidateItem(_visibleRows[i].Index);
+			}
+
+			_itemList.Clear();
+			_isDirty = true;
+
+		}
+
+		#endregion
+
+		#region Internal Properties
 
 		private ScrollRect ScrollRect
 		{
@@ -72,17 +162,12 @@ namespace SRF.UI.Layout
 			}
 		}
 
-		public override float minHeight
-		{
-			get { return _itemList.Count * ItemHeight + padding.top + padding.bottom + Spacing * _itemList.Count; }
-		}
-
 		private bool AlignBottom
 		{
 			get
 			{
-				return childAlignment == TextAnchor.LowerRight || childAlignment == TextAnchor.LowerCenter || 
-				       childAlignment == TextAnchor.LowerLeft;
+				return childAlignment == TextAnchor.LowerRight || childAlignment == TextAnchor.LowerCenter ||
+					   childAlignment == TextAnchor.LowerLeft;
 			}
 		}
 
@@ -91,7 +176,7 @@ namespace SRF.UI.Layout
 			get
 			{
 				return childAlignment == TextAnchor.UpperLeft || childAlignment == TextAnchor.UpperCenter ||
-				       childAlignment == TextAnchor.UpperRight;
+					   childAlignment == TextAnchor.UpperRight;
 			}
 		}
 
@@ -118,6 +203,21 @@ namespace SRF.UI.Layout
 			}
 		}
 
+
+		#endregion
+
+		private readonly SRList<object> _itemList = new SRList<object>();
+		private readonly SRList<int> _visibleItemList = new SRList<int>();
+
+		private SRList<Row> _visibleRows = new SRList<Row>();
+		private SRList<Row> _rowCache = new SRList<Row>();
+
+		private ScrollRect _scrollRect;
+		private bool _isDirty;
+		private object _selectedItem;
+		private int _selectedIndex;
+		private int _visibleItemCount;
+
 		protected override void Awake()
 		{
 
@@ -125,39 +225,13 @@ namespace SRF.UI.Layout
 
 			ScrollRect.onValueChanged.AddListener(OnScrollRectValueChanged);
 
-			var view = ItemPrefab.GetComponent(typeof (IVirtualView));
+			var view = ItemPrefab.GetComponent(typeof(IVirtualView));
 
-			if (view  == null) {
+			if (view == null) {
 				Debug.LogWarning(
 					"[VirtualVerticalLayoutGroup] ItemPrefab does not have a component inheriting from IVirtualView, so no data binding can occur");
 			}
 
-		}
-
-		public void AddItem(object item)
-		{
-			_itemList.Add(item);
-			_isDirty = true;
-		}
-
-		public void RemoveItem(object item)
-		{
-
-			var index = _itemList.IndexOf(item);
-
-			if (_visibleItemList.Contains(index)) {
-				
-			}
-
-			_itemList.Remove(item);
-			_isDirty = true;
-
-		}
-
-		public void ClearItems()
-		{
-			_itemList.Clear();
-			_isDirty = true;
 		}
 
 		private void OnScrollRectValueChanged(Vector2 d)
@@ -191,25 +265,52 @@ namespace SRF.UI.Layout
 
 			}
 
+			// Check for queued update (due to add/remove/clear)
 			if (_isDirty) {
-
-				for (var i = 0; i < _visibleRows.Count; i++) {
-					RecycleRow(_visibleRows[i]);
-				}
-
-				_visibleRows.Clear();
-				_visibleItemList.Clear();
 
 				ScrollUpdate();
 				_isDirty = false;
 
-				LayoutRebuilder.MarkLayoutForRebuild(rectTransform);
+			}
+
+		}
+
+		/// <summary>
+		/// Invalidate a single row (before removing, or changing selection status)
+		/// </summary>
+		/// <param name="itemIndex"></param>
+		protected void InvalidateItem(int itemIndex)
+		{
+
+			if (!_visibleItemList.Contains(itemIndex))
+				return;
+
+			_visibleItemList.Remove(itemIndex);
+
+			for (var i = 0; i < _visibleRows.Count; i++) {
+
+				if (_visibleRows[i].Index == itemIndex) {
+
+					RecycleRow(_visibleRows[i]);
+					_visibleRows.RemoveAt(i);
+					break;
+
+				}
 
 			}
 
-			//Profiler.BeginSample("ScrollUpdate");
-			//ScrollUpdate();
-			//Profiler.EndSample();
+		}
+
+		/// <summary>
+		/// After removing or inserting a row, ensure that the cached indexes (used for layout) match up
+		/// with the item index in the list
+		/// </summary>
+		protected void RefreshIndexCache()
+		{
+
+			for (var i = 0; i < _visibleRows.Count; i++) {
+				_visibleRows[i].Index = _itemList.IndexOf(_visibleRows[i].Data);
+			}
 
 		}
 
@@ -233,8 +334,6 @@ namespace SRF.UI.Layout
 
 				if (IsVisible(i, startY) && !_visibleItemList.Contains(i)) {
 
-					//Debug.Log("[VirtualVerticalLayoutGroup] Showing Item {0}".Fmt(i));
-
 					var row = GetRow(i);
 					_visibleRows.Add(row);
 					_visibleItemList.Add(i);
@@ -257,8 +356,6 @@ namespace SRF.UI.Layout
 
 				if (!IsVisible(row.Index, startY)) {
 
-					//Debug.Log("[VirtualVerticalLayoutGroup] Hiding Item {0}".Fmt(row.Index));
-
 					_visibleItemList.Remove(row.Index);
 					_visibleRows.Remove(row);
 					RecycleRow(row);
@@ -271,14 +368,16 @@ namespace SRF.UI.Layout
 			Profiler.EndSample();
 #endif
 
-			if(isDirty)
+			// If something visible has explicitly been changed, or the visible row count has changed
+			if(isDirty || _visibleItemCount != _visibleRows.Count)
 				LayoutRebuilder.MarkLayoutForRebuild(rectTransform);
+
+			_visibleItemCount = _visibleRows.Count;
 
 		}
 
 		private bool IsVisible(int index, float yPos)
 		{
-
 
 			var rowStartY = ItemHeight*index + Spacing*index;
 			var viewHeight = ((RectTransform)ScrollRect.transform).rect.height;
@@ -307,6 +406,7 @@ namespace SRF.UI.Layout
 
 			var width = rectTransform.rect.width - padding.left - padding.right;
 
+			// Position visible rows at 0 x
 			for (var i = 0; i < _visibleRows.Count; i++) {
 
 				var item = _visibleRows[i];
@@ -315,7 +415,7 @@ namespace SRF.UI.Layout
 
 			}
 
-			// Hide non-active rows to one side
+			// Hide non-active rows to one side. More efficient than enabling/disabling them
 			for (var i = 0; i < _rowCache.Count; i++) {
 
 				var item = _rowCache[i];
@@ -332,6 +432,7 @@ namespace SRF.UI.Layout
 			if (!Application.isPlaying)
 				return;
 
+			// Position visible rows by the index of the item they represent
 			for (var i = 0; i < _visibleRows.Count; i++) {
 
 				var item = _visibleRows[i];
@@ -342,11 +443,31 @@ namespace SRF.UI.Layout
 
 		}
 
-		#region Row Pooling
+		public void OnPointerClick(PointerEventData eventData)
+		{
+
+			var hitObject = eventData.pointerPressRaycast.gameObject;
+
+			if (hitObject == null)
+				return;
+
+			var hitPos = hitObject.transform.position;
+			var localPos = rectTransform.InverseTransformPoint(hitPos);
+			var row = Mathf.FloorToInt(Mathf.Abs(localPos.y)/ItemHeight);
+
+			if (row >= 0 && row < _itemList.Count)
+				SelectedItem = _itemList[row];
+			else
+				SelectedItem = null;
+
+		}
+
+		#region Row Pooling and Provisioning
 
 		private Row GetRow(int forIndex)
 		{
 
+			// If there are no rows available in the cache, create one from scratch
 			if (_rowCache.Count == 0) {
 
 				var newRow = CreateRow();
@@ -360,6 +481,7 @@ namespace SRF.UI.Layout
 			Row row = null;
 			Row altRow = null;
 
+			// Determine if the row we're looking for is an alt row
 			var target = forIndex%2;
 
 			// Try and find a row which previously had this data, so we can reuse it
@@ -367,21 +489,26 @@ namespace SRF.UI.Layout
 
 				row = _rowCache[i];
 
+				// If this row previously represented this data, just use that one.
 				if (row.Data == data) {
 
-					row.Index = forIndex;
 					_rowCache.RemoveAt(i);
+					PopulateRow(forIndex, row);
 					break;
 
 				}
 
+				// Cache a row which is was the same alt state as the row we're looking for, in case
+				// we don't find an exact match.
 				if (row.Index%2 == target)
 					altRow = row;
 
+				// Didn't match, reset to null
 				row = null;
 
 			}
 			
+			// If an exact match wasn't found, but a row with the same alt-status was found, use that one.
 			if (row == null && altRow != null) {
 
 				_rowCache.Remove(altRow);
@@ -390,12 +517,11 @@ namespace SRF.UI.Layout
 
 			} else if (row == null) {
 
+				// No match found, use the last added item in the cache
 				row = _rowCache.PopLast();
 				PopulateRow(forIndex, row);
 
 			}
-
-			//row.Rect.gameObject.SetActive(true);
 
 			return row;
 
@@ -412,14 +538,29 @@ namespace SRF.UI.Layout
 		{
 
 			row.Index = index;
-			row.Data = _itemList[index];
 
-			if (row.View != null)
+			// If the provided row didn't previously have this data, pass it to the view
+			if (row.Data != _itemList[index] && row.View != null) {
+
+				row.Data = _itemList[index];
 				row.View.SetDataContext(_itemList[index]);
 
-			if (RowStyleSheet != null || AltRowStyleSheet != null) {
+			}
 
-				row.Root.StyleSheet = index%2 == 0 ? RowStyleSheet : AltRowStyleSheet;
+			// If we're using stylesheets
+			if (RowStyleSheet != null || AltRowStyleSheet != null || SelectedRowStyleSheet != null) {
+
+				// If there is a selected row stylesheet, and this is the selected row, use that one
+				if (SelectedRowStyleSheet != null && SelectedItem == row.Data) {
+
+					row.Root.StyleSheet = SelectedRowStyleSheet;
+
+				} else {
+
+					// Otherwise just use the stylesheet suitable for the row alt-status
+					row.Root.StyleSheet = index%2 == 0 ? RowStyleSheet : AltRowStyleSheet;
+
+				}
 
 			}
 
@@ -434,14 +575,12 @@ namespace SRF.UI.Layout
 			item.Rect = row;
 			item.View = row.GetComponent(typeof (IVirtualView)) as IVirtualView;
 
-			if (RowStyleSheet != null || AltRowStyleSheet != null) {
+			if (RowStyleSheet != null || AltRowStyleSheet != null || SelectedRowStyleSheet != null) {
 				item.Root = row.gameObject.GetComponentOrAdd<StyleRoot>();
 				item.Root.StyleSheet = RowStyleSheet;
 			}
 
 			row.SetParent(rectTransform, false);
-
-
 
 			return item;
 
