@@ -62,6 +62,8 @@ namespace SRF.UI.Layout
 
 		public SelectedItemChangedEvent SelectedItemChanged { get { return _selectedItemChanged; } set { _selectedItemChanged = value; } }
 
+		public event Action RefreshCompleted;
+
 		public object SelectedItem
 		{
 			get { return _selectedItem; }
@@ -270,6 +272,11 @@ namespace SRF.UI.Layout
 
 				ScrollUpdate();
 				_isDirty = false;
+				
+				LayoutRebuilder.MarkLayoutForRebuild(rectTransform);
+
+				if (RefreshCompleted != null)
+					RefreshCompleted();
 
 			}
 
