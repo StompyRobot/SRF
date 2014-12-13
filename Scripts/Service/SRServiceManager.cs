@@ -301,8 +301,16 @@ namespace SRF.Service
 		private static object DefaultServiceConstructor(Type serviceIntType, Type implType)
 		{
 
-			var go = new GameObject("_S_" + serviceIntType.Name);
-			return go.AddComponent(implType);
+			// If mono-behaviour based, create a gameobject for this service
+			if (typeof (MonoBehaviour).IsAssignableFrom(implType)) {
+
+				var go = new GameObject("_S_" + serviceIntType.Name);
+				return go.AddComponent(implType);
+
+			}
+
+			// Otherwise just create an instance
+			return Activator.CreateInstance(implType);
 
 		}
 
