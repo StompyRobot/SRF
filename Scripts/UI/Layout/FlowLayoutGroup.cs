@@ -165,6 +165,7 @@ namespace SRF.UI.Layout
 
 			// Add the last rows height to the height accumulator
 			totalHeight += currentRowHeight;
+			totalHeight += padding.bottom;
 
 			if (layoutInput) {
 
