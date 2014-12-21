@@ -4,6 +4,8 @@ using System.Threading;
 public static class SRFileUtil
 {
 
+#if !UNITY_WEBPLAYER
+
 	public static void DeleteDirectory(string path)
 	{
 		try {
@@ -13,6 +15,8 @@ public static class SRFileUtil
 			Directory.Delete(path, true);
 		}
 	}
+
+#endif
 	
 	/// <summary>
 	/// Returns the human-readable file size for an arbitrary, 64-bit file size 
