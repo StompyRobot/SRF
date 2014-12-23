@@ -14,7 +14,7 @@ namespace SRF.UI
 	[RequireComponent(typeof(RectTransform))]
 	[ExecuteInEditMode]
 	[AddComponentMenu(Internal.ComponentMenuPaths.CopyPreferredSize)]
-	public class CopyPreferredSize : UIBehaviour, ILayoutElement
+	public class CopyPreferredSize : LayoutElement
 	{
 
 		public RectTransform CopySource;
@@ -22,17 +22,8 @@ namespace SRF.UI
 		public float PaddingWidth;
 		public float PaddingHeight;
 
-		public float minWidth
-		{
-			get
-			{
-				if (CopySource == null || !IsActive())
-					return -1f;
-				return LayoutUtility.GetMinWidth(CopySource) + PaddingWidth;
-			}
-		}
-
-		public float preferredWidth
+	
+		public override float preferredWidth
 		{
 			get
 			{
@@ -42,27 +33,7 @@ namespace SRF.UI
 			}
 		}
 
-		public float flexibleWidth
-		{
-			get
-			{
-				if (CopySource == null || !IsActive())
-					return -1f;
-				return LayoutUtility.GetFlexibleWidth(CopySource);
-			}
-		}
-
-		public float minHeight
-		{
-			get
-			{
-				if (CopySource == null || !IsActive())
-					return -1f;
-				return LayoutUtility.GetFlexibleHeight(CopySource) + PaddingHeight;
-			}
-		}
-
-		public float preferredHeight
+		public override float preferredHeight
 		{
 			get
 			{
@@ -72,23 +43,12 @@ namespace SRF.UI
 			}
 		}
 
-		public float flexibleHeight
+		public override int layoutPriority
 		{
-			get
-			{
-				if (CopySource == null || !IsActive())
-					return -1f;
-				return LayoutUtility.GetFlexibleHeight(CopySource);
-			}
+			get { return 2; }
 		}
 
-		public int layoutPriority
-		{
-			get { return 1; }
-		}
-
-
-		public void CalculateLayoutInputHorizontal()
+		/*public void CalculateLayoutInputHorizontal()
 		{
 			foreach (var component in CopySource.GetComponents(typeof (ILayoutElement))) {
 				(component as ILayoutElement).CalculateLayoutInputHorizontal();
@@ -100,42 +60,7 @@ namespace SRF.UI
 			foreach (var component in CopySource.GetComponents(typeof(ILayoutElement))) {
 				(component as ILayoutElement).CalculateLayoutInputVertical();
 			}
-		}
-
-		protected override void OnEnable()
-		{
-			SetDirty();
-		}
-
-		protected override void OnTransformParentChanged()
-		{
-			SetDirty();
-		}
-
-		protected override void OnDisable()
-		{
-			SetDirty();
-		}
-
-		protected override void OnDidApplyAnimationProperties()
-		{
-			SetDirty();
-		}
-
-		protected override void OnBeforeTransformParentChanged()
-		{
-			SetDirty();
-		}
-
-		protected void SetDirty()
-		{
-
-			if (!IsActive())
-				return;
-
-			LayoutRebuilder.MarkLayoutForRebuild(transform as RectTransform);
-
-		}
+		}*/
 
 	}
 }
