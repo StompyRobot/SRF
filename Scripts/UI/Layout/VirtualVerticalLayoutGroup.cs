@@ -253,7 +253,7 @@ namespace SRF.UI.Layout
 		{
 
 			base.OnEnable();
-			ScrollUpdate();
+			_isDirty = true;
 
 		}
 
