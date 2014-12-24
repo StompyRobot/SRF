@@ -3,6 +3,7 @@
 using System;
 using UnityEngine;
 using System.Collections;
+using UnityEditor;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -35,10 +36,73 @@ namespace SRF.UI
 		private double _dragStep;
 		private double _currentValue;
 
+		public override void OnPointerClick(PointerEventData eventData)
+		{
+
+			//Debug.Log("OnPointerClick (isFocused: {0}, isUsed: {1}, isDragging: {2})".Fmt(isFocused, eventData.used, eventData.dragging));
+
+			if (eventData.dragging)
+				return;
+
+			EventSystem.current.SetSelectedGameObject(gameObject, eventData);
+
+			base.OnPointerClick(eventData);
+
+			if ((m_Keyboard == null || !m_Keyboard.active)) {
+
+				OnSelect(eventData);
+
+			} else {
+
+				UpdateLabel();
+				eventData.Use();
+			}
+
+		}
+
+		public override void OnPointerDown(PointerEventData eventData)
+		{
+
+			//Debug.Log("OnPointerDown (isFocused: {0}, isUsed: {1})".Fmt(isFocused, eventData.used));
+
+			//base.OnPointerDown(eventData);
+
+		}
+
+		public override void OnPointerUp(PointerEventData eventData)
+		{
+
+			//Debug.Log("OnPointerUp (isFocused: {0}, isUsed: {1})".Fmt(isFocused, eventData.used));
+
+			//base.OnPointerUp(eventData);
+
+		}
+
 		public override void OnBeginDrag(PointerEventData eventData)
 		{
 
-			//base.OnBeginDrag(eventData);
+			//Debug.Log("OnBeginDrag (isFocused: {0}, isUsed: {1}, delta: {2})".Fmt(isFocused, eventData.used, eventData.delta));
+
+			// Pass event to parent if it is a vertical drag
+			if (Mathf.Abs(eventData.delta.y) > Mathf.Abs(eventData.delta.x)) {
+
+				//Debug.Log("Passing To Parent");
+
+				var parent = transform.parent;
+
+				if (parent != null) {
+
+					eventData.pointerDrag = ExecuteEvents.GetEventHandler<IBeginDragHandler>(parent.gameObject);
+
+					if(eventData.pointerDrag != null)
+						ExecuteEvents.Execute(eventData.pointerDrag, eventData, ExecuteEvents.beginDragHandler);
+
+				}
+
+				return;
+
+			}
+			eventData.Use();
 
 			_dragStartAmount = double.Parse(text);
 			_currentValue = _dragStartAmount;
@@ -59,7 +123,7 @@ namespace SRF.UI
 		public override void OnDrag(PointerEventData eventData)
 		{
 
-			//base.OnDrag(eventData);
+			//Debug.Log("OnDrag (isFocused: {0}, isUsed: {1})".Fmt(isFocused, eventData.used));
 
 			var diff = eventData.delta.x;
 
@@ -81,7 +145,12 @@ namespace SRF.UI
 
 		public override void OnEndDrag(PointerEventData eventData)
 		{
+
+			//Debug.Log("OnEndDrag (isFocused: {0}, isUsed: {1})".Fmt(isFocused, eventData.used));
+
 			//base.OnEndDrag(eventData);
+
+			eventData.Use();
 
 			if (_dragStartAmount != _currentValue) {
 
