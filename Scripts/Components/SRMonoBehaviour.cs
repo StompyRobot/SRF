@@ -35,7 +35,7 @@ public abstract class SRMonoBehaviour : MonoBehaviour, IHasTransform
 		get
 		{
 			if (_collider == null) {
-				_collider = base.collider;
+				_collider = GetComponent<Collider>();
 			}
 
 			return _collider;
@@ -52,7 +52,7 @@ public abstract class SRMonoBehaviour : MonoBehaviour, IHasTransform
 		get
 		{
 			if (_collider2D == null) {
-				_collider2D = base.collider2D;
+				_collider2D = GetComponent<Collider2D>();
 			}
 
 			return _collider2D;
@@ -69,7 +69,7 @@ public abstract class SRMonoBehaviour : MonoBehaviour, IHasTransform
 		get
 		{
 			if (_rigidBody == null) {
-				_rigidBody = base.rigidbody;
+				_rigidBody = GetComponent<Rigidbody>();
 			}
 
 			return _rigidBody;
@@ -86,7 +86,7 @@ public abstract class SRMonoBehaviour : MonoBehaviour, IHasTransform
 		get
 		{
 			if (_rigidbody2D == null) {
-				_rigidbody2D = base.rigidbody2D;
+				_rigidbody2D = GetComponent<Rigidbody2D>();
 			}
 
 			return _rigidbody2D;
