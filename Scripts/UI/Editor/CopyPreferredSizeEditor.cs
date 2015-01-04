@@ -12,6 +12,8 @@ namespace SRF.UI.Editor
 	public class CopyPreferredSizeEditor : UnityEditor.Editor
 	{
 
+		private SerializedProperty _copySourceProperty;
+
 		private SerializedProperty _paddingWidthProperty;
 		private SerializedProperty _paddingHeightProperty;
 
@@ -20,6 +22,7 @@ namespace SRF.UI.Editor
 
 			this._paddingWidthProperty = this.serializedObject.FindProperty("PaddingWidth");
 			this._paddingHeightProperty = this.serializedObject.FindProperty("PaddingHeight");
+			this._copySourceProperty = this.serializedObject.FindProperty("CopySource");
 
 		}
 
@@ -30,10 +33,12 @@ namespace SRF.UI.Editor
 
 			EditorGUILayout.Space();
 
-			this.serializedObject.Update();
+			EditorGUILayout.PropertyField(this._copySourceProperty);
 			EditorGUILayout.PropertyField(this._paddingWidthProperty);
 			EditorGUILayout.PropertyField(this._paddingHeightProperty);
 			this.serializedObject.ApplyModifiedProperties();
+
+			this.serializedObject.Update();
 
 		}
 
