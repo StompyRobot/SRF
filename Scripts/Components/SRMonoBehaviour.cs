@@ -137,7 +137,7 @@ public abstract class SRMonoBehaviour : MonoBehaviour, IHasTransform
 	[DebuggerStepThrough]
 	protected void AssertNotNull(object value, string fieldName = null)
 	{
-		SRDebug.AssertNotNull(value, fieldName, this);
+		SRDebugUtil.AssertNotNull(value, fieldName, this);
 	}
 
 
@@ -146,7 +146,7 @@ public abstract class SRMonoBehaviour : MonoBehaviour, IHasTransform
 	[DebuggerStepThrough]
 	protected void Assert(bool condition, string message = null)
 	{
-		SRDebug.Assert(condition, message, this);
+		SRDebugUtil.Assert(condition, message, this);
 	}
 
 

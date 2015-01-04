@@ -4,7 +4,7 @@ using System.Diagnostics;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
-public static class SRDebug
+public static class SRDebugUtil
 {
 
 	public static bool IsFixedUpdate { get; set; }

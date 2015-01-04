@@ -16,7 +16,7 @@ namespace SRF.Helpers
 		public PropertyReference(object target, PropertyInfo property)
 		{
 
-			SRDebug.AssertNotNull(target);
+			SRDebugUtil.AssertNotNull(target);
 
 			_target = target;
 			_property = property;
