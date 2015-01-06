@@ -307,9 +307,17 @@ namespace SRF.Service
 				var go = new GameObject("_S_" + serviceIntType.Name);
 				return go.AddComponent(implType);
 
+			} 
+			
+			// If ScriptableObject based, create an instance
+			if (typeof (ScriptableObject).IsAssignableFrom(implType)) {
+
+				var obj = ScriptableObject.CreateInstance(implType);
+				return obj;
+
 			}
 
-			// Otherwise just create an instance
+			// If just a standard C# object, just create an instance
 			return Activator.CreateInstance(implType);
 
 		}
