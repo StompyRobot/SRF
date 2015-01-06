@@ -8,6 +8,7 @@ using UnityEngine;
 
 namespace SRF.Helpers
 {
+
 	public static class AssetUtil
 	{
 
@@ -20,7 +21,8 @@ namespace SRF.Helpers
 		/// </summary>
 		public static T CreateAsset<T>() where T : ScriptableObject
 		{
-			string path = AssetDatabase.GetAssetPath(Selection.activeObject);
+
+			var path = AssetDatabase.GetAssetPath(Selection.activeObject);
 
 			if (path == "")
 				path = "Assets";
@@ -28,32 +30,38 @@ namespace SRF.Helpers
 				path = path.Replace(Path.GetFileName(path), "");
 
 			return CreateAsset<T>(path, "New " + typeof (T).Name);
+
 		}
 
 		public static T CreateAsset<T>(string path, string name) where T : ScriptableObject
 		{
+
 			if (string.IsNullOrEmpty(path))
 				path = "Assets";
 
 			if (!name.EndsWith(".asset"))
 				name += ".asset";
 
-			string assetPathAndName = AssetDatabase.GenerateUniqueAssetPath(path + "/" + name);
+			var assetPathAndName = AssetDatabase.GenerateUniqueAssetPath(path + "/" + name);
 
-			T asset = ScriptableObject.CreateInstance<T>();
+			var asset = ScriptableObject.CreateInstance<T>();
 			AssetDatabase.CreateAsset(asset, assetPathAndName);
 			AssetDatabase.SaveAssets();
 
 			return asset;
+
 		}
 
 		public static void SelectAssetInProjectView(Object asset)
 		{
+
 			EditorUtility.FocusProjectWindow();
 			Selection.activeObject = asset;
+
 		}
 
 #endif
 
 	}
+
 }

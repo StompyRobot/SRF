@@ -88,7 +88,13 @@ public static partial class SRMath
 		}
 
 	}
-
+	
+	/// <summary>
+	/// Wrap value to 0-max (non-inclusive)
+	/// </summary>
+	/// <param name="max">Max value (non-inclusive)</param>
+	/// <param name="value"></param>
+	/// <returns>Value wrapped from 0-max</returns>
 	public static int Wrap(int max, int value)
 	{
 
@@ -105,13 +111,19 @@ public static partial class SRMath
 
 	}
 
+	/// <summary>
+	/// Wrap value to 0-max (non-inclusive)
+	/// </summary>
+	/// <param name="max">Max value (non-inclusive)</param>
+	/// <param name="value"></param>
+	/// <returns>Value wrapped from 0-max</returns>
 	public static float Wrap(float max, float value)
 	{
 
 		while (value < 0)
 			value += max;
 
-		while (value > max)
+		while (value >= max)
 			value -= max;
 
 		return value;
