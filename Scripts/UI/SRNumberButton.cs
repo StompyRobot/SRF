@@ -80,6 +80,7 @@ namespace SRF.UI
 				currentValue = TargetField.MinValue;
 
 			TargetField.text = currentValue.ToString();
+			TargetField.onEndEdit.Invoke(TargetField.text);
 
 		}
 
