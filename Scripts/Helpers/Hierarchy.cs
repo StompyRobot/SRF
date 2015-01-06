@@ -7,7 +7,7 @@ using UnityEngine;
 namespace SRF
 {
 
-	public class Hierarchy : SRAutoSingleton<Hierarchy>
+	public class Hierarchy
 	{
 
 		private static readonly char[] Seperator = new[] { '/' };
