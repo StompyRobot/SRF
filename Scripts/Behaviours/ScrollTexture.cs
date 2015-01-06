@@ -24,7 +24,7 @@ namespace SRF.Behaviours
 		{
 
 			if (_renderer == null)
-				_renderer = renderer;
+				_renderer = GetComponent<Renderer>();
 
 			Material m;
 

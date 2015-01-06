@@ -24,7 +24,7 @@ namespace SRF.Components
 		void Awake()
 		{
 
-			_renderer = renderer;
+			_renderer = GetComponent<Renderer>();
 			_defaultMaterial = Renderer.sharedMaterial;
 			_activeMaterial = _defaultMaterial;
 
