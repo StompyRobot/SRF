@@ -12,6 +12,12 @@ namespace SRF.Service
 	public class SRServiceManager : SRAutoSingleton<SRServiceManager>
 	{
 
+#if DEBUG
+		public static bool EnableLogging = true;
+#else
+		public static bool EnableLogging = false;
+#endif
+
 		/// <summary>
 		/// Is there a service loading?
 		/// </summary>
@@ -248,8 +254,12 @@ namespace SRF.Service
 			var serviceStrings =
 				_serviceStubs.Select(p => "	{0}".Fmt(p)).ToArray();
 
-			Debug.Log("[SRServiceManager] Services Discovered: {0} \n  {1}".Fmt(serviceStrings.Length,
-				string.Join("\n  ", serviceStrings)));
+			if (EnableLogging) {
+
+				Debug.Log("[SRServiceManager] Services Discovered: {0} \n  {1}".Fmt(serviceStrings.Length,
+					string.Join("\n  ", serviceStrings)));
+
+			}
 
 		}
 
@@ -284,7 +294,8 @@ namespace SRF.Service
 				if(!HasService(t))
 					RegisterService(t, service);
 
-				Debug.Log("[SRServiceManager] Auto-created service: {0} ({1})".Fmt(stub.Type, stub.InterfaceType), service as UnityEngine.Object);
+				if(EnableLogging)
+					Debug.Log("[SRServiceManager] Auto-created service: {0} ({1})".Fmt(stub.Type, stub.InterfaceType), service as UnityEngine.Object);
 
 				return service;
 			}
