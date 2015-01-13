@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Reflection;
 
 namespace SRF.Helpers
@@ -25,12 +26,24 @@ namespace SRF.Helpers
 
 		public object GetValue()
 		{
-			return _property.GetValue(_target, null);
+
+			if (_property.CanRead) {
+				return _property.GetGetMethod().Invoke(_target, null);
+			}
+
+			return null;
+
 		}
 
 		public void SetValue(object value)
 		{
-			_property.SetValue(_target, value, null);
+
+			if (_property.CanWrite) {
+				_property.GetSetMethod().Invoke(_target, new[] {value});
+			} else {
+				throw new InvalidOperationException("Can not write to property");
+			}
+
 		}
 
 	}
