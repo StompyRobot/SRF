@@ -223,7 +223,7 @@ namespace SRF.Service
 			base.Awake();
 			DontDestroyOnLoad(CachedGameObject);
 
-			CachedGameObject.hideFlags = HideFlags.HideAndDontSave;
+			CachedGameObject.hideFlags = HideFlags.NotEditable;
 
 		}
 
