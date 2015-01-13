@@ -218,9 +218,13 @@ namespace SRF.Service
 
 		protected override void Awake()
 		{
+
 			_hasQuit = false;
 			base.Awake();
 			DontDestroyOnLoad(CachedGameObject);
+
+			CachedGameObject.hideFlags = HideFlags.HideAndDontSave;
+
 		}
 
 		protected void UpdateStubs()
