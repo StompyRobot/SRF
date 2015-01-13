@@ -28,6 +28,8 @@ namespace SRF.Internal
 		public const string SpawnPrefab = BehavioursRoot + "/Spawn Prefab";
 		public const string Velocity = BehavioursRoot + "/Velocity";
 
+		public const string SRDebugCamera = BehavioursRoot + "/Camera/SRDebugCamera";
+
 		#endregion
 
 		#region Components
