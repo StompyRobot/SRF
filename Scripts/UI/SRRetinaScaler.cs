@@ -7,6 +7,10 @@ using UnityEngine.UI;
 namespace SRF.UI
 {
 
+	/// <summary>
+	/// Detects when a screen dpi exceeds what the developer considers
+	/// a "retina" level display, and scales the canvas accordingly.
+	/// </summary>
 	[RequireComponent(typeof(CanvasScaler))]
 	public class SRRetinaScaler : SRMonoBehaviour
 	{
@@ -15,7 +19,7 @@ namespace SRF.UI
 		private int _thresholdDpi = 250;
 
 		[SerializeField]
-		private float _retinaScale = 0.5f;
+		private float _retinaScale = 2f;
 
 		/// <summary>
 		/// Dpi over which to apply scaling
