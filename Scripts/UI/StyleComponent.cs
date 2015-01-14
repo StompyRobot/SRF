@@ -18,7 +18,6 @@ namespace SRF.UI
 		[HideInInspector]
 		private string _styleKey;
 
-		[HideInInspector]
 		public string StyleKey
 		{
 			get { return _styleKey; }
@@ -45,6 +44,9 @@ namespace SRF.UI
 
 #if UNITY_EDITOR
 
+		/// <summary>
+		/// This method is not included in exported builds - don't worry about it showing up in the profiler.
+		/// </summary>
 		private void Update()
 		{
 			
