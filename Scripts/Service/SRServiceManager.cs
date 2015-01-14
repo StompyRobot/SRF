@@ -235,7 +235,11 @@ namespace SRF.Service
 
 			_serviceStubs = new List<ServiceStub>();
 
-			var types = Assembly.GetExecutingAssembly().GetTypes();
+			var types = new List<Type>();
+
+			foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies()) {
+				types.AddRange(assembly.GetExportedTypes());
+			}
 
 			foreach (var type in types) {
 
