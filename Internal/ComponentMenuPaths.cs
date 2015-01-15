@@ -57,6 +57,7 @@ namespace SRF.Internal
 		public const string FlashGraphic = ComponentsRoot + "/Flash Graphic";
 		public const string CopyPreferredSize = ComponentsRoot + "/Copy Preferred Size";
 		public const string SRText = ComponentsRoot + "/SRText";
+		public const string Unselectable = ComponentsRoot + "/Unselectable";
 
 		public const string FlowLayoutGroup = UIRoot + "Layout/Flow Layout Group";
 		public const string VirtualVerticalLayoutGroup = UIRoot + "Layout/VerticalLayoutGroup (Virtualizing)";
