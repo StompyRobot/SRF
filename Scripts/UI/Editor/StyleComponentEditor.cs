@@ -13,12 +13,22 @@ namespace SRF.UI.Editor
 	public class StyleComponentEditor : UnityEditor.Editor
 	{
 
+		private SerializedProperty _styleKeyProperty;
+
+		protected void OnEnable()
+		{
+
+			_styleKeyProperty = serializedObject.FindProperty("_styleKey");
+
+		}
+
+
 		public override void OnInspectorGUI()
 		{
 			
 			base.OnInspectorGUI();
 
-			var styleComponent = target as StyleComponent;
+			var styleComponent = serializedObject.targetObject as StyleComponent;
 
 			if (styleComponent == null) {
 				Debug.LogWarning("Target is null, expected StyleComponent");
@@ -51,23 +61,39 @@ namespace SRF.UI.Editor
 
 			var options = styleRoot.StyleSheet.GetStyleKeys(true).ToList();
 
-			var index = options.IndexOf(styleComponent.StyleKey) + 1;
+			var index = _styleKeyProperty.hasMultipleDifferentValues ? 0 : options.IndexOf(_styleKeyProperty.stringValue) + 1;
 
 			options.Insert(0, "--");
 
 			EditorGUILayout.Separator();
 
+			GUI.enabled = _styleKeyProperty.editable;
 			var newIndex = EditorGUILayout.Popup("Key", index, options.ToArray());
+			GUI.enabled = true;
 
 			if (newIndex != index) {
 
-				if (newIndex == 0)
-					styleComponent.StyleKey = "";
-				else
-					styleComponent.StyleKey = options[newIndex];
+				Debug.Log("index: {0} newIndex: {1}".Fmt(index, newIndex));
 
-				EditorUtility.SetDirty(styleComponent);
-				styleComponent.Refresh(true);
+				Debug.Log("value before: {0}".Fmt(_styleKeyProperty.stringValue));
+
+				_styleKeyProperty.stringValue = "";
+				_styleKeyProperty.stringValue = newIndex == 0 ? "" : options[newIndex];
+
+				Debug.Log("value after: {0}".Fmt(_styleKeyProperty.stringValue));
+
+			}
+
+			if (serializedObject.ApplyModifiedProperties()) {
+
+				foreach (var o in serializedObject.targetObjects) {
+
+					var c = o as StyleComponent;
+					c.Refresh(true);
+
+				}
+
+				_styleKeyProperty.serializedObject.Update();
 
 			}
 
