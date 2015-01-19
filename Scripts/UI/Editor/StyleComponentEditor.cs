@@ -73,14 +73,8 @@ namespace SRF.UI.Editor
 
 			if (newIndex != index) {
 
-				Debug.Log("index: {0} newIndex: {1}".Fmt(index, newIndex));
-
-				Debug.Log("value before: {0}".Fmt(_styleKeyProperty.stringValue));
-
 				_styleKeyProperty.stringValue = "";
 				_styleKeyProperty.stringValue = newIndex == 0 ? "" : options[newIndex];
-
-				Debug.Log("value after: {0}".Fmt(_styleKeyProperty.stringValue));
 
 			}
 
