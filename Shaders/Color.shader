@@ -1,4 +1,4 @@
-﻿Shader "Custom/Color" {
+﻿Shader "SRF/Unlit Color" {
 
 	Properties 
 	{

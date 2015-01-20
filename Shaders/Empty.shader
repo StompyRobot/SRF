@@ -1,4 +1,4 @@
-﻿Shader "Empty" 
+﻿Shader "SRF/Empty" 
 {
 
 	SubShader

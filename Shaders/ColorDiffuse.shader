@@ -1,8 +1,5 @@
-﻿// Simplified Diffuse shader. Differences from regular Diffuse one:
-// - no Main Color
-// - fully supports only 1 directional light. Other lights can affect it, but it will be per-vertex/SH.
-
-Shader "Custom/ColorDiffuse" {
+﻿
+Shader "SRF/Color" {
 Properties {
 	_Color ("Color", Color) = (1,1,1,1)
 }

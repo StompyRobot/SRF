@@ -1,4 +1,4 @@
-Shader "Unlit/Transparent/Depth Z" {
+Shader "SRF/Unlit/Depth Z" {
 Properties {
     _Color ("Main Color", Color) = (1,1,1,1)
     _MainTex ("Base (RGB) Trans (A)", 2D) = "white" {}
