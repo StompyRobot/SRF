@@ -46,6 +46,15 @@ namespace SRF.Helpers
 
 		}
 
+		public T GetAttribute<T>() where T : Attribute
+		{
+
+			var attributes = _property.GetCustomAttributes(typeof (T), true);
+
+			return attributes.Length > 0 ? (T) attributes[0] : null;
+
+		}
+
 	}
 
 }
