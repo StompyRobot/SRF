@@ -1,4 +1,5 @@
-﻿using Smooth.Pools;
+﻿
+using System.Collections.Generic;
 
 namespace SRF
 {
@@ -6,39 +7,30 @@ namespace SRF
 	public abstract class PooledEventArgs<T> where T : PooledEventArgs<T>, new()
 	{
 
+		private static readonly List<T> Pool = new List<T>();
+
 		/// <summary>
 		/// Override in child classes to reset event args to default values
 		/// </summary>
 		protected abstract void Reset();
 
-		/// <summary>
-		/// Singleton List<T> pool.
-		/// </summary>
-		private static class InternalPool
-		{
-
-			private static readonly Pool<T> _Instance = new Pool<T>(
-				() => new T(),
-				t => t.Reset());
-
-			/// <summary>
-			/// Singleton List<T> pool instance.
-			/// </summary>
-			public static Pool<T> Instance
-			{
-				get { return _Instance; }
-			}
-
-		}
-
+		
 		public static T Borrow()
 		{
-			return InternalPool.Instance.Borrow();
+
+			if (Pool.Count > 0)
+				return Pool.PopLast();
+
+			return new T();
+
 		}
 
 		public static void Release(T t)
 		{
-			InternalPool.Instance.Release(t);
+
+			t.Reset();
+			Pool.Add(t);
+
 		}
 
 	}
