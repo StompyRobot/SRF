@@ -156,7 +156,7 @@ public class SRList<T> : IList<T>, ISerializationCallbackReceiver
 		if (Buffer == null)
 			return false;
 
-		for (int i = 0; i < Count; ++i) {
+		for (var i = 0; i < Count; ++i) {
 
 			if (EqualityComparer.Equals(Buffer[i], item))
 				return true;
@@ -173,7 +173,12 @@ public class SRList<T> : IList<T>, ISerializationCallbackReceiver
 		Buffer.CopyTo(array, arrayIndex);
 	}
 
-	public bool Remove(T item)
+	/// <summary>
+	/// Remove item from the list
+	/// </summary>
+	/// <param name="item">Item to remove</param>
+	/// <param name="preserveOrder">If false, can perform a much faster remove operation at the expense of order not being preserved.</param>
+	public bool Remove(T item, bool preserveOrder = true)
 	{
 
 		if (Buffer == null)
@@ -184,7 +189,7 @@ public class SRList<T> : IList<T>, ISerializationCallbackReceiver
 		if (index < 0)
 			return false;
 
-		RemoveAt(index);
+		RemoveAt(index, preserveOrder);
 
 		return true;
 
@@ -201,9 +206,14 @@ public class SRList<T> : IList<T>, ISerializationCallbackReceiver
 		if (Buffer == null)
 			return -1;
 
-		for (int i = 0; i < Count; ++i) {
-			if (EqualityComparer.Equals(Buffer[i], item))
+		for (var i = 0; i < Count; ++i) {
+
+			if (EqualityComparer.Equals(Buffer[i], item)) {
+
 				return i;
+
+			}
+
 		}
 
 		return -1;
@@ -213,26 +223,59 @@ public class SRList<T> : IList<T>, ISerializationCallbackReceiver
 	public void Insert(int index, T item)
 	{
 
-		if (Buffer == null || Count == Buffer.Length)
+		if (Buffer == null || Count == Buffer.Length) {
 			Expand();
+		}
 
 		if (index < Count) {
-			for (int i = Count; i > index; --i)
+
+			for (int i = Count; i > index; --i) {
 				Buffer[i] = Buffer[i - 1];
+			}
+
 			Buffer[index] = item;
+
 			++Count;
-		} else
+
+		} else {
+
 			Add(item);
+
+		}
+
 	}
 
-	public void RemoveAt(int index)
+	/// <summary>
+	/// Remove the element at index
+	/// </summary>
+	/// <param name="index">Index to remove</param>
+	/// <param name="preserveOrder">If false, can perform a much faster remove operation at the expense of order not being preserved.</param>
+	public void RemoveAt(int index, bool preserveOrder = true)
 	{
+
+		if(index >= Count || index < 0)
+			throw new IndexOutOfRangeException();
+
+		if (!preserveOrder) {
+
+			// Copy last element to the element index being removed
+			Buffer[index] = Buffer[Count - 1];
+			Count--;
+
+			return;
+
+		}
+
 		if (Buffer != null && index < Count) {
-			--Count;
+
+			Count--;
+
 			Buffer[index] = default(T);
-			for (int b = index; b < Count; ++b)
+
+			for (var b = index; b < Count; ++b)
 				Buffer[b] = Buffer[b + 1];
 		}
+
 	}
 
 	public T this[int index]
@@ -258,7 +301,7 @@ public class SRList<T> : IList<T>, ISerializationCallbackReceiver
 	}
 
 	/// <summary>
-	///     Helper function that expands the size of the array, maintaining the content.
+	/// Helper function that expands the size of the array, maintaining the content.
 	/// </summary>
 	private void Expand()
 	{
@@ -271,8 +314,8 @@ public class SRList<T> : IList<T>, ISerializationCallbackReceiver
 	}
 
 	/// <summary>
-	///     Trim the unnecessary memory, resizing the buffer to be of 'Length' size.
-	///     Call this function only if you are sure that the buffer won't need to resize anytime soon.
+	/// Trim the unnecessary memory, resizing the buffer to be of 'Length' size.
+	/// Call this function only if you are sure that the buffer won't need to resize anytime soon.
 	/// </summary>
 	public void Trim()
 	{
@@ -284,7 +327,7 @@ public class SRList<T> : IList<T>, ISerializationCallbackReceiver
 
 			var newList = new T[Count];
 
-			for (int i = 0; i < Count; ++i)
+			for (var i = 0; i < Count; ++i)
 				newList[i] = Buffer[i];
 
 			Buffer = newList;
@@ -303,14 +346,14 @@ public class SRList<T> : IList<T>, ISerializationCallbackReceiver
 	/// </summary>
 	public void Sort(System.Comparison<T> comparer)
 	{
-		bool changed = true;
+		var changed = true;
 
 		while (changed) {
 			changed = false;
 
-			for (int i = 1; i < Count; ++i) {
+			for (var i = 1; i < Count; ++i) {
 				if (comparer.Invoke(Buffer[i - 1], Buffer[i]) > 0) {
-					T temp = Buffer[i];
+					var temp = Buffer[i];
 					Buffer[i] = Buffer[i - 1];
 					Buffer[i - 1] = temp;
 					changed = true;
@@ -330,6 +373,16 @@ public class SRList<T> : IList<T>, ISerializationCallbackReceiver
 	public void OnAfterDeserialize()
 	{
 		Debug.Log("[OnAfterDeserialize] Count: {0}".Fmt(_count));
+	}
+
+	void IList<T>.RemoveAt(int index)
+	{
+		RemoveAt(index, true);
+	}
+
+	bool ICollection<T>.Remove(T item)
+	{
+		return Remove(item, true);
 	}
 
 }
