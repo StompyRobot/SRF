@@ -57,6 +57,11 @@ namespace SRF.UI.Layout
 		/// </summary>
 		public float Spacing;
 
+		/// <summary>
+		/// If true, the scroll view will stick to the last element when fully scrolled to the bottom and an item is added
+		/// </summary>
+		public bool StickToBottom = true;
+
 		[SerializeField]
 		private SelectedItemChangedEvent _selectedItemChanged;
 
@@ -327,48 +332,64 @@ namespace SRF.UI.Layout
 			if (!Application.isPlaying)
 				return;
 
+			//Debug.Log("[SRConsole] ScrollUpdate {0}".Fmt(Time.frameCount));
+
 			var pos = rectTransform.anchoredPosition;
 			var startY = pos.y;
+
+			var viewHeight = ((RectTransform)ScrollRect.transform).rect.height;
+
+			// Determine the range of rows that should be visible
+			var rowRangeLower = Mathf.FloorToInt(startY/(ItemHeight + Spacing));
+			var rowRangeHigher = Mathf.CeilToInt((startY + viewHeight)/(ItemHeight + Spacing));
+
+			// Apply padding to reduce pop-in
+			rowRangeLower -= RowPadding;
+			rowRangeHigher += RowPadding;
+
+			rowRangeLower = Mathf.Max(0, rowRangeLower);
+			rowRangeHigher = Mathf.Min(_itemList.Count, rowRangeHigher);
 
 			var isDirty = false;
 
 #if PROFILE
-			Profiler.BeginSample("Item Visible Check");
+			Profiler.BeginSample("Visible Rows Cull");
 #endif
 
-			// Find items which should be visible but aren't
-			for (var i = 0; i < _itemList.Count; i++) {
+			for (var i = 0; i < _visibleRows.Count; i++) {
 
-				if (IsVisible(i, startY) && !_visibleItemList.Contains(i)) {
+				var row = _visibleRows[i];
 
-					var row = GetRow(i);
-					_visibleRows.Add(row);
-					_visibleItemList.Add(i);
-					isDirty = true;
+				// Move on if row is still visible
+				if(row.Index >= rowRangeLower && row.Index <= rowRangeHigher)
+					continue;
 
-				}
+				_visibleItemList.Remove(row.Index);
+				_visibleRows.Remove(row);
+				RecycleRow(row);
+				isDirty = true;
 
 			}
 
 #if PROFILE
 			Profiler.EndSample();
-
-			Profiler.BeginSample("Visible Rows Cull");
+			Profiler.BeginSample("Item Visible Check");
 #endif
 
-			// Find items which are visible but shouldn't be
-			for (var i = _visibleRows.Count - 1; i >= 0; i--) {
+			for (var i = rowRangeLower; i < rowRangeHigher; ++i) {
 
-				var row = _visibleRows[i];
+				if (i >= _itemList.Count)
+					break;
 
-				if (!IsVisible(row.Index, startY)) {
+				// Move on if row is already visible
+				if (_visibleItemList.Contains(i))
+					continue;
 
-					_visibleItemList.Remove(row.Index);
-					_visibleRows.Remove(row);
-					RecycleRow(row);
-					isDirty = true;
+				var row = GetRow(i);
+				_visibleRows.Add(row);
+				_visibleItemList.Add(i);
+				isDirty = true;
 
-				}
 			}
 
 #if PROFILE
@@ -376,28 +397,12 @@ namespace SRF.UI.Layout
 #endif
 
 			// If something visible has explicitly been changed, or the visible row count has changed
-			if (isDirty || _visibleItemCount != _visibleRows.Count)
+			if (isDirty || _visibleItemCount != _visibleRows.Count) {
+				//Debug.Log("[SRConsole] IsDirty {0}".Fmt(Time.frameCount));
 				LayoutRebuilder.MarkLayoutForRebuild(rectTransform);
-
-			_visibleItemCount = _visibleRows.Count;
-
-		}
-
-		private bool IsVisible(int index, float yPos)
-		{
-
-			var rowStartY = ItemHeight * index + Spacing * index;
-			var viewHeight = ((RectTransform)ScrollRect.transform).rect.height;
-
-			var distanceFromViewTop = rowStartY - yPos;
-
-			var pad = ItemHeight * RowPadding;
-
-			if (distanceFromViewTop > -pad && distanceFromViewTop < viewHeight + pad) {
-				return true;
 			}
 
-			return false;
+			_visibleItemCount = _visibleRows.Count;
 
 		}
 
@@ -438,6 +443,8 @@ namespace SRF.UI.Layout
 
 			if (!Application.isPlaying)
 				return;
+
+			//Debug.Log("[SRConsole] SetLayoutVertical {0}".Fmt(Time.frameCount));
 
 			// Position visible rows by the index of the item they represent
 			for (var i = 0; i < _visibleRows.Count; i++) {
@@ -625,8 +632,16 @@ namespace SRF.UI.Layout
 
 				case CanvasUpdate.PostLayout:
 
-					ScrollRect.normalizedPosition = _normalisedPosition;
-					ScrollRect.velocity = _velocity;
+					if (StickToBottom && _normalisedPosition.y <= 0.01f) {
+
+						ScrollRect.normalizedPosition = _normalisedPosition;
+
+					} else {
+
+						ScrollRect.velocity = _velocity;
+
+					}
+
 					break;
 
 			}
