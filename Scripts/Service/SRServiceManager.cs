@@ -13,9 +13,9 @@ namespace SRF.Service
 	{
 
 #if DEBUG
-		public static bool EnableLogging = true;
+		public const bool EnableLogging = true;
 #else
-		public static bool EnableLogging = false;
+		public const bool EnableLogging = false;
 #endif
 
 		/// <summary>
@@ -30,7 +30,7 @@ namespace SRF.Service
 
 			var s = GetServiceInternal(typeof(T)) as T;
 
-			if(s == null)
+			if(s == null && (!_hasQuit || EnableLogging))
 				Debug.LogWarning("Service {0} not found. (HasQuit: {1})".Fmt(typeof(T).Name, _hasQuit));
 
 			return s;
@@ -42,7 +42,7 @@ namespace SRF.Service
 
 			var s = GetServiceInternal(t);
 
-			if(s == null)
+			if (s == null && (!_hasQuit || EnableLogging)) 
 				Debug.LogWarning("Service {0} not found. (HasQuit: {1})".Fmt(t.Name, _hasQuit));
 
 			return s;
