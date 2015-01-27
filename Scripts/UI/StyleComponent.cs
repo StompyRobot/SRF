@@ -34,11 +34,21 @@ namespace SRF.UI
 		private Image _image;
 
 		private StyleRoot _cachedRoot;
+		private bool _hasStarted;
 
 		private void Start()
 		{
 
 			Refresh(true);
+			_hasStarted = true;
+
+		}
+
+		private void OnEnable()
+		{
+
+			if(_hasStarted)
+				Refresh(false);
 
 		}
 
@@ -168,7 +178,16 @@ namespace SRF.UI
 
 		private void SRStyleDirty()
 		{
+
+			// If inactive, invalidate the cached root and return. Next time it is enabled
+			// a new root will be found
+			if (!CachedGameObject.activeInHierarchy) {
+				_cachedRoot = null;
+				return;
+			}
+
 			Refresh(true);
+
 		}
 
 	}
