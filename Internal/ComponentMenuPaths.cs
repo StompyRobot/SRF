@@ -51,16 +51,17 @@ namespace SRF.Internal
 
 		public const string UIRoot = PathRoot + "/UI";
 
-		public const string TiltOnTouch = ComponentsRoot + "/Tilt On Touch";
-		public const string ScaleOnTouch = ComponentsRoot + "/Scale On Touch";
-		public const string InheritColour = ComponentsRoot + "/Inherit Colour";
-		public const string FlashGraphic = ComponentsRoot + "/Flash Graphic";
-		public const string CopyPreferredSize = ComponentsRoot + "/Copy Preferred Size";
-		public const string SRText = ComponentsRoot + "/SRText";
-		public const string Unselectable = ComponentsRoot + "/Unselectable";
+		public const string TiltOnTouch = UIRoot + "/Tilt On Touch";
+		public const string ScaleOnTouch = UIRoot + "/Scale On Touch";
+		public const string InheritColour = UIRoot + "/Inherit Colour";
+		public const string FlashGraphic = UIRoot + "/Flash Graphic";
+		public const string CopyPreferredSize = UIRoot + "/Copy Preferred Size";
+		public const string SRText = UIRoot + "/SRText";
+		public const string Unselectable = UIRoot + "/Unselectable";
+		public const string LongPressButton = UIRoot + "/Long Press Button";
 
-		public const string FlowLayoutGroup = UIRoot + "Layout/Flow Layout Group";
-		public const string VirtualVerticalLayoutGroup = UIRoot + "Layout/VerticalLayoutGroup (Virtualizing)";
+		public const string FlowLayoutGroup = UIRoot + "/Layout/Flow Layout Group";
+		public const string VirtualVerticalLayoutGroup = UIRoot + "/Layout/VerticalLayoutGroup (Virtualizing)";
 
 		#endregion
 
