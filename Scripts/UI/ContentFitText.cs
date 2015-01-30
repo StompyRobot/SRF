@@ -1,6 +1,7 @@
 ﻿#if ENABLE_4_6_FEATURES
 
 using System;
+using SRF.Internal;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -10,6 +11,7 @@ namespace SRF.UI
 
 	[RequireComponent(typeof(RectTransform))]
 	[ExecuteInEditMode]
+	[AddComponentMenu(ComponentMenuPaths.ContentFitText)]
 	public class ContentFitText : UIBehaviour, ILayoutElement
 	{
 

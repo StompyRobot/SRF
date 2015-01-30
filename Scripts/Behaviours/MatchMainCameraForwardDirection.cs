@@ -1,7 +1,10 @@
-﻿using UnityEngine;
+﻿using SRF.Internal;
+using UnityEngine;
 
-namespace Scripts.Visual
+namespace SRF.Behaviours
 {
+
+	[AddComponentMenu(ComponentMenuPaths.MatchMainCameraForwardDirection)]
 	public class MatchMainCameraForwardDirection : SRMonoBehaviour
 	{
 
@@ -12,7 +15,7 @@ namespace Scripts.Visual
 		void Start()
 		{
 
-			_target = Camera.main.transform;
+			_target = UnityEngine.Camera.main.transform;
 
 		}
 
@@ -20,7 +23,7 @@ namespace Scripts.Visual
 		{
 
 			if (CheckEveryFrame)
-				_target = Camera.main.transform;
+				_target = UnityEngine.Camera.main.transform;
 
 			CachedTransform.forward = _target.forward;
 

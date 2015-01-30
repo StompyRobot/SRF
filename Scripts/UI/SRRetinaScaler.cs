@@ -2,6 +2,7 @@
 
 using UnityEngine;
 using System.Collections;
+using SRF.Internal;
 using UnityEngine.UI;
 
 namespace SRF.UI
@@ -12,6 +13,7 @@ namespace SRF.UI
 	/// a "retina" level display, and scales the canvas accordingly.
 	/// </summary>
 	[RequireComponent(typeof(CanvasScaler))]
+	[AddComponentMenu(ComponentMenuPaths.RetinaScaler)]
 	public class SRRetinaScaler : SRMonoBehaviour
 	{
 

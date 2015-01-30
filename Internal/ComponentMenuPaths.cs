@@ -19,14 +19,18 @@ namespace SRF.Internal
 		public const string MatchTransform = BehavioursRoot + "/Match Transform";
 		public const string LookAt = BehavioursRoot + "/LookAt";
 		public const string MatchForwardDirection = BehavioursRoot + "/Match Forward Direction";
+		public const string MatchMainCameraForwardDirection = BehavioursRoot + "/Match Forward Direction (Main Camera)";
 
 		public const string RuntimePosition = BehavioursRoot + "/Runtime Position";
 		public const string ScrollTexture = BehavioursRoot + "/Scroll Texture";
 		public const string SmoothFloatBehaviour = BehavioursRoot + "/Smooth Float";
 		public const string SmoothFollow2D = BehavioursRoot + "/Smooth Follow (2D)";
+		public const string SpringFollow = BehavioursRoot + "/Spring Follow";
 		public const string SmoothMatchTransform = BehavioursRoot + "/Match Transform (Smooth)";
 		public const string SpawnPrefab = BehavioursRoot + "/Spawn Prefab";
 		public const string Velocity = BehavioursRoot + "/Velocity";
+
+		public const string SmoothOscillate = BehavioursRoot + "/Smooth Oscillate";
 
 		public const string SRDebugCamera = BehavioursRoot + "/Camera/SRDebugCamera";
 
@@ -62,6 +66,17 @@ namespace SRF.Internal
 
 		public const string FlowLayoutGroup = UIRoot + "/Layout/Flow Layout Group";
 		public const string VirtualVerticalLayoutGroup = UIRoot + "/Layout/VerticalLayoutGroup (Virtualizing)";
+
+		public const string StyleRoot = UIRoot + "/Style Root";
+		public const string StyleComponent = UIRoot + "/Style Component";
+
+		public const string ResponsiveEnable = UIRoot + "/Responsive (Enable)";
+		public const string ResponsiveResize = UIRoot + "/Responsive (Resize)";
+
+		public const string RetinaScaler = UIRoot + "/Retina Scaler";
+		public const string NumberButton = UIRoot + "/SRNumberButton";
+		public const string NumberSpinner = UIRoot + "/SRNumberSpinner";
+		public const string ContentFitText = UIRoot + "/Content Fit Text";
 
 		#endregion
 

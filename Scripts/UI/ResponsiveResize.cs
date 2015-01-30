@@ -1,5 +1,6 @@
 ﻿#if ENABLE_4_6_FEATURES
 using System;
+using SRF.Internal;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,6 +9,7 @@ namespace SRF.UI
 
 	[ExecuteInEditMode]
 	[RequireComponent(typeof(RectTransform))]
+	[AddComponentMenu(ComponentMenuPaths.ResponsiveEnable)]
 	public class ResponsiveResize : ResponsiveBase
 	{
 

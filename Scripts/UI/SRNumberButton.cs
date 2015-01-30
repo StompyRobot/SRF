@@ -1,11 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
+using SRF.Internal;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace SRF.UI
 {
 
+	[AddComponentMenu(ComponentMenuPaths.NumberButton)]
 	public class SRNumberButton : Button, IPointerClickHandler, IPointerDownHandler, IPointerUpHandler
 	{
 

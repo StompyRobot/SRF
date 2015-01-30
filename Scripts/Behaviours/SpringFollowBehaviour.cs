@@ -1,7 +1,10 @@
-﻿using UnityEngine;
+﻿using SRF.Internal;
+using UnityEngine;
 
 namespace SRF.Behaviours
 {
+
+	[AddComponentMenu(ComponentMenuPaths.SpringFollow)]
 	public class SpringFollowBehaviour : SRMonoBehaviourEx
 	{
 

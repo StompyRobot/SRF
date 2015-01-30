@@ -1,24 +1,31 @@
 ﻿using UnityEngine;
 using System.Collections;
+using SRF.Internal;
 
-/// <summary>
-/// Rotate transform of attached object so the forward direction vectors of both objects match
-/// </summary>
-public class MatchForwardDirection : SRMonoBehaviour
+namespace SRF.Behaviours
 {
 
-	public Transform Target;
-
-	protected virtual void Start()
+	/// <summary>
+	/// Rotate transform of attached object so the forward direction vectors of both objects match
+	/// </summary>
+	[AddComponentMenu(ComponentMenuPaths.MatchForwardDirection)]
+	public class MatchForwardDirection : SRMonoBehaviour
 	{
 
-		AssertNotNull(Target, "Target");
+		public Transform Target;
 
-	}
+		protected virtual void Start()
+		{
 
-	void Update()
-	{
-		CachedTransform.forward = Target.forward;
+			AssertNotNull(Target, "Target");
+
+		}
+
+		private void Update()
+		{
+			CachedTransform.forward = Target.forward;
+		}
+
 	}
 
 }

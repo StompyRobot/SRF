@@ -1,7 +1,9 @@
-﻿using UnityEngine;
+﻿using SRF.Internal;
+using UnityEngine;
 
 namespace SRF.Behaviours
 {
+	[AddComponentMenu(ComponentMenuPaths.SmoothOscillate)]
 	public class SmoothOscillateBehaviour : SRMonoBehaviour
 	{
 

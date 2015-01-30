@@ -1,11 +1,13 @@
 ﻿#if ENABLE_4_6_FEATURES
 
+using SRF.Internal;
 using UnityEngine;
 
 namespace SRF.UI
 {
 
 	[ExecuteInEditMode]
+	[AddComponentMenu(ComponentMenuPaths.StyleRoot)]
 	public sealed class StyleRoot : SRMonoBehaviour
 	{
 
