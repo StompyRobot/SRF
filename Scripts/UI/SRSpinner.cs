@@ -46,8 +46,6 @@ namespace SRF.UI
 		public void OnDrag(PointerEventData eventData)
 		{
 
-			Debug.Log(_dragDelta);
-
 			_dragDelta += eventData.delta.x;
 
 			if (Mathf.Abs(_dragDelta) > DragThreshold) {
