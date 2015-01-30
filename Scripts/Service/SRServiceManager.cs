@@ -5,6 +5,9 @@ using System.Reflection;
 using SRF.Components;
 using UnityEngine;
 
+// Disable unreachable code warning caused by DEBUG
+#pragma warning disable 0162
+
 namespace SRF.Service
 {
 
