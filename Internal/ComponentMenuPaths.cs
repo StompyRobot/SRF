@@ -76,6 +76,7 @@ namespace SRF.Internal
 		public const string RetinaScaler = UIRoot + "/Retina Scaler";
 		public const string NumberButton = UIRoot + "/SRNumberButton";
 		public const string NumberSpinner = UIRoot + "/SRNumberSpinner";
+		public const string SRSpinner = UIRoot + "/Spinner";
 		public const string ContentFitText = UIRoot + "/Content Fit Text";
 
 		#endregion
