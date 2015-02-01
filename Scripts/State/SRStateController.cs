@@ -66,8 +66,6 @@ namespace SRF.State
 		}
 
 		private TState _state;
-		private TState _prevState;
-		private TTrigger _prevTrigger;
 
 		private InternalStateMachine _stateMachine;
 		private float _transTime;
@@ -99,14 +97,18 @@ namespace SRF.State
 			_stateMachine.OnTransitioned(OnStateMachineTransitioned);
 
 			Configure();
+
 		}
 
 		private void OnStateMachineTransitioned(InternalStateMachine.Transition transition)
 		{
 
 			_transTime = Time.realtimeSinceStartup;
+
+#if UNITY_EDITOR
 			_prevState = transition.Source;
 			_prevTrigger = transition.Trigger;
+#endif
 
 			if (_eventListeners != null && _eventListeners.Count > 0) {
 				for (var i = 0; i < _eventListeners.Count; ++i) {
@@ -137,6 +139,9 @@ namespace SRF.State
 #if UNITY_EDITOR
 
 		private static string _nameCache;
+
+		private TState _prevState;
+		private TTrigger _prevTrigger;
 
 		protected virtual void OnGUI()
 		{
