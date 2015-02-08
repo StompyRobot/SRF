@@ -1,5 +1,6 @@
 ﻿#if ENABLE_4_6_FEATURES
 using System.Collections.Generic;
+using SRF.Internal;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,7 +10,7 @@ namespace SRF.UI.Layout
 	/// <summary>
 	/// Layout Group controller that arranges children in rows, fitting as many on a line until total width exceeds parent bounds
 	/// </summary>
-	[AddComponentMenu(Internal.ComponentMenuPaths.FlowLayoutGroup)]
+	[AddComponentMenu(ComponentMenuPaths.FlowLayoutGroup)]
 	public class FlowLayoutGroup : LayoutGroup
 	{
 
@@ -17,6 +18,8 @@ namespace SRF.UI.Layout
 
 		public bool ChildForceExpandWidth = false;
 		public bool ChildForceExpandHeight = false;
+
+		private float _layoutHeight;
 
 		public override void CalculateLayoutInputHorizontal()
 		{
@@ -41,7 +44,7 @@ namespace SRF.UI.Layout
 
 		public override void CalculateLayoutInputVertical()
 		{
-			SetLayout(rectTransform.rect.width, 1, true);
+			_layoutHeight = SetLayout(rectTransform.rect.width, 1, true);
 		}
 
 		protected bool IsCenterAlign
@@ -83,7 +86,7 @@ namespace SRF.UI.Layout
 		/// <summary>
 		/// Holds the rects that will make up the current row being processed
 		/// </summary>
-		private readonly SRList<RectTransform> _rowList = new SRList<RectTransform>(); 
+		private readonly IList<RectTransform> _rowList = new List<RectTransform>(); 
 
 		/// <summary>
 		/// Main layout method
@@ -94,19 +97,23 @@ namespace SRF.UI.Layout
 		public float SetLayout(float width, int axis, bool layoutInput)
 		{
 
+			var groupHeight = rectTransform.rect.height;
+
 			// Width that is available after padding is subtracted
 			var workingWidth = rectTransform.rect.width - padding.left - padding.right;
 
 			// Accumulates the total height of the rows, including spacing and padding.
-			var totalHeight = (float)padding.top;
+			var yOffset = IsLowerAlign ? (float)padding.bottom : (float)padding.top;
 
 			var currentRowWidth = 0f;
-			var currentRow = 0;
 			var currentRowHeight = 0f;
 
 			for (var i = 0; i < rectChildren.Count; i++) {
 
-				var child = rectChildren[i];
+				// LowerAlign works from back to front
+				var index = IsLowerAlign ? rectChildren.Count - 1 - i : i;
+
+				var child = rectChildren[index];
 
 				var childWidth = LayoutUtility.GetPreferredSize(child, 0);
 				var childHeight = LayoutUtility.GetPreferredSize(child, 1);
@@ -123,19 +130,17 @@ namespace SRF.UI.Layout
 					// Process current row elements positioning
 					if (!layoutInput) {
 
-						LayoutRow(_rowList, currentRowWidth, currentRowHeight, workingWidth, padding.left, totalHeight, axis);
+						var h = CalculateRowVerticalOffset(groupHeight, yOffset, currentRowHeight);
+						LayoutRow(_rowList, currentRowWidth, currentRowHeight, workingWidth, padding.left, h, axis);
 
 					}
-				
+
 					// Clear existing row
 					_rowList.Clear();
 
-					// Increment row count
-					currentRow++;
-
 					// Add the current row height to total height accumulator, and reset to 0 for the next row
-					totalHeight += currentRowHeight;
-					totalHeight += Spacing;
+					yOffset += currentRowHeight;
+					yOffset += Spacing;
 
 					currentRowHeight = 0;
 					currentRowWidth = 0;
@@ -156,25 +161,43 @@ namespace SRF.UI.Layout
 
 			if (!layoutInput) {
 
+				var h = CalculateRowVerticalOffset(groupHeight, yOffset, currentRowHeight);
+
 				// Layout the final row
-				LayoutRow(_rowList, currentRowWidth, currentRowHeight, workingWidth, padding.left, totalHeight, axis);
+				LayoutRow(_rowList, currentRowWidth, currentRowHeight, workingWidth, padding.left, h, axis);
 
 			}
 
 			_rowList.Clear();
 
 			// Add the last rows height to the height accumulator
-			totalHeight += currentRowHeight;
-			totalHeight += padding.bottom;
+			yOffset += currentRowHeight;
+			yOffset += IsLowerAlign ? padding.top : padding.bottom;
 
 			if (layoutInput) {
 
 				if(axis == 1)
-					SetLayoutInputForAxis(totalHeight, totalHeight, -1, axis);
+					SetLayoutInputForAxis(yOffset, yOffset, -1, axis);
 
 			}
 
-			return totalHeight;
+			return yOffset;
+
+		}
+
+		private float CalculateRowVerticalOffset(float groupHeight, float yOffset, float currentRowHeight)
+		{
+
+			float h;
+
+			if (IsLowerAlign) {
+				h = groupHeight - yOffset - currentRowHeight;
+			} else if (IsMiddleAlign) {
+				h = groupHeight*0.5f - _layoutHeight * 0.5f + yOffset;
+			} else {
+				h = yOffset;
+			}
+			return h;
 
 		}
 
@@ -183,9 +206,9 @@ namespace SRF.UI.Layout
 
 			var xPos = xOffset;
 
-			if (IsCenterAlign)
+			if (!ChildForceExpandWidth && IsCenterAlign)
 				xPos += (maxWidth - rowWidth) * 0.5f;
-			else if (IsRightAlign)
+			else if (!ChildForceExpandWidth && IsRightAlign)
 				xPos += (maxWidth - rowWidth);
 
 			var extraWidth = 0f;
@@ -196,7 +219,9 @@ namespace SRF.UI.Layout
 
 			for (var j = 0; j < _rowList.Count; j++) {
 
-				var rowChild = _rowList[j];
+				var index = IsLowerAlign ? _rowList.Count - 1 - j : j;
+
+				var rowChild = _rowList[index];
 
 				var rowChildWidth = LayoutUtility.GetPreferredSize(rowChild, 0) + extraWidth;
 				var rowChildHeight = LayoutUtility.GetPreferredSize(rowChild, 1);
