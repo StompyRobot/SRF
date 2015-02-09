@@ -63,10 +63,10 @@ namespace SRF.Components
 		void Update()
 		{
 
-			if (!UseFixedUpdate && RealTime.time > _nextUpdate) {
+			if (!UseFixedUpdate && Time.realtimeSinceStartup > _nextUpdate) {
 
 				InternalPerformScan();
-				_nextUpdate = RealTime.time + UpdateFrequency;
+				_nextUpdate = Time.realtimeSinceStartup + UpdateFrequency;
 
 			} else {
 
@@ -156,7 +156,7 @@ namespace SRF.Components
 
 			_nearUnits.Sort((p, q) => p.Distance.CompareTo(q.Distance));
 
-			if (RealTime.time > NextCacheCheck) {
+			if (Time.realtimeSinceStartup > NextCacheCheck) {
 				CleanCache();
 			}
 
@@ -169,7 +169,7 @@ namespace SRF.Components
 
 			// TODO: Iterate Dictionary and remove null elements instead of just clearing
 			Cache.Clear();
-			NextCacheCheck = RealTime.time + CacheCheckFrequency;
+			NextCacheCheck = Time.realtimeSinceStartup + CacheCheckFrequency;
 
 		}
 

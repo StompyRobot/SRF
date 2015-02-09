@@ -32,7 +32,7 @@ namespace SRF.Behaviours
 		protected void Update()
 		{
 
-			_time += (IgnoreTimeScale ? RealTime.deltaTime : Time.deltaTime) * Speed;
+			_time += (IgnoreTimeScale ? Time.unscaledDeltaTime : Time.deltaTime) * Speed;
 
 			CachedTransform.localPosition = _defaultLocalPosition +
 			                                Intensity*Mathf.Sin(_time);

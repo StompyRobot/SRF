@@ -33,7 +33,7 @@ namespace SRF.Behaviours
 			else
 				m = _renderer.materials[Material];
 
-			var dt = IgnoreTimeScale ? RealTime.time : Time.time;
+			var dt = IgnoreTimeScale ? Time.realtimeSinceStartup : Time.time;
 
 			m.SetTextureOffset(TextureName, ScrollSpeed*dt);
 

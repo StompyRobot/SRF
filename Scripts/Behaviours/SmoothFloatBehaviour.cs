@@ -41,7 +41,7 @@ namespace SRF.Behaviours
 		private void Update()
 		{
 
-			var t = IgnoreTimeScale ? RealTime.deltaTime : Time.deltaTime;
+			var t = IgnoreTimeScale ? Time.unscaledDeltaTime : Time.deltaTime;
 
 			_time += t;
 

@@ -26,7 +26,7 @@ namespace SRF.Behaviours
 				TargetPosition = Target.position;
 
 			CachedTransform.position = Vector3.SmoothDamp(CachedTransform.position, TargetPosition, ref _currentVelocity, Time,
-				MaxSpeed, RealTime.deltaTime);
+				MaxSpeed, UnityEngine.Time.unscaledDeltaTime);
 
 		}
 

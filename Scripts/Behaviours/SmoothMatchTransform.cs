@@ -30,7 +30,7 @@ namespace SRF.Behaviours
 			if (Target == null)
 				return;
 
-			var dt = IgnoreTimeScale ? RealTime.deltaTime : Time.deltaTime;
+			var dt = IgnoreTimeScale ? Time.unscaledDeltaTime : Time.deltaTime;
 
 			if (MatchPosition)
 				CachedTransform.position = Vector3.SmoothDamp(CachedTransform.position, Target.position, ref _positionVelocity,
