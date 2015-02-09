@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if !UNITY_5
+
+using System;
 using System.Diagnostics;
 
 #pragma warning disable 1591
@@ -931,3 +933,5 @@ namespace JetBrains.Annotations
 	[Conditional("JETBRAINS_ANNOTATIONS")]
 	public sealed class NoReorder : Attribute { }
 }
+
+#endif
