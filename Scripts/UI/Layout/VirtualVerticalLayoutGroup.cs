@@ -194,7 +194,17 @@ namespace SRF.UI.Layout
 
 				if (_itemHeight <= 0) {
 
-					_itemHeight = LayoutUtility.GetPreferredSize(ItemPrefab, 1);
+					var layoutElement = ItemPrefab.GetComponent(typeof (ILayoutElement)) as ILayoutElement;
+
+					if (layoutElement != null) {
+
+						_itemHeight = layoutElement.preferredHeight;
+
+					} else {
+
+						_itemHeight = ItemPrefab.rect.height;
+
+					}
 
 					if (_itemHeight.ApproxZero()) {
 						Debug.LogWarning("[VirtualVerticalLayoutGroup] ItemPrefab must have a preferred size greater than 0");
