@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using UnityEngine;
+using Debug = System.Diagnostics.Debug;
 
 public static partial class SRMath
 {
@@ -70,7 +71,7 @@ public static partial class SRMath
 	public static void NearestPair(Vector3 p, out Vector3 o1, out Vector3 o2, params Vector3[] points)
 	{
 
-		System.Diagnostics.Debug.Assert(points.Length > 1);
+		Debug.Assert(points.Length > 1);
 
 		// Early out if only two points
 		if (points.Length == 2) {

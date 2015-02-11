@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using SRF.Components;
 using UnityEngine;
 
 namespace SRF
@@ -10,7 +9,7 @@ namespace SRF
 	public class Hierarchy
 	{
 
-		private static readonly char[] Seperator = new[] { '/' };
+		private static readonly char[] Seperator = { '/' };
 
 		private static readonly Dictionary<string, Transform> Cache = new Dictionary<string, Transform>();
 

@@ -1,7 +1,7 @@
 ﻿#if ENABLE_4_6_FEATURES
 
+using SRF.Internal;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace SRF.UI
@@ -13,7 +13,7 @@ namespace SRF.UI
 	/// </summary>
 	[RequireComponent(typeof(RectTransform))]
 	[ExecuteInEditMode]
-	[AddComponentMenu(Internal.ComponentMenuPaths.CopyPreferredSize)]
+	[AddComponentMenu(ComponentMenuPaths.CopyPreferredSize)]
 	public class CopyPreferredSize : LayoutElement
 	{
 

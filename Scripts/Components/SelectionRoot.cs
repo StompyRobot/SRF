@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using SRF.Internal;
+using UnityEngine;
 
 namespace SRF.Components
 {
@@ -8,7 +9,7 @@ namespace SRF.Components
 	/// (clicking on child elements will select this element instead)
 	/// </summary>
 	[SelectionBase]
-	[AddComponentMenu(Internal.ComponentMenuPaths.SelectionRoot)]
+	[AddComponentMenu(ComponentMenuPaths.SelectionRoot)]
 	public class SelectionRoot : MonoBehaviour
 	{
 

@@ -1,9 +1,10 @@
-﻿using UnityEngine;
+﻿using SRF.Internal;
+using UnityEngine;
 
 namespace SRF.Behaviours
 {
 
-	[AddComponentMenu(Internal.ComponentMenuPaths.LookAt)]
+	[AddComponentMenu(ComponentMenuPaths.LookAt)]
 	public class LookAt : SRMonoBehaviour
 	{
 

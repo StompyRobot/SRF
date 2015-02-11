@@ -1,12 +1,13 @@
 ﻿#if ENABLE_4_6_FEATURES
 
+using SRF.Internal;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace SRF.UI
 {
 
-	[AddComponentMenu(Internal.ComponentMenuPaths.TiltOnTouch)]
+	[AddComponentMenu(ComponentMenuPaths.TiltOnTouch)]
 	[RequireComponent(typeof(RectTransform))]
 	public class TiltOnTouch : SRMonoBehaviourEx, IPointerDownHandler, IPointerUpHandler, IPointerExitHandler, IDragHandler
 	{

@@ -1,5 +1,5 @@
 ﻿using System;
-
+using Stateless;
 
 namespace SRF.State
 {
@@ -9,7 +9,7 @@ namespace SRF.State
 
 		public abstract TStates State { get; }
 
-		public class StateMachine : Stateless.StateMachine<TStates, TTriggers>
+		public class StateMachine : StateMachine<TStates, TTriggers>
 		{
 
 			public StateMachine(Func<TStates> stateAccessor, Action<TStates> stateMutator) : base(stateAccessor, stateMutator) { }
@@ -39,17 +39,17 @@ namespace SRF.State
 		{
 		}
 
-		protected virtual void Setup(StateMachine.StateConfiguration configuration)
+		protected virtual void Setup(StateMachine<TStates, TTriggers>.StateConfiguration configuration)
 		{
 			configuration.OnEntry(OnEntry).OnExit(OnExit);
 		}
 
-		protected virtual void OnEntry(StateMachine.Transition transition)
+		protected virtual void OnEntry(StateMachine<TStates, TTriggers>.Transition transition)
 		{
 			enabled = true;
 		}
 
-		protected virtual void OnExit(StateMachine.Transition transition)
+		protected virtual void OnExit(StateMachine<TStates, TTriggers>.Transition transition)
 		{
 			enabled = false;
 		}

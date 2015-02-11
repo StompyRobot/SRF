@@ -4,8 +4,9 @@ using System.Linq;
 using System.Reflection;
 using SRF.Service;
 using UnityEngine;
+using Object = System.Object;
 
-[AttributeUsage(AttributeTargets.Class | AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Field)]
 public sealed class RequiredFieldAttribute : Attribute
 {
 
@@ -111,7 +112,7 @@ public abstract class SRMonoBehaviourEx : SRMonoBehaviour
 
 			var f = cache[i];
 
-			if (!EqualityComparer<System.Object>.Default.Equals(f.Field.GetValue(instance), null))
+			if (!EqualityComparer<Object>.Default.Equals(f.Field.GetValue(instance), null))
 				continue;
 
 			// If import is enabled, use SRServiceManager to import the reference
@@ -140,7 +141,7 @@ public abstract class SRMonoBehaviourEx : SRMonoBehaviour
 
 				var newValue = instance.GetComponent(f.Field.FieldType);
 
-				if (!EqualityComparer<System.Object>.Default.Equals(newValue, null)) {
+				if (!EqualityComparer<Object>.Default.Equals(newValue, null)) {
 					f.Field.SetValue(instance, newValue);
 					continue;
 				}

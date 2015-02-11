@@ -1,6 +1,5 @@
-﻿using UnityEngine;
-using System.Collections;
-using SRF.Internal;
+﻿using SRF.Internal;
+using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace SRF.UI

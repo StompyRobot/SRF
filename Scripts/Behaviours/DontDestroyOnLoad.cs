@@ -1,15 +1,16 @@
-﻿using UnityEngine;
+﻿using SRF.Internal;
+using UnityEngine;
 
 namespace SRF.Behaviours
 {
 
-	[AddComponentMenu(Internal.ComponentMenuPaths.DontDestroyOnLoad)]
+	[AddComponentMenu(ComponentMenuPaths.DontDestroyOnLoad)]
 	public class DontDestroyOnLoad : MonoBehaviour
 	{
 
 		void Awake()
 		{
-			DontDestroyOnLoad(this.gameObject);
+			DontDestroyOnLoad(gameObject);
 		}
 
 	}

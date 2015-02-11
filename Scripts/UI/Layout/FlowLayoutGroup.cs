@@ -103,7 +103,7 @@ namespace SRF.UI.Layout
 			var workingWidth = rectTransform.rect.width - padding.left - padding.right;
 
 			// Accumulates the total height of the rows, including spacing and padding.
-			var yOffset = IsLowerAlign ? (float)padding.bottom : (float)padding.top;
+			var yOffset = IsLowerAlign ? padding.bottom : (float)padding.top;
 
 			var currentRowWidth = 0f;
 			var currentRowHeight = 0f;

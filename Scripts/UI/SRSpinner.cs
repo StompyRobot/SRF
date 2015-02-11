@@ -1,10 +1,9 @@
 ﻿using System;
+using SRF.Internal;
 using UnityEngine;
-using System.Collections;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using SRF.Internal;
 
 namespace SRF.UI
 {

@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using SRF.Components;
+using SRF.Internal;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 // Disable unreachable code warning caused by DEBUG
 #pragma warning disable 0162
@@ -11,7 +13,7 @@ using UnityEngine;
 namespace SRF.Service
 {
 
-	[AddComponentMenu(Internal.ComponentMenuPaths.SRServiceManager)]
+	[AddComponentMenu(ComponentMenuPaths.SRServiceManager)]
 	public class SRServiceManager : SRAutoSingleton<SRServiceManager>
 	{
 
@@ -139,7 +141,7 @@ namespace SRF.Service
 				throw new ArgumentException("service {0} must be assignable from type {1}".Fmt(service.GetType(), t));
 			}
 
-			Instance._services.Add(new Service() {
+			Instance._services.Add(new Service {
 				Object = service,
 				Type = t
 			});
@@ -306,7 +308,7 @@ namespace SRF.Service
 					RegisterService(t, service);
 
 				if(EnableLogging)
-					Debug.Log("[SRServiceManager] Auto-created service: {0} ({1})".Fmt(stub.Type, stub.InterfaceType), service as UnityEngine.Object);
+					Debug.Log("[SRServiceManager] Auto-created service: {0} ({1})".Fmt(stub.Type, stub.InterfaceType), service as Object);
 
 				return service;
 			}
@@ -370,7 +372,7 @@ namespace SRF.Service
 
 				if (stub == null) {
 
-					stub = new ServiceStub() {
+					stub = new ServiceStub {
 						InterfaceType = attrib.ServiceType
 					};
 
@@ -410,7 +412,7 @@ namespace SRF.Service
 
 				if (stub == null) {
 
-					stub = new ServiceStub() {
+					stub = new ServiceStub {
 						InterfaceType = attrib.ServiceType
 					};
 

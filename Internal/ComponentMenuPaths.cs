@@ -1,7 +1,4 @@
-﻿using UnityEngine;
-using System.Collections;
-
-namespace SRF.Internal
+﻿namespace SRF.Internal
 {
 
 	internal static class ComponentMenuPaths

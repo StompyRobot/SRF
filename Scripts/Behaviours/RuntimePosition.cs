@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using SRF.Internal;
+using UnityEngine;
 
 namespace SRF.Behaviours
 {
@@ -7,7 +7,7 @@ namespace SRF.Behaviours
 	/// <summary>
 	/// Set localPosition as soon as this object is created. (Useful for setting up UI workspaces in editor)
 	/// </summary>
-	[AddComponentMenu(Internal.ComponentMenuPaths.RuntimePosition)]
+	[AddComponentMenu(ComponentMenuPaths.RuntimePosition)]
 	public class RuntimePosition : MonoBehaviour
 	{
 

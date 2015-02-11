@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
+using Object = System.Object;
 
 public static class SRDebugUtil
 {
@@ -16,7 +17,7 @@ public static class SRDebugUtil
 	public static void AssertNotNull(object value, string message = null, MonoBehaviour instance = null)
 	{ 
 
-		if (!EqualityComparer<System.Object>.Default.Equals(value, null))
+		if (!EqualityComparer<Object>.Default.Equals(value, null))
 			return;
 
 		message = message != null ? "NotNullAssert Failed: {0}".Fmt(message) : "Assert Failed";
@@ -74,8 +75,8 @@ public static class SRDebugUtil
 	private static Line[] _lineBuffer;
 	private static Line[] _fixedUpdateBuffer;
 
-	private static int _currentFrameLines = 0;
-	private static int _currentFixedFrameLines = 0;
+	private static int _currentFrameLines;
+	private static int _currentFixedFrameLines;
 	private static Material _m;
 
 	public static void DrawLine(Vector3 srcPos, Vector3 endPos, Color color)

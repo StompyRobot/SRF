@@ -1,8 +1,7 @@
 ﻿#if ENABLE_4_6_FEATURES
 
-using UnityEngine;
-using System.Collections;
 using SRF.Internal;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace SRF.UI

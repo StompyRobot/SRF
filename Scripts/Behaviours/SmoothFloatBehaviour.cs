@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using SRF.Internal;
+using UnityEngine;
 
 namespace SRF.Behaviours
 {
@@ -7,7 +7,7 @@ namespace SRF.Behaviours
 	/// <summary>
 	/// Smoothly floats the attached transform on the x and y axis based on a smoothing value.
 	/// </summary>
-	[AddComponentMenu(Internal.ComponentMenuPaths.SmoothFloatBehaviour)]
+	[AddComponentMenu(ComponentMenuPaths.SmoothFloatBehaviour)]
 	public class SmoothFloatBehaviour : SRMonoBehaviour
 	{
 

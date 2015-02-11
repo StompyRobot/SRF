@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using SRF.Internal;
+using UnityEngine;
 
 namespace SRF.Behaviours
 {
@@ -7,7 +7,7 @@ namespace SRF.Behaviours
 	/// <summary>
 	/// Smoothly interpolate position/rotation/scale to match another transform
 	/// </summary>
-	[AddComponentMenu(Internal.ComponentMenuPaths.SmoothMatchTransform)]
+	[AddComponentMenu(ComponentMenuPaths.SmoothMatchTransform)]
 	public class SmoothMatchTransform : SRMonoBehaviour
 	{
 

@@ -1,6 +1,5 @@
-﻿using UnityEngine;
-using System.Collections;
-using SRF.Internal;
+﻿using SRF.Internal;
+using UnityEngine;
 
 namespace SRF.Behaviours
 {

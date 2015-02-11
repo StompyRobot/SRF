@@ -1,5 +1,4 @@
-﻿using UnityEngine;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEditor.UI;
 
 namespace SRF.UI.Editor
@@ -15,7 +14,7 @@ namespace SRF.UI.Editor
 		protected override void OnEnable()
 		{
 			base.OnEnable();
-			this._onLongPressProperty = this.serializedObject.FindProperty("_onLongPress");
+			_onLongPressProperty = serializedObject.FindProperty("_onLongPress");
 		}
 
 
@@ -25,9 +24,9 @@ namespace SRF.UI.Editor
 			base.OnInspectorGUI();
 
 			EditorGUILayout.Space();
-			this.serializedObject.Update();
-			EditorGUILayout.PropertyField(this._onLongPressProperty);
-			this.serializedObject.ApplyModifiedProperties();
+			serializedObject.Update();
+			EditorGUILayout.PropertyField(_onLongPressProperty);
+			serializedObject.ApplyModifiedProperties();
 
 		}
 

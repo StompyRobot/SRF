@@ -1,5 +1,6 @@
 ﻿#if ENABLE_4_6_FEATURES
 
+using SRF.Internal;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,7 +9,7 @@ namespace SRF.UI
 
 	[RequireComponent(typeof(Graphic))]
 	[ExecuteInEditMode]
-	[AddComponentMenu(Internal.ComponentMenuPaths.InheritColour)]
+	[AddComponentMenu(ComponentMenuPaths.InheritColour)]
 	public class InheritColour : SRMonoBehaviour
 	{
 

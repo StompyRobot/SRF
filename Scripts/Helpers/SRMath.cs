@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Linq;
-using System.Runtime.Remoting.Metadata;
 using UnityEngine;
-using System.Collections;
 
 public static partial class SRMath
 {
@@ -76,19 +73,14 @@ public static partial class SRMath
 	/// <returns></returns>
 	public static float NearestAngle(float to, float angle1, float angle2)
 	{
-
 		if (Mathf.Abs(Mathf.DeltaAngle(to, angle1)) > Mathf.Abs(Mathf.DeltaAngle(to, angle2))) {
 
 			return angle2;
 
-		} else {
-
-			return angle1;
-
 		}
-
+		return angle1;
 	}
-	
+
 	/// <summary>
 	/// Wrap value to 0-max (non-inclusive)
 	/// </summary>

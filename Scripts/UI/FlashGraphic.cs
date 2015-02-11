@@ -1,5 +1,6 @@
 ﻿#if ENABLE_4_6_FEATURES
 
+using SRF.Internal;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -10,7 +11,7 @@ namespace SRF.UI
 	/// <summary>
 	/// Instantly sets colour to FlashColor on pointer down, then fades back to DefaultColour once pointer is released.
 	/// </summary>
-	[AddComponentMenu(Internal.ComponentMenuPaths.FlashGraphic)]
+	[AddComponentMenu(ComponentMenuPaths.FlashGraphic)]
 	[ExecuteInEditMode]
 	public class FlashGraphic : UIBehaviour, IPointerDownHandler, IPointerUpHandler
 	{

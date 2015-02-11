@@ -1,4 +1,4 @@
-﻿using System;
+﻿using SRF.Internal;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 namespace SRF.UI
 {
 
-	[AddComponentMenu(Internal.ComponentMenuPaths.ScaleOnTouch)]
+	[AddComponentMenu(ComponentMenuPaths.ScaleOnTouch)]
 	public class ScaleOnTouch : SRMonoBehaviourEx, IPointerDownHandler, IPointerUpHandler, IPointerExitHandler, IDragHandler
 	{
 

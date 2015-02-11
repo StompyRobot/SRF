@@ -301,7 +301,7 @@ public class SRList<T> : IList<T>, ISerializationCallbackReceiver
 	/// <summary>
 	/// List.Sort equivalent.
 	/// </summary>
-	public void Sort(System.Comparison<T> comparer)
+	public void Sort(Comparison<T> comparer)
 	{
 		bool changed = true;
 

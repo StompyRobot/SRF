@@ -1,5 +1,6 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using SRF.Internal;
+using UnityEngine;
+
 namespace SRF.Components
 {
 
@@ -7,7 +8,7 @@ namespace SRF.Components
 	/// Wraps a Unity LineRenderer component. Provides lookup capabilities, as the default
 	/// LineRenderer has no GetPosition method.
 	/// </summary>
-	[AddComponentMenu(Internal.ComponentMenuPaths.SRLineRenderer)]
+	[AddComponentMenu(ComponentMenuPaths.SRLineRenderer)]
 	[RequireComponent(typeof(LineRenderer))]
 	public class SRLineRenderer : MonoBehaviour
 	{

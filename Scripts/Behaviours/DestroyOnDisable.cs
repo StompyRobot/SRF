@@ -1,16 +1,16 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using SRF.Internal;
+using UnityEngine;
 
 namespace SRF.Behaviours
 {
 
-	[AddComponentMenu(Internal.ComponentMenuPaths.DestroyOnDisable)]
+	[AddComponentMenu(ComponentMenuPaths.DestroyOnDisable)]
 	public class DestroyOnDisable : MonoBehaviour
 	{
 
 		private void OnDisable()
 		{
-			Destroy(this.gameObject);
+			Destroy(gameObject);
 		}
 
 	}

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using SRF.Internal;
+using UnityEngine;
 
 namespace SRF.Behaviours
 {
@@ -6,7 +7,7 @@ namespace SRF.Behaviours
 	/// <summary>
 	/// Scrolls the material texture UVs
 	/// </summary>
-	[AddComponentMenu(Internal.ComponentMenuPaths.ScrollTexture)]
+	[AddComponentMenu(ComponentMenuPaths.ScrollTexture)]
 	public class ScrollTexture : MonoBehaviour
 	{
 

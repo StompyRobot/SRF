@@ -1,12 +1,12 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using SRF.Internal;
+using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace SRF.UI
 {
 
-	[AddComponentMenu(Internal.ComponentMenuPaths.LongPressButton)]
+	[AddComponentMenu(ComponentMenuPaths.LongPressButton)]
 	public class LongPressButton : Button
 	{
 
@@ -16,7 +16,7 @@ namespace SRF.UI
 		private bool _handled;
 		private float _pressedTime;
 
-		[SerializeField] private Button.ButtonClickedEvent _onLongPress = new ButtonClickedEvent();
+		[SerializeField] private ButtonClickedEvent _onLongPress = new ButtonClickedEvent();
 
 		public ButtonClickedEvent onLongPress
 		{

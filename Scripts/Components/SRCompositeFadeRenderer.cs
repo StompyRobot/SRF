@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using SRF.Internal;
+using UnityEngine;
 
 namespace SRF.Components
 {
@@ -8,7 +8,7 @@ namespace SRF.Components
 	/// Provides a single SRFadeRenderer interface, but will fade multiple renderers behind the scenes (useful for fading
 	/// a hierarchy)
 	/// </summary>
-	[AddComponentMenu(Internal.ComponentMenuPaths.SRCompositeFadeRenderer)]
+	[AddComponentMenu(ComponentMenuPaths.SRCompositeFadeRenderer)]
 	public class SRCompositeFadeRenderer : SRFadeRenderer
 	{
 

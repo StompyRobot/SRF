@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using SRF.Internal;
+using UnityEngine;
 
 namespace SRF.Behaviours
 {
@@ -6,7 +7,7 @@ namespace SRF.Behaviours
 	/// <summary>
 	/// Spawn a prefab and add it as a child to this object (useful for nesting prefabs)
 	/// </summary>
-	[AddComponentMenu(Internal.ComponentMenuPaths.SpawnPrefab)]
+	[AddComponentMenu(ComponentMenuPaths.SpawnPrefab)]
 	public class SpawnPrefab : SRMonoBehaviour
 	{
 

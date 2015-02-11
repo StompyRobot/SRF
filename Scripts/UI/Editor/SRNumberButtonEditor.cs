@@ -1,6 +1,5 @@
 ﻿#if ENABLE_4_6_FEATURES
 
-using UnityEngine;
 using UnityEditor;
 using UnityEditor.UI;
 
@@ -19,8 +18,8 @@ namespace SRF.UI.Editor
 		{
 
 			base.OnEnable();
-			this._targetFieldProperty = this.serializedObject.FindProperty("TargetField");
-			this._amountProperty = this.serializedObject.FindProperty("Amount");
+			_targetFieldProperty = serializedObject.FindProperty("TargetField");
+			_amountProperty = serializedObject.FindProperty("Amount");
 
 		}
 
@@ -31,10 +30,10 @@ namespace SRF.UI.Editor
 
 			EditorGUILayout.Space();
 
-			this.serializedObject.Update();
-			EditorGUILayout.PropertyField(this._targetFieldProperty);
-			EditorGUILayout.PropertyField(this._amountProperty);
-			this.serializedObject.ApplyModifiedProperties();
+			serializedObject.Update();
+			EditorGUILayout.PropertyField(_targetFieldProperty);
+			EditorGUILayout.PropertyField(_amountProperty);
+			serializedObject.ApplyModifiedProperties();
 
 		}
 

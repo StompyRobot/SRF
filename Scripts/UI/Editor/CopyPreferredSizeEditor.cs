@@ -1,8 +1,6 @@
 ﻿#if ENABLE_4_6_FEATURES
 
-using UnityEngine;
 using UnityEditor;
-using UnityEditor.UI;
 
 namespace SRF.UI.Editor
 {
@@ -20,9 +18,9 @@ namespace SRF.UI.Editor
 		protected void OnEnable()
 		{
 
-			this._paddingWidthProperty = this.serializedObject.FindProperty("PaddingWidth");
-			this._paddingHeightProperty = this.serializedObject.FindProperty("PaddingHeight");
-			this._copySourceProperty = this.serializedObject.FindProperty("CopySource");
+			_paddingWidthProperty = serializedObject.FindProperty("PaddingWidth");
+			_paddingHeightProperty = serializedObject.FindProperty("PaddingHeight");
+			_copySourceProperty = serializedObject.FindProperty("CopySource");
 
 		}
 
@@ -33,12 +31,12 @@ namespace SRF.UI.Editor
 
 			EditorGUILayout.Space();
 
-			EditorGUILayout.PropertyField(this._copySourceProperty);
-			EditorGUILayout.PropertyField(this._paddingWidthProperty);
-			EditorGUILayout.PropertyField(this._paddingHeightProperty);
-			this.serializedObject.ApplyModifiedProperties();
+			EditorGUILayout.PropertyField(_copySourceProperty);
+			EditorGUILayout.PropertyField(_paddingWidthProperty);
+			EditorGUILayout.PropertyField(_paddingHeightProperty);
+			serializedObject.ApplyModifiedProperties();
 
-			this.serializedObject.Update();
+			serializedObject.Update();
 
 		}
 

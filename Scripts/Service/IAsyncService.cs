@@ -1,7 +1,4 @@
-﻿using UnityEngine;
-using System.Collections;
-
-namespace SRF.Service
+﻿namespace SRF.Service
 {
 	public interface IAsyncService
 	{

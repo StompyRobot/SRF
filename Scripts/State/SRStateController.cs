@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Stateless;
 using UnityEngine;
 
 namespace SRF.State
@@ -8,7 +9,7 @@ namespace SRF.State
 	public abstract class SRStateController<TState, TTrigger> : SRMonoBehaviour, IHasStateMachine<TState, TTrigger>
 	{
 
-		protected class InternalStateMachine : Stateless.StateMachine<TState, TTrigger>
+		protected class InternalStateMachine : StateMachine<TState, TTrigger>
 		{
 
 			public InternalStateMachine(Func<TState> stateAccessor, Action<TState> stateMutator)
@@ -100,7 +101,7 @@ namespace SRF.State
 
 		}
 
-		private void OnStateMachineTransitioned(InternalStateMachine.Transition transition)
+		private void OnStateMachineTransitioned(StateMachine<TState, TTrigger>.Transition transition)
 		{
 
 			_transTime = Time.realtimeSinceStartup;

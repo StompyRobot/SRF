@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using SRF.Internal;
+using UnityEngine;
 
 namespace SRF.Behaviours
 {
@@ -7,7 +8,7 @@ namespace SRF.Behaviours
 	/// Match the target transform until it is destroyed.
 	/// </summary>
 	[ExecuteInEditMode]
-	[AddComponentMenu(Internal.ComponentMenuPaths.MatchTransform)]
+	[AddComponentMenu(ComponentMenuPaths.MatchTransform)]
 	public class MatchTransform : SRMonoBehaviour
 	{
 

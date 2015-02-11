@@ -1,9 +1,11 @@
 ﻿//#define ENABLE_LOGGING
+
 using System;
 using System.Collections;
 using System.Diagnostics;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
+using Object = UnityEngine.Object;
 
 namespace SRF.Service
 {
@@ -16,7 +18,7 @@ namespace SRF.Service
 	{
 
 		[Conditional("ENABLE_LOGGING")]
-		private void Log(string msg, UnityEngine.Object target)
+		private void Log(string msg, Object target)
 		{
 //#if ENABLE_LOGGING
 		Debug.Log(msg, target);

@@ -11,7 +11,7 @@ namespace SRF.Components
 	public abstract class SRAutoSingleton<T> : SRMonoBehaviour where T : SRAutoSingleton<T>
 	{
 
-		private static T _instance = null;
+		private static T _instance;
 
 		/// <summary>
 		/// Get (or create) the instance of this Singleton
