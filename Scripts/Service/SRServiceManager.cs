@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using SRF.Components;
+using SRF.Helpers;
 using SRF.Internal;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -201,11 +202,11 @@ namespace SRF.Service
 				var s = InterfaceType.Name + " (";
 
 				if (Type != null)
-					s += "Type: " + Type.Name;
+					s += "Type: " + Type;
 				else if (Selector != null)
-					s += "Selector: " + Selector.Method;
+					s += "Selector: " + Selector;
 				else if (Constructor != null)
-					s += "Constructor: " + Constructor.Method;
+					s += "Constructor: " + Constructor;
 
 				s += ")";
 
@@ -243,24 +244,16 @@ namespace SRF.Service
 			var types = new List<Type>();
 
 			foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies()) {
+#if NETFX_CORE
+				types.AddRange(assembly.ExportedTypes);
+#else
 				types.AddRange(assembly.GetExportedTypes());
+#endif
 			}
 
 			foreach (var type in types) {
 
-				var attrib = Attribute.GetCustomAttribute(type, typeof (ServiceAttribute)) as ServiceAttribute;
-
-				if (attrib != null) {
-
-					_serviceStubs.Add(new ServiceStub {
-						Type = type,
-						InterfaceType = attrib.ServiceType
-					});
-
-				}
-
-				ScanTypeForConstructors(type, _serviceStubs);
-				ScanTypeForSelectors(type, _serviceStubs);
+				ScanType(type);
 
 			}
 
@@ -346,14 +339,36 @@ namespace SRF.Service
 
 		}
 
+		#region Type Scanning
+
+		private void ScanType(Type type)
+		{
+
+			var attribute = SRReflection.GetAttribute<ServiceAttribute>(type);
+
+			if (attribute != null) {
+
+				_serviceStubs.Add(new ServiceStub {
+					Type = type,
+					InterfaceType = attribute.ServiceType
+				});
+
+			}
+
+			ScanTypeForConstructors(type, _serviceStubs);
+			ScanTypeForSelectors(type, _serviceStubs);
+
+		}
+
+
 		private static void ScanTypeForSelectors(Type t, List<ServiceStub> stubs)
 		{
 
-			var methods = t.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+			var methods = GetStaticMethods(t);
 
 			foreach (var method in methods) {
 
-				var attrib = Attribute.GetCustomAttribute(method, typeof(ServiceSelectorAttribute)) as ServiceSelectorAttribute;
+				var attrib = SRReflection.GetAttribute<ServiceSelectorAttribute>(method);
 
 				if (attrib == null)
 					continue;
@@ -380,7 +395,11 @@ namespace SRF.Service
 
 				}
 
-				stub.Selector = (Func<Type>) Delegate.CreateDelegate(typeof(Func<Type>), method);
+#if NETFX_CORE
+				stub.Selector = (Func<Type>) method.CreateDelegate(typeof(Func<Type>));
+#else
+				stub.Selector = (Func<Type>)Delegate.CreateDelegate(typeof(Func<Type>), method);
+#endif
 
 			}
 
@@ -389,11 +408,11 @@ namespace SRF.Service
 		private static void ScanTypeForConstructors(Type t, List<ServiceStub> stubs)
 		{
 
-			var methods = t.GetMethods(BindingFlags.Static);
+			var methods = GetStaticMethods(t);
 
 			foreach (var method in methods) {
 
-				var attrib = Attribute.GetCustomAttribute(method, typeof(ServiceConstructorAttribute)) as ServiceConstructorAttribute;
+				var attrib = SRReflection.GetAttribute<ServiceConstructorAttribute>(method);
 
 				if (attrib == null)
 					continue;
@@ -420,11 +439,81 @@ namespace SRF.Service
 
 				}
 
+#if NETFX_CORE
+				stub.Constructor = (Func<object>)method.CreateDelegate(typeof(Func<object>));
+#else
 				stub.Constructor = (Func<object>)Delegate.CreateDelegate(t, method);
+#endif
 
 			}
 
 		}
+
+		#endregion
+
+		#region Reflection
+
+		private static MethodInfo[] GetStaticMethods(Type t)
+		{
+
+#if !NETFX_CORE
+			return t.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+#else
+			return t.GetTypeInfo().DeclaredMethods.Where(p => p.IsStatic).ToArray();
+#endif
+
+		}
+
+#if NETFX_CORE
+
+		private sealed class AppDomain
+		{
+			public static AppDomain CurrentDomain { get; private set; }
+ 
+			static AppDomain()
+			{
+				CurrentDomain = new AppDomain();
+			}
+ 
+			public Assembly[] GetAssemblies()
+			{
+				return GetAssemblyListAsync().Result.ToArray();
+			}
+ 
+			private async System.Threading.Tasks.Task<IEnumerable<Assembly>> GetAssemblyListAsync()
+			{
+				var folder = Windows.ApplicationModel.Package.Current.InstalledLocation;
+ 
+				var assemblies = new List<Assembly>();
+				foreach (var file in await folder.GetFilesAsync())
+				{
+					if (file.FileType == ".dll" || file.FileType == ".exe")
+					{
+
+						System.Diagnostics.Debug.WriteLine("Found: " + file.Path);
+
+						try {
+
+							var name = new AssemblyName() {Name = file.DisplayName};
+							var asm = Assembly.Load(name);
+							assemblies.Add(asm);
+
+						} catch {
+
+							System.Diagnostics.Debug.WriteLine("Error loading " + file.Name);
+
+						}
+
+					}
+				}
+ 
+				return assemblies;
+			}
+		}
+
+#endif
+
+		#endregion
 
 	}
 

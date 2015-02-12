@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 
 namespace SRF.Helpers
@@ -27,7 +28,9 @@ namespace SRF.Helpers
 		{
 
 			if (_property.CanRead) {
-				return _property.GetGetMethod().Invoke(_target, null);
+
+				return SRReflection.GetPropertyValue(_target, _property);
+
 			}
 
 			return null;
@@ -38,9 +41,13 @@ namespace SRF.Helpers
 		{
 
 			if (_property.CanWrite) {
-				_property.GetSetMethod().Invoke(_target, new[] {value});
+
+				SRReflection.SetPropertyValue(_target, _property, value);
+
 			} else {
+
 				throw new InvalidOperationException("Can not write to property");
+
 			}
 
 		}
@@ -48,9 +55,9 @@ namespace SRF.Helpers
 		public T GetAttribute<T>() where T : Attribute
 		{
 
-			var attributes = _property.GetCustomAttributes(typeof (T), true);
+			var attributes = _property.GetCustomAttributes(typeof (T), true).FirstOrDefault();
 
-			return attributes.Length > 0 ? (T) attributes[0] : null;
+			return attributes as T;
 
 		}
 

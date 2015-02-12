@@ -4,7 +4,7 @@ using System.Threading;
 public static class SRFileUtil
 {
 
-#if !UNITY_WEBPLAYER
+#if !UNITY_WEBPLAYER && !NETFX_CORE
 
 	public static void DeleteDirectory(string path)
 	{

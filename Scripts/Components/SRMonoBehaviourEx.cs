@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using SRF.Helpers;
 using SRF.Service;
 using UnityEngine;
 using Object = System.Object;
@@ -171,18 +172,19 @@ public abstract class SRMonoBehaviourEx : SRMonoBehaviour
 		var cache = new List<FieldInfo>();
 
 		// Check for attribute added to the class
-		var globalAttr =
-			t.GetCustomAttributes(typeof (RequiredFieldAttribute), true).FirstOrDefault() as RequiredFieldAttribute;
+		var globalAttr = SRReflection.GetAttribute<RequiredFieldAttribute>(t);
 
+#if NETFX_CORE
+		var fields = t.GetTypeInfo().DeclaredFields.Where(f => !f.IsStatic);
+#else
 		// Check each field for the attribute
 		var fields = t.GetFields(BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic);
+#endif
 
-		for (var i = 0; i < fields.Length; i++) {
-
-			var f = fields[i];
-
-			var requiredFieldAttribute = f.GetCustomAttributes(typeof (RequiredFieldAttribute), false).FirstOrDefault() as RequiredFieldAttribute;
-			var importAttribute = f.GetCustomAttributes(typeof (ImportAttribute), false).FirstOrDefault() as ImportAttribute;
+		foreach (var f in fields) {
+	
+			var requiredFieldAttribute = SRReflection.GetAttribute<RequiredFieldAttribute>(f);
+			var importAttribute = SRReflection.GetAttribute<ImportAttribute>(f);
 
 			if(globalAttr == null && requiredFieldAttribute == null && importAttribute == null)
 				continue; // Early out if no attributes found.
