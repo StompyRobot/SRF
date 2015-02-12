@@ -1,4 +1,4 @@
-﻿#if !UNITY_5
+﻿#if !UNITY_5 && UNITY_EDITOR
 
 using System;
 using System.Diagnostics;

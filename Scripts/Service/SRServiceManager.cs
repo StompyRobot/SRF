@@ -244,6 +244,18 @@ namespace SRF.Service
 			var types = new List<Type>();
 
 			foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies()) {
+
+				var n = assembly.GetName().Name;
+
+				// Filter down to user assemblies only
+				if(n == "mscorlib" || 
+					n == "System" || 
+					n == "UnityEngine"  || 
+					n.StartsWith("System.") || 
+					n.StartsWith("UnityEngine.") || 
+					n.StartsWith("Mono."))
+					continue;
+
 #if NETFX_CORE
 				types.AddRange(assembly.ExportedTypes);
 #else
