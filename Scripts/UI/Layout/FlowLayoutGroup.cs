@@ -214,8 +214,21 @@ namespace SRF.UI.Layout
 			var extraWidth = 0f;
 
 			if (ChildForceExpandWidth) {
-				extraWidth = (maxWidth - rowWidth)/_rowList.Count;
+
+				var flexibleChildCount = 0;
+
+				for (var i = 0; i < _rowList.Count; i++) {
+
+					if (LayoutUtility.GetFlexibleWidth(_rowList[i]) > 0f)
+						flexibleChildCount ++;
+
+				}
+
+				if(flexibleChildCount > 0)
+					extraWidth = (maxWidth - rowWidth)/flexibleChildCount;
+
 			}
+
 
 			for (var j = 0; j < _rowList.Count; j++) {
 
@@ -223,7 +236,11 @@ namespace SRF.UI.Layout
 
 				var rowChild = _rowList[index];
 
-				var rowChildWidth = LayoutUtility.GetPreferredSize(rowChild, 0) + extraWidth;
+				var rowChildWidth = LayoutUtility.GetPreferredSize(rowChild, 0);
+
+				if (LayoutUtility.GetFlexibleWidth(rowChild) > 0f)
+					rowChildWidth += extraWidth;
+
 				var rowChildHeight = LayoutUtility.GetPreferredSize(rowChild, 1);
 
 				if (ChildForceExpandHeight)
