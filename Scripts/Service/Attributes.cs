@@ -4,7 +4,7 @@ namespace SRF.Service
 {
 
 	[AttributeUsage(AttributeTargets.Class)]
-	public class ServiceAttribute : Attribute
+	public sealed class ServiceAttribute : Attribute
 	{
 
 		public Type ServiceType { get; private set; }
@@ -17,7 +17,7 @@ namespace SRF.Service
 	}
 
 	[AttributeUsage(AttributeTargets.Method)]
-	public class ServiceSelectorAttribute : Attribute
+	public sealed class ServiceSelectorAttribute : Attribute
 	{
 
 		public Type ServiceType { get; private set; }
@@ -30,7 +30,7 @@ namespace SRF.Service
 	}
 
 	[AttributeUsage(AttributeTargets.Method)]
-	public class ServiceConstructorAttribute : Attribute
+	public sealed class ServiceConstructorAttribute : Attribute
 	{
 
 		public Type ServiceType { get; private set; }
