@@ -121,10 +121,15 @@ namespace SRF.UI.Layout
 				// Max child width is layout group with - padding
 				childWidth = Mathf.Min(childWidth, workingWidth);
 
+				// Apply spacing if not the first element in a row
+				if(_rowList.Count > 0)
+					currentRowWidth += Spacing;
+
 				// If adding this element would exceed the bounds of the row,
 				// go to a new line after processing the current row
 				if (currentRowWidth + childWidth > workingWidth) {
 
+					// Undo spacing addition if we're moving to a new line (Spacing is not applied on edges)
 					currentRowWidth -= Spacing;
 
 					// Process current row elements positioning
@@ -154,8 +159,6 @@ namespace SRF.UI.Layout
 				if (childHeight > currentRowHeight) {
 					currentRowHeight = childHeight;
 				}
-
-				currentRowWidth += Spacing;
 
 			}
 
