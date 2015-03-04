@@ -253,14 +253,31 @@ namespace SRF.Service
 					n == "UnityEngine"  || 
 					n.StartsWith("System.") || 
 					n.StartsWith("UnityEngine.") || 
-					n.StartsWith("Mono."))
+					n.StartsWith("Mono.") || 
+					n.StartsWith("Boo.") || 
+					n.StartsWith("UnityEditor") || 
+					n.StartsWith("Unity.") ||
+					n.StartsWith("UnityScript") ||
+					n.StartsWith("nunit.") ||
+					n.StartsWith("I18N") ||
+					n.StartsWith("ICSharpCode"))
 					continue;
+
+				try {
 
 #if NETFX_CORE
 				types.AddRange(assembly.ExportedTypes);
 #else
-				types.AddRange(assembly.GetExportedTypes());
+					types.AddRange(assembly.GetExportedTypes());
 #endif
+
+				} catch (Exception e) {
+					
+					Debug.LogError("[SRServiceManager] Error loading assembly {0}".Fmt(assembly.FullName), this);
+					Debug.LogException(e);
+
+				}
+
 			}
 
 			foreach (var type in types) {
