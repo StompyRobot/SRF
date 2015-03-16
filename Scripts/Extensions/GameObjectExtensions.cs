@@ -78,4 +78,27 @@ public static class GameObjectExtensions
 
 	}
 
+	/// <summary>
+	///  Set the layer of a gameobject and all child objects
+	/// </summary>
+	/// <param name="o"></param>
+	/// <param name="layer"></param>
+	public static void SetLayerRecursive(this GameObject o, int layer)
+	{
+		SetLayerInternal(o.transform, layer);
+	}
+
+	private static void SetLayerInternal(Transform t, int layer)
+	{
+
+		t.gameObject.layer = layer;
+
+		foreach (Transform o in t) {
+			
+			SetLayerInternal(o, layer);
+
+		}
+
+	}
+
 }
