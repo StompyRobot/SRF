@@ -245,14 +245,13 @@ namespace SRF.Service
 
 			foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies()) {
 
-				var n = assembly.GetName().Name;
+				var n = assembly.FullName;
+
 
 				// Filter down to user assemblies only
-				if(n == "mscorlib" || 
-					n == "System" || 
-					n == "UnityEngine"  || 
-					n.StartsWith("System.") || 
-					n.StartsWith("UnityEngine.") || 
+				if(n.StartsWith("mscorlib") || 
+					n.StartsWith("System") || 
+					n.StartsWith("UnityEngine")  || 
 					n.StartsWith("Mono.") || 
 					n.StartsWith("Boo.") || 
 					n.StartsWith("UnityEditor") || 
@@ -266,9 +265,9 @@ namespace SRF.Service
 				try {
 
 #if NETFX_CORE
-				types.AddRange(assembly.ExportedTypes);
+					types.AddRange(assembly.ExportedTypes);
 #else
-				types.AddRange(assembly.GetExportedTypes());
+					types.AddRange(assembly.GetExportedTypes());
 #endif
 
 				} catch (Exception e) {
