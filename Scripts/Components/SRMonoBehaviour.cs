@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// Base MonoBehaviour which provides useful common functionality
 /// </summary>
-public abstract class SRMonoBehaviour : MonoBehaviour, IHasTransform
+public abstract class SRMonoBehaviour : MonoBehaviour
 {
 
 	/// <summary>
