@@ -264,6 +264,9 @@ namespace SRF.Service
 
 				try {
 
+
+#if !UNITY_WEBPLAYER
+
 					var found = false;
 
 					foreach (var b in assembly.GetName().GetPublicKeyToken()) {
@@ -281,6 +284,8 @@ namespace SRF.Service
 						continue;
 
 					}
+
+#endif
 
 #if NETFX_CORE
 					types.AddRange(assembly.ExportedTypes);
