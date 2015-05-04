@@ -247,7 +247,6 @@ namespace SRF.Service
 
 				var n = assembly.FullName;
 
-
 				// Filter down to user assemblies only
 				if(n.StartsWith("mscorlib") || 
 					n.StartsWith("System") || 
@@ -259,10 +258,29 @@ namespace SRF.Service
 					n.StartsWith("UnityScript") ||
 					n.StartsWith("nunit.") ||
 					n.StartsWith("I18N") ||
-					n.StartsWith("ICSharpCode"))
+					n.StartsWith("ICSharpCode") ||
+					n.StartsWith("Newtonsoft.Json"))
 					continue;
 
 				try {
+
+					var found = false;
+
+					foreach (var b in assembly.GetName().GetPublicKeyToken()) {
+
+						if (b > 0) {
+							found = true;
+							break;
+						}
+
+					}
+
+					if (found) {
+
+						//Debug.Log(string.Format("[SRServiceManager] Ignoring strong-named assembly ({0})", n));
+						continue;
+
+					}
 
 #if NETFX_CORE
 					types.AddRange(assembly.ExportedTypes);
