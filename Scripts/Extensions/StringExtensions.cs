@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-public static class StringExtensions
+
+public static class SRFStringExtensions
 {
 #if UNITY_EDITOR
 	[JetBrains.Annotations.StringFormatMethod("formatString")]

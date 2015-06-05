@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public static class GameObjectExtensions
+public static class SRFGameObjectExtensions
 {
 
 	public static T GetIComponent<T>(this GameObject t) where T : class

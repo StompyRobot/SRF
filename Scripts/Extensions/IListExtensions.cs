@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-public static class IListExtensions
+public static class SRFIListExtensions
 {
 
 	public static T Random<T>(this IList<T> list)

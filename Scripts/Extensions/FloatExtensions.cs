@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public static class FloatExtensions
+public static class SRFFloatExtensions
 {
 
 	public static float Sqr(this float f)

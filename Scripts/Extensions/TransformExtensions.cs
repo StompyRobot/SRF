@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public static class TransformExtensions
+public static class SRFTransformExtensions
 {
 
 	public static IEnumerable<Transform> GetChildren(this Transform t)
