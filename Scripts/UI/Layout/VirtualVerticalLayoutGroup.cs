@@ -561,13 +561,9 @@ namespace SRF.UI.Layout
 
 			row.Index = index;
 
-			// If the provided row didn't previously have this data, pass it to the view
-			if (row.Data != _itemList[index] && row.View != null) {
-
-				row.Data = _itemList[index];
-				row.View.SetDataContext(_itemList[index]);
-
-			}
+			// Set data context on row
+			row.Data = _itemList[index];
+			row.View.SetDataContext(_itemList[index]);
 
 			// If we're using stylesheets
 			if (RowStyleSheet != null || AltRowStyleSheet != null || SelectedRowStyleSheet != null) {
