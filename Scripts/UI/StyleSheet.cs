@@ -1,4 +1,4 @@
-﻿#if ENABLE_4_6_FEATURES
+﻿#if ENABLE_4_6_FEATURES || UNITY_5
 
 using System;
 using System.Collections.Generic;
