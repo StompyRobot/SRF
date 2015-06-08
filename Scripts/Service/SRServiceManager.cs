@@ -18,7 +18,7 @@ namespace SRF.Service
 	public class SRServiceManager : SRAutoSingleton<SRServiceManager>
 	{
 
-#if DEBUG
+#if SRDEBUG
 		public const bool EnableLogging = true;
 #else
 		public const bool EnableLogging = false;
