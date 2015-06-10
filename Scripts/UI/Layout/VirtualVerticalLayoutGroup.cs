@@ -62,6 +62,8 @@ namespace SRF.UI.Layout
 		/// </summary>
 		public bool StickToBottom = true;
 
+		public bool EnableSelection = true;
+
 		[SerializeField]
 		private SelectedItemChangedEvent _selectedItemChanged;
 
@@ -73,7 +75,7 @@ namespace SRF.UI.Layout
 			set
 			{
 
-				if (_selectedItem == value)
+				if (_selectedItem == value || !EnableSelection)
 					return;
 
 				var newSelectedIndex = value == null ? -1 : _itemList.IndexOf(value);
@@ -467,6 +469,9 @@ namespace SRF.UI.Layout
 
 		public void OnPointerClick(PointerEventData eventData)
 		{
+
+			if (!EnableSelection)
+				return;
 
 			var hitObject = eventData.pointerPressRaycast.gameObject;
 
