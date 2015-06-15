@@ -8,8 +8,8 @@ namespace SRF.Helpers
 	public class PropertyReference
 	{
 
-		private object _target;
-		private PropertyInfo _property;
+		private readonly object _target;
+		private readonly PropertyInfo _property;
 
 		public string PropertyName { get { return _property.Name; } }
 		public Type PropertyType { get { return _property.PropertyType; } }
@@ -19,7 +19,7 @@ namespace SRF.Helpers
 			get
 			{
 #if NETFX_CORE
-				return _property.CanRead;
+				return _property.GetMethod != null && _property.GetMethod.IsPublic;
 #else
 				return _property.GetGetMethod() != null;
 #endif
@@ -31,7 +31,7 @@ namespace SRF.Helpers
 			get
 			{
 #if NETFX_CORE
-				return _property.CanWrite;
+				return _property.SetMethod != null && _property.SetMethod.IsPublic;
 #else
 				return _property.GetSetMethod() != null;
 #endif
