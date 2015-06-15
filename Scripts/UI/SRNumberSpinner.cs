@@ -41,6 +41,9 @@ namespace SRF.UI
 
 			//Debug.Log("OnPointerClick (isFocused: {0}, isUsed: {1}, isDragging: {2})".Fmt(isFocused, eventData.used, eventData.dragging));
 
+			if (!interactable)
+				return;
+
 			if (eventData.dragging)
 				return;
 
@@ -80,6 +83,9 @@ namespace SRF.UI
 
 		public override void OnBeginDrag(PointerEventData eventData)
 		{
+
+			if (!interactable)
+				return;
 
 			//Debug.Log("OnBeginDrag (isFocused: {0}, isUsed: {1}, delta: {2})".Fmt(isFocused, eventData.used, eventData.delta));
 
@@ -123,6 +129,9 @@ namespace SRF.UI
 		public override void OnDrag(PointerEventData eventData)
 		{
 
+			if (!interactable)
+				return;
+
 			//Debug.Log("OnDrag (isFocused: {0}, isUsed: {1})".Fmt(isFocused, eventData.used));
 
 			var diff = eventData.delta.x;
@@ -145,6 +154,9 @@ namespace SRF.UI
 
 		public override void OnEndDrag(PointerEventData eventData)
 		{
+
+			if (!interactable)
+				return;
 
 			//Debug.Log("OnEndDrag (isFocused: {0}, isUsed: {1})".Fmt(isFocused, eventData.used));
 
