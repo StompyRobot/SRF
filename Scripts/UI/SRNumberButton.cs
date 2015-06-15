@@ -27,6 +27,9 @@ namespace SRF.UI
 
 			base.OnPointerDown(eventData);
 
+			if (!interactable)
+				return;
+
 			Apply();
 
 			_isDown = true;
