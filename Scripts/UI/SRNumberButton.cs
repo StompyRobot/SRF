@@ -56,11 +56,11 @@ namespace SRF.UI
 					var newDelay = Delay*0.5f;
 
 					var extra = Mathf.RoundToInt((Time.realtimeSinceStartup-_downTime)/ExtraThreshold);
-					Debug.Log(extra);
+
 					for (var i = 0; i < extra; i++) {
 						newDelay *= 0.5f;
 					}
-					Debug.Log(newDelay);
+
 					_delayTime = Time.realtimeSinceStartup + newDelay;
 
 				}
