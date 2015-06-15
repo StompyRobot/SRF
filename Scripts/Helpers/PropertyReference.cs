@@ -12,7 +12,31 @@ namespace SRF.Helpers
 		private PropertyInfo _property;
 
 		public string PropertyName { get { return _property.Name; } }
-		public Type PropertyType { get { return _property.PropertyType; } } 
+		public Type PropertyType { get { return _property.PropertyType; } }
+
+		public bool CanRead
+		{
+			get
+			{
+#if NETFX_CORE
+				return _property.CanRead;
+#else
+				return _property.GetGetMethod() != null;
+#endif
+			}
+		}
+
+		public bool CanWrite
+		{
+			get
+			{
+#if NETFX_CORE
+				return _property.CanWrite;
+#else
+				return _property.GetSetMethod() != null;
+#endif
+			}
+		}
 
 		public PropertyReference(object target, PropertyInfo property)
 		{
