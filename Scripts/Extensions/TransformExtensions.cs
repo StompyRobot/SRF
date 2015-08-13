@@ -1,63 +1,66 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public static class TransformExtensions
+namespace SRF
 {
 
-	public static IEnumerable<Transform> GetChildren(this Transform t)
+	public static class SRFTransformExtensions
 	{
 
-		int i = 0;
+		public static IEnumerable<Transform> GetChildren(this Transform t)
+		{
 
-		while (i < t.childCount) {
-			yield return t.GetChild(i);
-			++i;
+			int i = 0;
+
+			while (i < t.childCount) {
+				yield return t.GetChild(i);
+				++i;
+			}
+
 		}
 
-	}
+		/// <summary>
+		/// Reset all local values on a transform to identity
+		/// </summary>
+		/// <param name="t"></param>
+		public static void ResetLocal(this Transform t)
+		{
 
-	/// <summary>
-	/// Reset all local values on a transform to identity
-	/// </summary>
-	/// <param name="t"></param>
-	public static void ResetLocal(this Transform t)
-	{
+			t.localPosition = Vector3.zero;
+			t.localRotation = Quaternion.identity;
+			t.localScale = Vector3.one;
 
-		t.localPosition = Vector3.zero;
-		t.localRotation = Quaternion.identity;
-		t.localScale = Vector3.one;
+		}
 
-	}
+		/// <summary>
+		/// Create an empty child object of this transform
+		/// </summary>
+		/// <param name="t"></param>
+		/// <param name="name"></param>
+		/// <returns></returns>
+		public static GameObject CreateChild(this Transform t, string name)
+		{
 
-	/// <summary>
-	/// Create an empty child object of this transform
-	/// </summary>
-	/// <param name="t"></param>
-	/// <param name="name"></param>
-	/// <returns></returns>
-	public static GameObject CreateChild(this Transform t, string name)
-	{
+			var go = new GameObject(name);
+			go.transform.parent = t;
+			go.transform.ResetLocal();
+			go.gameObject.layer = t.gameObject.layer;
 
-		var go = new GameObject(name);
-		go.transform.parent = t;
-		go.transform.ResetLocal();
-		go.gameObject.layer = t.gameObject.layer;
+			return go;
 
-		return go;
+		}
 
-	}
-
-	/// <summary>
-	/// Set the parent of this transform, but maintain the localScale, localPosition, localRotation values.
-	/// </summary>
-	/// <param name="t"></param>
-	/// <param name="parent"></param>
-	public static void SetParentMaintainLocals(this Transform t, Transform parent)
-	{
+		/// <summary>
+		/// Set the parent of this transform, but maintain the localScale, localPosition, localRotation values.
+		/// </summary>
+		/// <param name="t"></param>
+		/// <param name="parent"></param>
+		public static void SetParentMaintainLocals(this Transform t, Transform parent)
+		{
 
 #if UNITY_4_6
 
-		t.SetParent(parent, false);
+			t.SetParent(parent, false);
 
 #else
 
@@ -73,40 +76,42 @@ public static class TransformExtensions
 
 #endif
 
-	}
+		}
 
-	/// <summary>
-	/// Copy local position,rotation,scale from other transform
-	/// </summary>
-	/// <param name="t"></param>
-	/// <param name="from"></param>
-	public static void SetLocals(this Transform t, Transform from)
-	{
-		t.localPosition = from.localPosition;
-		t.localRotation = from.localRotation;
-		t.localScale = from.localScale;
-	}
+		/// <summary>
+		/// Copy local position,rotation,scale from other transform
+		/// </summary>
+		/// <param name="t"></param>
+		/// <param name="from"></param>
+		public static void SetLocals(this Transform t, Transform from)
+		{
+			t.localPosition = from.localPosition;
+			t.localRotation = from.localRotation;
+			t.localScale = from.localScale;
+		}
 
-	/// <summary>
-	/// Set position/rotation to from. Scale is unchanged
-	/// </summary>
-	/// <param name="t"></param>
-	/// <param name="from"></param>
-	public static void Match(this Transform t, Transform from)
-	{
-		t.position = from.position;
-		t.rotation = from.rotation;
-	}
+		/// <summary>
+		/// Set position/rotation to from. Scale is unchanged
+		/// </summary>
+		/// <param name="t"></param>
+		/// <param name="from"></param>
+		public static void Match(this Transform t, Transform from)
+		{
+			t.position = from.position;
+			t.rotation = from.rotation;
+		}
 
-	/// <summary>
-	/// Destroy all child game objects
-	/// </summary>
-	/// <param name="t"></param>
-	public static void DestroyChildren(this Transform t)
-	{
+		/// <summary>
+		/// Destroy all child game objects
+		/// </summary>
+		/// <param name="t"></param>
+		public static void DestroyChildren(this Transform t)
+		{
 
-		foreach (var child in t) {
-			GameObject.Destroy(((Transform) child).gameObject);
+			foreach (var child in t) {
+				GameObject.Destroy(((Transform) child).gameObject);
+			}
+
 		}
 
 	}

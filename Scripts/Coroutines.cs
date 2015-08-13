@@ -1,16 +1,21 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-public static class Coroutines
+namespace SRF
 {
 
-	public static IEnumerator WaitForSecondsRealTime(float time)
+	public static class Coroutines
 	{
 
-		var endTime = Time.realtimeSinceStartup + time;
+		public static IEnumerator WaitForSecondsRealTime(float time)
+		{
 
-		while (Time.realtimeSinceStartup < endTime)
-			yield return null;
+			var endTime = Time.realtimeSinceStartup + time;
+
+			while (Time.realtimeSinceStartup < endTime)
+				yield return null;
+
+		}
 
 	}
 
