@@ -14,7 +14,7 @@ namespace SRF.UI
 
 		public SRNumberSpinner TargetField;
 
-		public int Amount = 1;
+		public double Amount = 1;
 
 		public const float Delay = 0.4f;
 
