@@ -17,9 +17,13 @@ namespace SRF.UI
 
 		private float _startValue;
 		private float _delta;
+
+		private CanvasScaler _canvasScaler;
+
 		void Start()
 		{
 			Verify();
+			_canvasScaler = GetComponentInParent<CanvasScaler>();
 		}
 
 		bool Verify()
@@ -60,10 +64,17 @@ namespace SRF.UI
 
 			//Debug.Log("OnDrag");
 
+			var delta = 0f;
+
 			if (Axis == RectTransform.Axis.Horizontal)
-				_delta += eventData.delta.x;
+				delta += eventData.delta.x;
 			else
-				_delta += eventData.delta.y;
+				delta += eventData.delta.y;
+
+			if (_canvasScaler != null)
+				delta /= _canvasScaler.scaleFactor;
+
+			_delta += delta;
 
 			SetCurrentValue(Mathf.Max(_startValue + _delta, GetMinSize()));
 		}
