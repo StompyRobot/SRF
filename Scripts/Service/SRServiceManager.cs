@@ -489,12 +489,8 @@ namespace SRF.Service
 					stubs.Add(stub);
 
 				}
-
-#if NETFX_CORE
-				stub.Constructor = (Func<object>)method.CreateDelegate(typeof(Func<object>));
-#else
-				stub.Constructor = (Func<object>)Delegate.CreateDelegate(t, method);
-#endif
+				
+				stub.Constructor = () => method.Invoke(null, null);
 
 			}
 
