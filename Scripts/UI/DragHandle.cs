@@ -9,11 +9,17 @@ namespace SRF.UI
 	public class DragHandle : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHandler
 	{
 
+		public float MaxSize = -1;
+
 		public LayoutElement TargetLayoutElement;
 
 		public RectTransform TargetRectTransform;
 
 		public RectTransform.Axis Axis = RectTransform.Axis.Horizontal;
+
+		public bool Invert = false;
+
+		private float Mult {get { return Invert ? -1 : 1; } }
 
 		private float _startValue;
 		private float _delta;
@@ -74,9 +80,10 @@ namespace SRF.UI
 			if (_canvasScaler != null)
 				delta /= _canvasScaler.scaleFactor;
 
+			delta *= Mult;
 			_delta += delta;
 
-			SetCurrentValue(Mathf.Max(_startValue + _delta, GetMinSize()));
+			SetCurrentValue(Mathf.Clamp(_startValue + _delta, GetMinSize(), GetMaxSize()));
 		}
 
 		private float GetCurrentValue()
@@ -155,6 +162,13 @@ namespace SRF.UI
 		{
 			if (TargetLayoutElement == null) return 0;
 			return Axis == RectTransform.Axis.Horizontal ? TargetLayoutElement.minWidth : TargetLayoutElement.minHeight;
+		}
+
+		private float GetMaxSize()
+		{
+			if (MaxSize > 0)
+				return MaxSize;
+			return float.MaxValue;
 		}
 
 	}
