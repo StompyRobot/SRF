@@ -109,7 +109,7 @@ namespace SRF
             {
                 if (_gameObject == null)
                 {
-                    _gameObject = gameObject;
+                    _gameObject = base.gameObject;
                 }
 
                 return _gameObject;
