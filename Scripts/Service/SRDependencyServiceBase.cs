@@ -9,92 +9,83 @@ using Object = UnityEngine.Object;
 
 namespace SRF.Service
 {
+    /// <summary>
+    /// A service which has async-loading dependencies
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public abstract class SRDependencyServiceBase<T> : SRServiceBase<T>, IAsyncService where T : class
+    {
+        private bool _isLoaded;
+        protected abstract Type[] Dependencies { get; }
 
-	/// <summary>
-	/// A service which has async-loading dependencies
-	/// </summary>
-	/// <typeparam name="T"></typeparam>
-	public abstract class SRDependencyServiceBase<T> : SRServiceBase<T>, IAsyncService where T : class
-	{
+        public bool IsLoaded
+        {
+            get { return _isLoaded; }
+        }
 
-		[Conditional("ENABLE_LOGGING")]
-		private void Log(string msg, Object target)
-		{
+        [Conditional("ENABLE_LOGGING")]
+        private void Log(string msg, Object target)
+        {
 //#if ENABLE_LOGGING
-		Debug.Log(msg, target);
+            Debug.Log(msg, target);
 //#endif
-		}
+        }
 
-		public bool IsLoaded
-		{
-			get { return _isLoaded; }
-		}
+        protected override void Start()
+        {
+            base.Start();
 
-		protected abstract Type[] Dependencies { get; }
-		private bool _isLoaded;
+            StartCoroutine(LoadDependencies());
+        }
 
-		protected override void Start()
-		{
+        /// <summary>
+        /// Invoked once all dependencies are loaded
+        /// </summary>
+        protected virtual void OnLoaded() {}
 
-			base.Start();
+        private IEnumerator LoadDependencies()
+        {
+            SRServiceManager.LoadingCount++;
 
-			StartCoroutine(LoadDependencies());
+            Log("[Service] Loading service ({0})".Fmt(GetType().Name), this);
 
-		}
+            foreach (var d in Dependencies)
+            {
+                var hasService = SRServiceManager.HasService(d);
 
-		/// <summary>
-		/// Invoked once all dependencies are loaded
-		/// </summary>
-		protected virtual void OnLoaded()
-		{
-			
-		}
+                Log("[Service] Resolving Service ({0}) HasService: {1}".Fmt(d.Name, hasService), this);
 
-		private IEnumerator LoadDependencies()
-		{
+                if (hasService)
+                {
+                    continue;
+                }
 
-			SRServiceManager.LoadingCount++;
+                var service = SRServiceManager.GetService(d);
 
-			Log("[Service] Loading service ({0})".Fmt(GetType().Name), this);
+                if (service == null)
+                {
+                    Debug.LogError("[Service] Could not resolve dependency ({0})".Fmt(d.Name));
+                    enabled = false;
+                    yield break;
+                }
 
-			foreach (var d in Dependencies) {
+                var a = service as IAsyncService;
 
-				var hasService = SRServiceManager.HasService(d);
+                if (a != null)
+                {
+                    while (!a.IsLoaded)
+                    {
+                        yield return new WaitForEndOfFrame();
+                    }
+                }
+            }
 
-				Log("[Service] Resolving Service ({0}) HasService: {1}".Fmt(d.Name, hasService), this);
+            Log("[Service] Loading service ({0}) complete.".Fmt(GetType().Name), this);
 
-				if(hasService)
-					continue;
+            _isLoaded = true;
+            SRServiceManager.LoadingCount--;
 
-				var service = SRServiceManager.GetService(d);
-
-				if (service == null) {
-					Debug.LogError("[Service] Could not resolve dependency ({0})".Fmt(d.Name));
-					enabled = false;
-					yield break;
-				}
-
-				var a = service as IAsyncService;
-
-				if (a != null) {
-
-					while (!a.IsLoaded)
-						yield return new WaitForEndOfFrame();
-
-				}
-
-			}
-
-			Log("[Service] Loading service ({0}) complete.".Fmt(GetType().Name), this);
-
-			_isLoaded = true;
-			SRServiceManager.LoadingCount--;
-
-			OnLoaded();
-
-		}
-
-
-	}
-
+            OnLoaded();
+        }
+    }
 }

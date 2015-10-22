@@ -5,64 +5,60 @@ using UnityEngine;
 
 namespace SRF
 {
+    public class Hierarchy
+    {
+        private static readonly char[] Seperator = {'/'};
+        private static readonly Dictionary<string, Transform> Cache = new Dictionary<string, Transform>();
 
-	public class Hierarchy
-	{
+        [Obsolete("Use static Get() instead")]
+        public Transform this[string key]
+        {
+            get { return Get(key); }
+        }
 
-		private static readonly char[] Seperator = { '/' };
+        /// <summary>
+        /// Pass in a path (e.g. /Test/Me/One) and get a transform with the hierarchy Test->Me->One.
+        /// Any Transforms required below this path will be auto-created.
+        /// This is a very slow method, so use only on initialisation.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public static Transform Get(string key)
+        {
+            Transform t;
 
-		private static readonly Dictionary<string, Transform> Cache = new Dictionary<string, Transform>();
+            // Check cache
+            if (Cache.TryGetValue(key, out t))
+            {
+                return t;
+            }
 
-		/// <summary>
-		/// Pass in a path (e.g. /Test/Me/One) and get a transform with the hierarchy Test->Me->One.
-		/// Any Transforms required below this path will be auto-created.
-		/// This is a very slow method, so use only on initialisation.
-		/// </summary>
-		/// <param name="key"></param>
-		/// <returns></returns>
-		public static Transform Get(string key)
-		{
+            var find = GameObject.Find(key);
 
-			Transform t;
+            if (find)
+            {
+                t = find.transform;
+                Cache.Add(key, t);
 
-			// Check cache
-			if (Cache.TryGetValue(key, out t))
-				return t;
+                return t;
+            }
 
-			var find = GameObject.Find(key);
+            // Find container parent
+            var elements = key.Split(Seperator, StringSplitOptions.RemoveEmptyEntries);
 
-			if (find) {
+            // Create new container
+            t = new GameObject(elements.Last()).transform;
+            Cache.Add(key, t);
 
-				t = find.transform;
-				Cache.Add(key, t);
+            // If root
+            if (elements.Length == 1)
+            {
+                return t;
+            }
 
-				return t;
+            t.parent = Get(string.Join("/", elements, 0, elements.Length - 1));
 
-			}
-
-			// Find container parent
-			var elements = key.Split(Seperator, StringSplitOptions.RemoveEmptyEntries);
-
-			// Create new container
-			t = new GameObject(elements.Last()).transform;
-			Cache.Add(key, t);
-
-			// If root
-			if (elements.Length == 1)
-				return t;
-
-			t.parent = Get(string.Join("/", elements, 0, elements.Length - 1));
-
-			return t;
-
-		}
-
-		[Obsolete("Use static Get() instead")]
-		public Transform this[string key]
-		{
-			get { return Get(key); }
-		}
-
-	}
-
+            return t;
+        }
+    }
 }

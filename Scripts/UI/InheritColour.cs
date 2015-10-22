@@ -6,52 +6,47 @@ using UnityEngine.UI;
 
 namespace SRF.UI
 {
+    [RequireComponent(typeof (Graphic))]
+    [ExecuteInEditMode]
+    [AddComponentMenu(ComponentMenuPaths.InheritColour)]
+    public class InheritColour : SRMonoBehaviour
+    {
+        private Graphic _graphic;
+        public Graphic From;
 
-	[RequireComponent(typeof(Graphic))]
-	[ExecuteInEditMode]
-	[AddComponentMenu(ComponentMenuPaths.InheritColour)]
-	public class InheritColour : SRMonoBehaviour
-	{
+        private Graphic Graphic
+        {
+            get
+            {
+                if (_graphic == null)
+                {
+                    _graphic = GetComponent<Graphic>();
+                }
 
-		public Graphic From;
+                return _graphic;
+            }
+        }
 
-		private Graphic Graphic
-		{
-			get
-			{
+        private void Refresh()
+        {
+            if (From == null)
+            {
+                return;
+            }
 
-				if (_graphic == null)
-					_graphic = GetComponent<Graphic>();
+            Graphic.color = From.canvasRenderer.GetColor();
+        }
 
-				return _graphic;
+        private void Update()
+        {
+            Refresh();
+        }
 
-			}
-		}
-
-		private Graphic _graphic;
-
-		void Refresh()
-		{
-
-			if (From == null)
-				return;
-
-			Graphic.color = From.canvasRenderer.GetColor();
-
-		}
-
-		void Update()
-		{
-			Refresh();
-		}
-
-		void Start()
-		{
-			Refresh();
-		}
-
-	}
-
+        private void Start()
+        {
+            Refresh();
+        }
+    }
 }
 
 #endif

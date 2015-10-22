@@ -4,62 +4,56 @@ using UnityEngine;
 
 namespace SRF.UI
 {
+    [ExecuteInEditMode]
+    [RequireComponent(typeof (RectTransform))]
+    public abstract class ResponsiveBase : SRMonoBehaviour
+    {
+        private bool _queueRefresh;
 
-	[ExecuteInEditMode]
-	[RequireComponent(typeof (RectTransform))]
-	public abstract class ResponsiveBase : SRMonoBehaviour
-	{
+        protected RectTransform RectTransform
+        {
+            get { return (RectTransform) CachedTransform; }
+        }
 
-		protected RectTransform RectTransform
-		{
-			get { return (RectTransform) CachedTransform; }
-		}
+        protected void OnEnable()
+        {
+            _queueRefresh = true;
+        }
 
-		private bool _queueRefresh;
+        protected void OnRectTransformDimensionsChange()
+        {
+            _queueRefresh = true;
+        }
 
-		protected void OnEnable()
-		{
-			_queueRefresh = true;
-		}
-
-		protected void OnRectTransformDimensionsChange()
-		{
-			_queueRefresh = true;
-		}
-
-		protected void Update()
-		{
-
+        protected void Update()
+        {
 #if UNITY_EDITOR
 
-			// Refresh whenever we can in the editor, since layout has quirky update behaviour
-			// when not in play mode
-			if (!Application.isPlaying) {
-
-				Refresh();
-				return;
-
-			}
+            // Refresh whenever we can in the editor, since layout has quirky update behaviour
+            // when not in play mode
+            if (!Application.isPlaying)
+            {
+                Refresh();
+                return;
+            }
 
 #endif
 
-			if (_queueRefresh) {
-				Refresh();
-				_queueRefresh = false;
-			}
+            if (_queueRefresh)
+            {
+                Refresh();
+                _queueRefresh = false;
+            }
+        }
 
-		}
+        protected abstract void Refresh();
 
-		protected abstract void Refresh();
-
-		[ContextMenu("Refresh")]
-		private void DoRefresh()
-		{
-			Refresh();
-		}
-
-	}
-
+        [ContextMenu("Refresh")]
+        private void DoRefresh()
+        {
+            Refresh();
+        }
+    }
 }
 
 #endif

@@ -2,32 +2,27 @@
 
 namespace SRF.Helpers
 {
+    public class MethodReference
+    {
+        private MethodInfo _method;
+        private object _target;
 
-	public class MethodReference
-	{
+        public MethodReference(object target, MethodInfo method)
+        {
+            SRDebugUtil.AssertNotNull(target);
 
-		private object _target;
-		private MethodInfo _method;
+            _target = target;
+            _method = method;
+        }
 
-		public string MethodName { get { return _method.Name; } }
+        public string MethodName
+        {
+            get { return _method.Name; }
+        }
 
-		public MethodReference(object target, MethodInfo method)
-		{
-
-			SRDebugUtil.AssertNotNull(target);
-
-			_target = target;
-			_method = method;
-
-		}
-
-		public object Invoke(object[] parameters)
-		{
-
-			return _method.Invoke(_target, parameters);
-
-		}
-
-	}
-
+        public object Invoke(object[] parameters)
+        {
+            return _method.Invoke(_target, parameters);
+        }
+    }
 }

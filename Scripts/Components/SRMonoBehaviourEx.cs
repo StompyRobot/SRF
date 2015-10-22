@@ -4,237 +4,209 @@ using System.Reflection;
 using SRF.Helpers;
 using SRF.Service;
 using UnityEngine;
-using System.Linq;
-using SRF;
-using Object = System.Object;
 
 namespace SRF
 {
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Field)]
+    public sealed class RequiredFieldAttribute : Attribute
+    {
+        private bool _autoCreate;
+        private bool _autoSearch;
+        private bool _editorOnly = true;
 
-	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Field)]
-	public sealed class RequiredFieldAttribute : Attribute
-	{
+        public RequiredFieldAttribute(bool autoSearch)
+        {
+            AutoSearch = autoSearch;
+        }
 
-		private bool _editorOnly = true;
-		private bool _autoSearch;
-		private bool _autoCreate;
+        public RequiredFieldAttribute() {}
 
-		public bool AutoSearch
-		{
-			get { return _autoSearch; }
-			set { _autoSearch = value; }
-		}
+        public bool AutoSearch
+        {
+            get { return _autoSearch; }
+            set { _autoSearch = value; }
+        }
 
-		public bool AutoCreate
-		{
-			get { return _autoCreate; }
-			set { _autoCreate = value; }
-		}
+        public bool AutoCreate
+        {
+            get { return _autoCreate; }
+            set { _autoCreate = value; }
+        }
 
-		[Obsolete]
-		public bool EditorOnly
-		{
-			get { return _editorOnly; }
-			set { _editorOnly = value; }
-		}
+        [Obsolete]
+        public bool EditorOnly
+        {
+            get { return _editorOnly; }
+            set { _editorOnly = value; }
+        }
+    }
 
-		public RequiredFieldAttribute(bool autoSearch)
-		{
-			AutoSearch = autoSearch;
-		}
+    /// <summary>
+    /// Add to a field to attempt to use SRServiceManager to get an instance of the field type
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Field)]
+    public class ImportAttribute : Attribute
+    {
+        public readonly Type Service;
+        public ImportAttribute() {}
 
-		public RequiredFieldAttribute() {}
+        public ImportAttribute(Type serviceType)
+        {
+            Service = serviceType;
+        }
+    }
 
-	}
+    public abstract class SRMonoBehaviourEx : SRMonoBehaviour
+    {
+        private static Dictionary<Type, IList<FieldInfo>> _checkedFields;
 
-	/// <summary>
-	/// Add to a field to attempt to use SRServiceManager to get an instance of the field type
-	/// </summary>
-	[AttributeUsage(AttributeTargets.Field)]
-	public class ImportAttribute : Attribute
-	{
+        private static void CheckFields(SRMonoBehaviourEx instance, bool justSet = false)
+        {
+            if (_checkedFields == null)
+            {
+                _checkedFields = new Dictionary<Type, IList<FieldInfo>>();
+            }
 
-		public readonly Type Service;
+            var t = instance.GetType();
 
-		public ImportAttribute() {}
+            IList<FieldInfo> cache;
 
-		public ImportAttribute(Type serviceType)
-		{
-			Service = serviceType;
-		}
+            if (!_checkedFields.TryGetValue(instance.GetType(), out cache))
+            {
+                cache = ScanType(t);
 
-	}
+                _checkedFields.Add(t, cache);
+            }
 
-	public abstract class SRMonoBehaviourEx : SRMonoBehaviour
-	{
+            PopulateObject(cache, instance, justSet);
+        }
 
-		private struct FieldInfo
-		{
+        private static void PopulateObject(IList<FieldInfo> cache, SRMonoBehaviourEx instance, bool justSet)
+        {
+            for (var i = 0; i < cache.Count; i++)
+            {
+                var f = cache[i];
 
-			public System.Reflection.FieldInfo Field;
+                if (!EqualityComparer<object>.Default.Equals(f.Field.GetValue(instance), null))
+                {
+                    continue;
+                }
 
-			public bool Import;
-			public Type ImportType;
+                // If import is enabled, use SRServiceManager to import the reference
+                if (f.Import)
+                {
+                    var t = f.ImportType ?? f.Field.FieldType;
 
-			public bool AutoSet;
-			public bool AutoCreate;
+                    var service = SRServiceManager.GetService(t);
 
-		}
+                    if (service == null)
+                    {
+                        Debug.LogWarning("Field {0} import failed (Type {1})".Fmt(f.Field.Name, t));
+                        continue;
+                    }
 
-		private static Dictionary<Type, IList<FieldInfo>> _checkedFields;
+                    f.Field.SetValue(instance, service);
 
-		private static void CheckFields(SRMonoBehaviourEx instance, bool justSet = false)
-		{
+                    continue;
+                }
 
-			if (_checkedFields == null)
-				_checkedFields = new Dictionary<Type, IList<FieldInfo>>();
+                // If autoset is enabled on field, try and find the component on the GameObject
 
-			var t = instance.GetType();
+                if (f.AutoSet)
+                {
+                    var newValue = instance.GetComponent(f.Field.FieldType);
 
-			IList<FieldInfo> cache;
+                    if (!EqualityComparer<object>.Default.Equals(newValue, null))
+                    {
+                        f.Field.SetValue(instance, newValue);
+                        continue;
+                    }
+                }
 
-			if (!_checkedFields.TryGetValue(instance.GetType(), out cache)) {
+                if (justSet)
+                {
+                    continue;
+                }
 
-				cache = ScanType(t);
+                if (f.AutoCreate)
+                {
+                    var newValue = instance.CachedGameObject.AddComponent(f.Field.FieldType);
+                    f.Field.SetValue(instance, newValue);
+                }
 
-				_checkedFields.Add(t, cache);
+                throw new UnassignedReferenceException(
+                    "Field {0} is unassigned, but marked with RequiredFieldAttribute".Fmt(f.Field.Name));
+            }
+        }
 
-			}
+        private static List<FieldInfo> ScanType(Type t)
+        {
+            var cache = new List<FieldInfo>();
 
-			PopulateObject(cache, instance, justSet);
-
-		}
-
-		private static void PopulateObject(IList<FieldInfo> cache, SRMonoBehaviourEx instance, bool justSet)
-		{
-
-			for (var i = 0; i < cache.Count; i++) {
-
-				var f = cache[i];
-
-				if (!EqualityComparer<Object>.Default.Equals(f.Field.GetValue(instance), null))
-					continue;
-
-				// If import is enabled, use SRServiceManager to import the reference
-				if (f.Import) {
-
-					var t = f.ImportType ?? f.Field.FieldType;
-
-					var service = SRServiceManager.GetService(t);
-
-					if (service == null) {
-
-						Debug.LogWarning("Field {0} import failed (Type {1})".Fmt(f.Field.Name, t));
-						continue;
-
-					}
-
-					f.Field.SetValue(instance, service);
-
-					continue;
-
-				}
-
-				// If autoset is enabled on field, try and find the component on the GameObject
-
-				if (f.AutoSet) {
-
-					var newValue = instance.GetComponent(f.Field.FieldType);
-
-					if (!EqualityComparer<Object>.Default.Equals(newValue, null)) {
-						f.Field.SetValue(instance, newValue);
-						continue;
-					}
-
-				}
-
-				if (justSet)
-					continue;
-
-				if (f.AutoCreate) {
-
-					var newValue = instance.CachedGameObject.AddComponent(f.Field.FieldType);
-					f.Field.SetValue(instance, newValue);
-
-				}
-
-				throw new UnassignedReferenceException(
-					"Field {0} is unassigned, but marked with RequiredFieldAttribute".Fmt(f.Field.Name));
-
-			}
-
-		}
-
-		private static List<FieldInfo> ScanType(Type t)
-		{
-
-			var cache = new List<FieldInfo>();
-
-			// Check for attribute added to the class
-			var globalAttr = SRReflection.GetAttribute<RequiredFieldAttribute>(t);
+            // Check for attribute added to the class
+            var globalAttr = SRReflection.GetAttribute<RequiredFieldAttribute>(t);
 
 #if NETFX_CORE
 		var fields = t.GetTypeInfo().DeclaredFields.Where(f => !f.IsStatic);
 #else
-			// Check each field for the attribute
-			var fields = t.GetFields(BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic);
+            // Check each field for the attribute
+            var fields = t.GetFields(BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic);
 #endif
 
-			foreach (var f in fields) {
+            foreach (var f in fields)
+            {
+                var requiredFieldAttribute = SRReflection.GetAttribute<RequiredFieldAttribute>(f);
+                var importAttribute = SRReflection.GetAttribute<ImportAttribute>(f);
 
-				var requiredFieldAttribute = SRReflection.GetAttribute<RequiredFieldAttribute>(f);
-				var importAttribute = SRReflection.GetAttribute<ImportAttribute>(f);
+                if (globalAttr == null && requiredFieldAttribute == null && importAttribute == null)
+                {
+                    continue; // Early out if no attributes found.
+                }
 
-				if (globalAttr == null && requiredFieldAttribute == null && importAttribute == null)
-					continue; // Early out if no attributes found.
+                var info = new FieldInfo();
+                info.Field = f;
 
-				var info = new FieldInfo();
-				info.Field = f;
+                if (importAttribute != null)
+                {
+                    info.Import = true;
+                    info.ImportType = importAttribute.Service;
+                }
+                else if (requiredFieldAttribute != null)
+                {
+                    info.AutoSet = requiredFieldAttribute.AutoSearch;
+                    info.AutoCreate = requiredFieldAttribute.AutoCreate;
+                }
+                else
+                {
+                    info.AutoSet = globalAttr.AutoSearch;
+                    info.AutoCreate = globalAttr.AutoCreate;
+                }
 
-				if (importAttribute != null) {
+                cache.Add(info);
+            }
 
-					info.Import = true;
-					info.ImportType = importAttribute.Service;
+            return cache;
+        }
 
-				} else if (requiredFieldAttribute != null) {
+        protected virtual void Awake()
+        {
+            CheckFields(this);
+        }
 
-					info.AutoSet = requiredFieldAttribute.AutoSearch;
-					info.AutoCreate = requiredFieldAttribute.AutoCreate;
+        protected virtual void Start() {}
+        protected virtual void Update() {}
+        protected virtual void FixedUpdate() {}
+        protected virtual void OnEnable() {}
+        protected virtual void OnDisable() {}
+        protected virtual void OnDestroy() {}
 
-				} else {
-
-					info.AutoSet = globalAttr.AutoSearch;
-					info.AutoCreate = globalAttr.AutoCreate;
-
-				}
-
-				cache.Add(info);
-
-			}
-
-			return cache;
-
-		}
-
-		protected virtual void Awake()
-		{
-
-			CheckFields(this);
-
-		}
-
-		protected virtual void Start() {}
-
-		protected virtual void Update() {}
-
-		protected virtual void FixedUpdate() {}
-
-		protected virtual void OnEnable() {}
-
-		protected virtual void OnDisable() {}
-
-		protected virtual void OnDestroy() {}
-
-	}
-
+        private struct FieldInfo
+        {
+            public bool AutoCreate;
+            public bool AutoSet;
+            public System.Reflection.FieldInfo Field;
+            public bool Import;
+            public Type ImportType;
+        }
+    }
 }

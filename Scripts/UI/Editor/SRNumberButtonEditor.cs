@@ -5,41 +5,32 @@ using UnityEditor.UI;
 
 namespace SRF.UI.Editor
 {
+    [CustomEditor(typeof (SRNumberButton))]
+    [CanEditMultipleObjects]
+    public class SRNumberButtonEditor : ButtonEditor
+    {
+        private SerializedProperty _amountProperty;
+        private SerializedProperty _targetFieldProperty;
 
-	[CustomEditor(typeof (SRNumberButton))]
-	[CanEditMultipleObjects]
-	public class SRNumberButtonEditor : ButtonEditor
-	{
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+            _targetFieldProperty = serializedObject.FindProperty("TargetField");
+            _amountProperty = serializedObject.FindProperty("Amount");
+        }
 
-		private SerializedProperty _targetFieldProperty;
-		private SerializedProperty _amountProperty;
+        public override void OnInspectorGUI()
+        {
+            base.OnInspectorGUI();
 
-		protected override void OnEnable()
-		{
+            EditorGUILayout.Space();
 
-			base.OnEnable();
-			_targetFieldProperty = serializedObject.FindProperty("TargetField");
-			_amountProperty = serializedObject.FindProperty("Amount");
-
-		}
-
-		public override void OnInspectorGUI()
-		{
-
-			base.OnInspectorGUI();
-
-			EditorGUILayout.Space();
-
-			serializedObject.Update();
-			EditorGUILayout.PropertyField(_targetFieldProperty);
-			EditorGUILayout.PropertyField(_amountProperty);
-			serializedObject.ApplyModifiedProperties();
-
-		}
-
-	}
-
-
+            serializedObject.Update();
+            EditorGUILayout.PropertyField(_targetFieldProperty);
+            EditorGUILayout.PropertyField(_amountProperty);
+            serializedObject.ApplyModifiedProperties();
+        }
+    }
 }
 
 #endif

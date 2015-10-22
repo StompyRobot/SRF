@@ -6,50 +6,49 @@ using UnityEngine.UI;
 
 namespace SRF.UI
 {
+    /// <summary>
+    /// Detects when a screen dpi exceeds what the developer considers
+    /// a "retina" level display, and scales the canvas accordingly.
+    /// </summary>
+    [RequireComponent(typeof (CanvasScaler))]
+    [AddComponentMenu(ComponentMenuPaths.RetinaScaler)]
+    public class SRRetinaScaler : SRMonoBehaviour
+    {
+        [SerializeField] private float _retinaScale = 2f;
 
-	/// <summary>
-	/// Detects when a screen dpi exceeds what the developer considers
-	/// a "retina" level display, and scales the canvas accordingly.
-	/// </summary>
-	[RequireComponent(typeof(CanvasScaler))]
-	[AddComponentMenu(ComponentMenuPaths.RetinaScaler)]
-	public class SRRetinaScaler : SRMonoBehaviour
-	{
+        [SerializeField] private int _thresholdDpi = 250;
 
-		[SerializeField]
-		private int _thresholdDpi = 250;
+        /// <summary>
+        /// Dpi over which to apply scaling
+        /// </summary>
+        public int ThresholdDpi
+        {
+            get { return _thresholdDpi; }
+        }
 
-		[SerializeField]
-		private float _retinaScale = 2f;
+        public float RetinaScale
+        {
+            get { return _retinaScale; }
+        }
 
-		/// <summary>
-		/// Dpi over which to apply scaling
-		/// </summary>
-		public int ThresholdDpi { get { return _thresholdDpi; } }
+        private void Start()
+        {
+            var dpi = Screen.dpi;
 
-		public float RetinaScale { get { return _retinaScale; } }
+            if (dpi <= 0)
+            {
+                return;
+            }
 
-		private void Start()
-		{
+            if (dpi > ThresholdDpi)
+            {
+                var scaler = GetComponent<CanvasScaler>();
 
-			var dpi = Screen.dpi;
-
-			if (dpi <= 0)
-				return;
-
-			if (dpi > ThresholdDpi) {
-
-				var scaler = GetComponent<CanvasScaler>();
-
-				scaler.uiScaleMode = CanvasScaler.ScaleMode.ConstantPixelSize;
-				scaler.scaleFactor = RetinaScale;
-
-			}
-
-		}
-
-	}
-
+                scaler.uiScaleMode = CanvasScaler.ScaleMode.ConstantPixelSize;
+                scaler.scaleFactor = RetinaScale;
+            }
+        }
+    }
 }
 
 #endif

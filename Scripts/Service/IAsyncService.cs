@@ -1,10 +1,7 @@
 ﻿namespace SRF.Service
 {
-	public interface IAsyncService
-	{
-
-		bool IsLoaded { get; }
-
-	}
-
+    public interface IAsyncService
+    {
+        bool IsLoaded { get; }
+    }
 }

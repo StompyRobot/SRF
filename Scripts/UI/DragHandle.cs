@@ -1,175 +1,190 @@
 ﻿using System;
 using UnityEngine;
-using System.Collections;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace SRF.UI
 {
-	public class DragHandle : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHandler
-	{
+    public class DragHandle : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHandler
+    {
+        private CanvasScaler _canvasScaler;
+        private float _delta;
+        private float _startValue;
+        public RectTransform.Axis Axis = RectTransform.Axis.Horizontal;
+        public bool Invert = false;
+        public float MaxSize = -1;
+        public LayoutElement TargetLayoutElement;
+        public RectTransform TargetRectTransform;
 
-		public float MaxSize = -1;
+        private float Mult
+        {
+            get { return Invert ? -1 : 1; }
+        }
 
-		public LayoutElement TargetLayoutElement;
+        public void OnBeginDrag(PointerEventData eventData)
+        {
+            if (!Verify())
+            {
+                return;
+            }
 
-		public RectTransform TargetRectTransform;
+            //Debug.Log("OnBeginDrag");
 
-		public RectTransform.Axis Axis = RectTransform.Axis.Horizontal;
+            _startValue = GetCurrentValue();
+            _delta = 0;
+        }
 
-		public bool Invert = false;
+        public void OnDrag(PointerEventData eventData)
+        {
+            if (!Verify())
+            {
+                return;
+            }
 
-		private float Mult {get { return Invert ? -1 : 1; } }
+            //Debug.Log("OnDrag");
 
-		private float _startValue;
-		private float _delta;
+            var delta = 0f;
 
-		private CanvasScaler _canvasScaler;
+            if (Axis == RectTransform.Axis.Horizontal)
+            {
+                delta += eventData.delta.x;
+            }
+            else
+            {
+                delta += eventData.delta.y;
+            }
 
-		void Start()
-		{
-			Verify();
-			_canvasScaler = GetComponentInParent<CanvasScaler>();
-		}
+            if (_canvasScaler != null)
+            {
+                delta /= _canvasScaler.scaleFactor;
+            }
 
-		bool Verify()
-		{
-			if (TargetLayoutElement == null && TargetRectTransform == null) {
-				Debug.LogWarning("DragHandle: TargetLayoutElement and TargetRectTransform are both null. Disabling behaviour.");
-				enabled = false;
-				return false;
-			}
+            delta *= Mult;
+            _delta += delta;
 
-			return true;
-		}
+            SetCurrentValue(Mathf.Clamp(_startValue + _delta, GetMinSize(), GetMaxSize()));
+        }
 
-		public void OnBeginDrag(PointerEventData eventData)
-		{
-			if (!Verify()) return;
+        public void OnEndDrag(PointerEventData eventData)
+        {
+            if (!Verify())
+            {
+                return;
+            }
 
-			//Debug.Log("OnBeginDrag");
+            //Debug.Log("OnEndDrag");
 
-			_startValue = GetCurrentValue();
-			_delta = 0;
-		}
+            SetCurrentValue(Mathf.Max(_startValue + _delta, GetMinSize()));
+            _delta = 0;
+            CommitCurrentValue();
+        }
 
-		public void OnEndDrag(PointerEventData eventData)
-		{
-			if (!Verify()) return;
+        private void Start()
+        {
+            Verify();
+            _canvasScaler = GetComponentInParent<CanvasScaler>();
+        }
 
-			//Debug.Log("OnEndDrag");
+        private bool Verify()
+        {
+            if (TargetLayoutElement == null && TargetRectTransform == null)
+            {
+                Debug.LogWarning(
+                    "DragHandle: TargetLayoutElement and TargetRectTransform are both null. Disabling behaviour.");
+                enabled = false;
+                return false;
+            }
 
-			SetCurrentValue(Mathf.Max(_startValue + _delta, GetMinSize()));
-			_delta = 0;
-			CommitCurrentValue();
-		}
+            return true;
+        }
 
-		public void OnDrag(PointerEventData eventData)
-		{
-			if (!Verify()) return;
+        private float GetCurrentValue()
+        {
+            if (TargetLayoutElement != null)
+            {
+                return Axis == RectTransform.Axis.Horizontal
+                    ? TargetLayoutElement.preferredWidth
+                    : TargetLayoutElement.preferredHeight;
+            }
 
-			//Debug.Log("OnDrag");
+            if (TargetRectTransform != null)
+            {
+                return Axis == RectTransform.Axis.Horizontal
+                    ? TargetRectTransform.sizeDelta.x
+                    : TargetRectTransform.sizeDelta.y;
+            }
 
-			var delta = 0f;
+            throw new InvalidOperationException();
+        }
 
-			if (Axis == RectTransform.Axis.Horizontal)
-				delta += eventData.delta.x;
-			else
-				delta += eventData.delta.y;
+        private void SetCurrentValue(float value)
+        {
+            if (TargetLayoutElement != null)
+            {
+                if (Axis == RectTransform.Axis.Horizontal)
+                {
+                    TargetLayoutElement.preferredWidth = value;
+                }
+                else
+                {
+                    TargetLayoutElement.preferredHeight = value;
+                }
 
-			if (_canvasScaler != null)
-				delta /= _canvasScaler.scaleFactor;
+                return;
+            }
 
-			delta *= Mult;
-			_delta += delta;
+            if (TargetRectTransform != null)
+            {
+                var d = TargetRectTransform.sizeDelta;
 
-			SetCurrentValue(Mathf.Clamp(_startValue + _delta, GetMinSize(), GetMaxSize()));
-		}
+                if (Axis == RectTransform.Axis.Horizontal)
+                {
+                    d.x = value;
+                }
+                else
+                {
+                    d.y = value;
+                }
 
-		private float GetCurrentValue()
-		{
+                TargetRectTransform.sizeDelta = d;
 
-			if (TargetLayoutElement != null) {
+                return;
+            }
 
-				return Axis == RectTransform.Axis.Horizontal
-					? TargetLayoutElement.preferredWidth
-					: TargetLayoutElement.preferredHeight;
+            throw new InvalidOperationException();
+        }
 
-			}
+        private void CommitCurrentValue()
+        {
+            if (TargetLayoutElement != null)
+            {
+                if (Axis == RectTransform.Axis.Horizontal)
+                {
+                    TargetLayoutElement.preferredWidth = ((RectTransform) TargetLayoutElement.transform).sizeDelta.x;
+                }
+                else
+                {
+                    TargetLayoutElement.preferredHeight = ((RectTransform) TargetLayoutElement.transform).sizeDelta.y;
+                }
+            }
+        }
 
-			if (TargetRectTransform != null) {
+        private float GetMinSize()
+        {
+            if (TargetLayoutElement == null)
+            {
+                return 0;
+            }
+            return Axis == RectTransform.Axis.Horizontal ? TargetLayoutElement.minWidth : TargetLayoutElement.minHeight;
+        }
 
-				return Axis == RectTransform.Axis.Horizontal
-					? TargetRectTransform.sizeDelta.x
-					: TargetRectTransform.sizeDelta.y;
-
-			}
-
-			throw new InvalidOperationException();
-
-		}
-
-		private void SetCurrentValue(float value)
-		{
-
-			if (TargetLayoutElement != null) {
-
-				if (Axis == RectTransform.Axis.Horizontal) {
-					TargetLayoutElement.preferredWidth = value;
-				} else {
-					TargetLayoutElement.preferredHeight = value;
-				}
-
-				return;
-
-			}
-
-			if (TargetRectTransform != null) {
-
-				var d = TargetRectTransform.sizeDelta;
-
-				if (Axis == RectTransform.Axis.Horizontal) {
-					d.x = value;
-				} else {
-					d.y = value;
-				}
-
-				TargetRectTransform.sizeDelta = d;
-
-				return;
-
-			}
-
-			throw new InvalidOperationException();
-
-		}
-
-		private void CommitCurrentValue()
-		{
-
-			if (TargetLayoutElement != null) {
-
-				if (Axis == RectTransform.Axis.Horizontal) {
-					TargetLayoutElement.preferredWidth = ((RectTransform)TargetLayoutElement.transform).sizeDelta.x;
-				} else {
-					TargetLayoutElement.preferredHeight = ((RectTransform)TargetLayoutElement.transform).sizeDelta.y;
-				}
-			}
-
-		}
-
-		private float GetMinSize()
-		{
-			if (TargetLayoutElement == null) return 0;
-			return Axis == RectTransform.Axis.Horizontal ? TargetLayoutElement.minWidth : TargetLayoutElement.minHeight;
-		}
-
-		private float GetMaxSize()
-		{
-			if (MaxSize > 0)
-				return MaxSize;
-			return float.MaxValue;
-		}
-
-	}
+        private float GetMaxSize()
+        {
+            if (MaxSize > 0)
+            {
+                return MaxSize;
+            }
+            return float.MaxValue;
+        }
+    }
 }

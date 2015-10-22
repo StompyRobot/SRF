@@ -5,108 +5,101 @@ using UnityEngine;
 
 namespace SRF.UI
 {
+    [ExecuteInEditMode]
+    [RequireComponent(typeof (RectTransform))]
+    [AddComponentMenu(ComponentMenuPaths.ResponsiveEnable)]
+    public class ResponsiveEnable : ResponsiveBase
+    {
+        public enum Modes
+        {
+            EnableAbove,
+            EnableBelow
+        }
 
-	[ExecuteInEditMode]
-	[RequireComponent(typeof(RectTransform))]
-	[AddComponentMenu(ComponentMenuPaths.ResponsiveEnable)]
-	public class ResponsiveEnable : ResponsiveBase
-	{
+        public Entry[] Entries = new Entry[0];
 
-		[Serializable]
-		public struct Entry
-		{
+        protected override void Refresh()
+        {
+            var rect = RectTransform.rect;
 
-			public Modes Mode;
+            for (var i = 0; i < Entries.Length; i++)
+            {
+                var e = Entries[i];
 
-			public float ThresholdWidth;
-			public float ThresholdHeight;
+                var enable = true;
 
-			public GameObject[] GameObjects;
-			public Behaviour[] Components;
+                switch (e.Mode)
+                {
+                    case Modes.EnableAbove:
+                    {
+                        if (e.ThresholdHeight > 0)
+                        {
+                            enable = rect.height >= e.ThresholdHeight && enable;
+                        }
 
-		}
+                        if (e.ThresholdWidth > 0)
+                        {
+                            enable = rect.width >= e.ThresholdWidth && enable;
+                        }
 
-		public enum Modes
-		{
+                        break;
+                    }
+                    case Modes.EnableBelow:
+                    {
+                        if (e.ThresholdHeight > 0)
+                        {
+                            enable = rect.height <= e.ThresholdHeight && enable;
+                        }
 
-			EnableAbove,
-			EnableBelow
+                        if (e.ThresholdWidth > 0)
+                        {
+                            enable = rect.width <= e.ThresholdWidth && enable;
+                        }
 
-		}
+                        break;
+                    }
+                    default:
+                        throw new IndexOutOfRangeException();
+                }
 
-		public Entry[] Entries = new Entry[0];
+                if (e.GameObjects != null)
+                {
+                    for (var j = 0; j < e.GameObjects.Length; j++)
+                    {
+                        var go = e.GameObjects[j];
 
-		protected override void Refresh()
-		{
+                        if (go != null)
+                        {
+                            go.SetActive(enable);
+                        }
+                    }
+                }
 
-			var rect = RectTransform.rect;
+                if (e.Components != null)
+                {
+                    for (var j = 0; j < e.Components.Length; j++)
+                    {
+                        var go = e.Components[j];
 
-			for (var i = 0; i < Entries.Length; i++) {
+                        if (go != null)
+                        {
+                            go.enabled = enable;
+                        }
+                    }
+                }
+            }
+        }
 
-				var e = Entries[i];
+        [Serializable]
+        public struct Entry
+        {
+            public Behaviour[] Components;
+            public GameObject[] GameObjects;
+            public Modes Mode;
+            public float ThresholdHeight;
+            public float ThresholdWidth;
+        }
+    }
+}
 
-
-				var enable = true;
-
-				switch (e.Mode) {
-
-					case Modes.EnableAbove: {
-
-							if (e.ThresholdHeight > 0)
-								enable = rect.height >= e.ThresholdHeight && enable;
-
-							if (e.ThresholdWidth > 0)
-								enable = rect.width >= e.ThresholdWidth && enable;
-
-							break;
-
-						}
-					case Modes.EnableBelow: {
-
-							if (e.ThresholdHeight > 0)
-								enable = rect.height <= e.ThresholdHeight && enable;
-
-							if (e.ThresholdWidth > 0)
-								enable = rect.width <= e.ThresholdWidth && enable;
-
-							break;
-						}
-					default:
-						throw new IndexOutOfRangeException();
-
-				}
-
-				if (e.GameObjects != null) {
-
-					for (var j = 0; j < e.GameObjects.Length; j++) {
-
-						var go = e.GameObjects[j];
-
-						if (go != null)
-							go.SetActive(enable);
-
-					}
-
-				}
-
-				if (e.Components != null) {
-
-					for (var j = 0; j < e.Components.Length; j++) {
-
-						var go = e.Components[j];
-
-						if (go != null)
-							go.enabled = enable;
-
-					}
-
-				}
-
-			}
-
-		}
-
-	}
-
-} 
 #endif

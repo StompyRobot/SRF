@@ -3,33 +3,26 @@ using UnityEditor.UI;
 
 namespace SRF.UI.Editor
 {
+    [CustomEditor(typeof (LongPressButton), true)]
+    [CanEditMultipleObjects]
+    public class LongPressButtonEditor : ButtonEditor
+    {
+        private SerializedProperty _onLongPressProperty;
 
-	[CustomEditor(typeof(LongPressButton), true)]
-	[CanEditMultipleObjects]
-	public class LongPressButtonEditor : ButtonEditor
-	{
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+            _onLongPressProperty = serializedObject.FindProperty("_onLongPress");
+        }
 
-		private SerializedProperty _onLongPressProperty;
+        public override void OnInspectorGUI()
+        {
+            base.OnInspectorGUI();
 
-		protected override void OnEnable()
-		{
-			base.OnEnable();
-			_onLongPressProperty = serializedObject.FindProperty("_onLongPress");
-		}
-
-
-		public override void OnInspectorGUI()
-		{
-
-			base.OnInspectorGUI();
-
-			EditorGUILayout.Space();
-			serializedObject.Update();
-			EditorGUILayout.PropertyField(_onLongPressProperty);
-			serializedObject.ApplyModifiedProperties();
-
-		}
-
-	}
-
+            EditorGUILayout.Space();
+            serializedObject.Update();
+            EditorGUILayout.PropertyField(_onLongPressProperty);
+            serializedObject.ApplyModifiedProperties();
+        }
+    }
 }

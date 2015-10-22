@@ -3,47 +3,45 @@ using System.Collections.Generic;
 
 namespace SRF
 {
+    public static class SRFIListExtensions
+    {
+        public static T Random<T>(this IList<T> list)
+        {
+            if (list.Count == 0)
+            {
+                throw new IndexOutOfRangeException("List needs at least one entry to call Random()");
+            }
 
-	public static class SRFIListExtensions
-	{
+            if (list.Count == 1)
+            {
+                return list[0];
+            }
 
-		public static T Random<T>(this IList<T> list)
-		{
+            return list[UnityEngine.Random.Range(0, list.Count)];
+        }
 
-			if(list.Count == 0)
-				throw new IndexOutOfRangeException("List needs at least one entry to call Random()");
+        public static T RandomOrDefault<T>(this IList<T> list)
+        {
+            if (list.Count == 0)
+            {
+                return default(T);
+            }
 
-			if (list.Count == 1)
-				return list[0];
+            return list.Random();
+        }
 
-			return list[UnityEngine.Random.Range(0, list.Count)];
-		
-		}
-	
-		public static T RandomOrDefault<T>(this IList<T> list)
-		{
+        public static T PopLast<T>(this IList<T> list)
+        {
+            if (list.Count == 0)
+            {
+                throw new InvalidOperationException();
+            }
 
-			if (list.Count == 0)
-				return default(T);
+            var t = list[list.Count - 1];
 
-			return list.Random();
+            list.RemoveAt(list.Count - 1);
 
-		}
-
-		public static T PopLast<T>(this IList<T> list)
-		{
-
-			if (list.Count == 0)
-				throw new InvalidOperationException();
-
-			var t = list[list.Count - 1];
-
-			list.RemoveAt(list.Count-1);
-
-			return t;
-
-		}
-
-	}
-
+            return t;
+        }
+    }
 }

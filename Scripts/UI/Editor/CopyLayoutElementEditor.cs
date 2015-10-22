@@ -1,11 +1,8 @@
 ﻿#if ENABLE_4_6_FEATURES
 
-using UnityEditor;
-
 namespace SRF.UI.Editor
 {
-
-	/*[CustomEditor(typeof(CopyLayoutElement))]
+    /*[CustomEditor(typeof(CopyLayoutElement))]
 	[CanEditMultipleObjects]
 	public class CopyLayoutElementEditor : UnityEditor.Editor
 	{
@@ -41,8 +38,6 @@ namespace SRF.UI.Editor
 		}
 
 	}*/
-
-
 }
 
 #endif

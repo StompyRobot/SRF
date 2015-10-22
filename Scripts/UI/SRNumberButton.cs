@@ -5,89 +5,78 @@ using UnityEngine.UI;
 
 namespace SRF.UI
 {
+    [AddComponentMenu(ComponentMenuPaths.NumberButton)]
+    public class SRNumberButton : Button, IPointerClickHandler, IPointerDownHandler, IPointerUpHandler
+    {
+        private const float ExtraThreshold = 3f;
+        public const float Delay = 0.4f;
+        private float _delayTime;
+        private float _downTime;
+        private bool _isDown;
+        public double Amount = 1;
+        public SRNumberSpinner TargetField;
 
-	[AddComponentMenu(ComponentMenuPaths.NumberButton)]
-	public class SRNumberButton : Button, IPointerClickHandler, IPointerDownHandler, IPointerUpHandler
-	{
+        public override void OnPointerDown(PointerEventData eventData)
+        {
+            base.OnPointerDown(eventData);
 
-		private const float ExtraThreshold = 3f;
+            if (!interactable)
+            {
+                return;
+            }
 
-		public SRNumberSpinner TargetField;
+            Apply();
 
-		public double Amount = 1;
+            _isDown = true;
+            _downTime = Time.realtimeSinceStartup;
+            _delayTime = _downTime + Delay;
+        }
 
-		public const float Delay = 0.4f;
+        public override void OnPointerUp(PointerEventData eventData)
+        {
+            base.OnPointerUp(eventData);
 
-		private bool _isDown;
-		private float _delayTime;
-		private float _downTime;
+            _isDown = false;
+        }
 
-		public override void OnPointerDown(PointerEventData eventData)
-		{
+        protected virtual void Update()
+        {
+            if (_isDown)
+            {
+                if (_delayTime <= Time.realtimeSinceStartup)
+                {
+                    Apply();
 
-			base.OnPointerDown(eventData);
+                    var newDelay = Delay*0.5f;
 
-			if (!interactable)
-				return;
+                    var extra = Mathf.RoundToInt((Time.realtimeSinceStartup - _downTime)/ExtraThreshold);
 
-			Apply();
+                    for (var i = 0; i < extra; i++)
+                    {
+                        newDelay *= 0.5f;
+                    }
 
-			_isDown = true;
-			_downTime = Time.realtimeSinceStartup;
-			_delayTime = _downTime + Delay;
+                    _delayTime = Time.realtimeSinceStartup + newDelay;
+                }
+            }
+        }
 
-		}
+        private void Apply()
+        {
+            var currentValue = double.Parse(TargetField.text);
+            currentValue += Amount;
 
-		public override void OnPointerUp(PointerEventData eventData)
-		{
+            if (currentValue > TargetField.MaxValue)
+            {
+                currentValue = TargetField.MaxValue;
+            }
+            if (currentValue < TargetField.MinValue)
+            {
+                currentValue = TargetField.MinValue;
+            }
 
-			base.OnPointerUp(eventData);
-
-			_isDown = false;
-
-		}
-
-		protected virtual void Update()
-		{
-
-			if (_isDown) {
-
-				if (_delayTime <= Time.realtimeSinceStartup) {
-
-					Apply();
-
-					var newDelay = Delay*0.5f;
-
-					var extra = Mathf.RoundToInt((Time.realtimeSinceStartup-_downTime)/ExtraThreshold);
-
-					for (var i = 0; i < extra; i++) {
-						newDelay *= 0.5f;
-					}
-
-					_delayTime = Time.realtimeSinceStartup + newDelay;
-
-				}
-
-			}
-
-		}
-
-		private void Apply()
-		{
-
-			var currentValue = double.Parse(TargetField.text);
-			currentValue += Amount;
-
-			if (currentValue > TargetField.MaxValue)
-				currentValue = TargetField.MaxValue;
-			if (currentValue < TargetField.MinValue)
-				currentValue = TargetField.MinValue;
-
-			TargetField.text = currentValue.ToString();
-			TargetField.onEndEdit.Invoke(TargetField.text);
-
-		}
-
-	}
-
+            TargetField.text = currentValue.ToString();
+            TargetField.onEndEdit.Invoke(TargetField.text);
+        }
+    }
 }

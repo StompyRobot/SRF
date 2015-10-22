@@ -7,112 +7,115 @@ using Debug = UnityEngine.Debug;
 
 namespace SRF.Service
 {
-	public abstract class SRSceneServiceBase<T, TImpl> : SRServiceBase<T>, IAsyncService
-		where T : class
-		where TImpl : Component
-	{
+    public abstract class SRSceneServiceBase<T, TImpl> : SRServiceBase<T>, IAsyncService
+        where T : class
+        where TImpl : Component
+    {
+        private TImpl _rootObject;
 
-		[Conditional("ENABLE_LOGGING")]
-		private void Log(string msg, Object target)
-		{
-			//#if ENABLE_LOGGING
-			Debug.Log(msg, target);
-			//#endif
-		}
+        /// <summary>
+        /// Name of the scene this service's contents are within
+        /// </summary>
+        protected abstract string SceneName { get; }
 
-		/// <summary>
-		/// Name of the scene this service's contents are within
-		/// </summary>
-		protected abstract string SceneName { get; }
+        /// <summary>
+        /// Scene contents root object
+        /// </summary>
+        protected TImpl RootObject
+        {
+            get { return _rootObject; }
+        }
 
-		/// <summary>
-		/// Scene contents root object
-		/// </summary>
-		protected TImpl RootObject
-		{
-			get { return _rootObject; }
-		}
+        public bool IsLoaded
+        {
+            get { return _rootObject != null; }
+        }
 
-		public bool IsLoaded { get { return _rootObject != null; } }
+        [Conditional("ENABLE_LOGGING")]
+        private void Log(string msg, Object target)
+        {
+            //#if ENABLE_LOGGING
+            Debug.Log(msg, target);
+            //#endif
+        }
 
-		private TImpl _rootObject;
+        protected override void Start()
+        {
+            base.Start();
 
-		protected override void Start()
-		{
+            StartCoroutine(LoadCoroutine());
+        }
 
-			base.Start();
+        protected override void OnDestroy()
+        {
+            if (IsLoaded)
+            {
+                Destroy(_rootObject.gameObject);
+            }
 
-			StartCoroutine(LoadCoroutine());
+            base.OnDestroy();
+        }
 
-		}
+        protected virtual void OnLoaded() {}
 
-		protected override void OnDestroy()
-		{
+        private IEnumerator LoadCoroutine()
+        {
+            if (_rootObject != null)
+            {
+                yield break;
+            }
 
-			if(IsLoaded)
-				Destroy(_rootObject.gameObject);
+            SRServiceManager.LoadingCount++;
 
-			base.OnDestroy();
-		}
-
-		protected virtual void OnLoaded() {}
-
-		private IEnumerator LoadCoroutine()
-		{
-
-			if (_rootObject != null)
-				yield break;
-
-			SRServiceManager.LoadingCount++;
-
-			if (Application.loadedLevelName == SceneName) {
-
-				Log("[Service] Already in service scene {0}. Searching for root object...".Fmt(SceneName), this);
-
-			} else {
-
-				Log("[Service] Loading scene ({0})".Fmt(SceneName), this);
+            if (Application.loadedLevelName == SceneName)
+            {
+                Log("[Service] Already in service scene {0}. Searching for root object...".Fmt(SceneName), this);
+            }
+            else
+            {
+                Log("[Service] Loading scene ({0})".Fmt(SceneName), this);
 
 #if UNITY_PRO_LICENSE
-					yield return Application.LoadLevelAdditiveAsync(SceneName);
+                yield return Application.LoadLevelAdditiveAsync(SceneName);
 #else
 					Application.LoadLevelAdditive(SceneName);
 					yield return new WaitForEndOfFrame();
 #endif
 
-				Log("[Service] Scene loaded. Searching for root object...", this);
+                Log("[Service] Scene loaded. Searching for root object...", this);
+            }
 
-			}
+            var go = GameObject.Find(SceneName);
 
-			var go = GameObject.Find(SceneName);
+            if (go == null)
+            {
+                goto Error;
+            }
 
-			if (go == null)
-				goto Error;
+            var timpl = go.GetComponent<TImpl>();
 
-			var timpl = go.GetComponent<TImpl>();
+            if (timpl == null)
+            {
+                goto Error;
+            }
 
-			if (timpl == null)
-				goto Error;
+            _rootObject = timpl;
+            _rootObject.transform.parent = CachedTransform;
 
-			_rootObject = timpl;
-			_rootObject.transform.parent = CachedTransform;
+            DontDestroyOnLoad(go);
 
-			DontDestroyOnLoad(go);
+            Debug.Log("[Service] Loading {0} complete. (Scene: {1})".Fmt(GetType().Name, SceneName), this);
+            SRServiceManager.LoadingCount--;
 
-			Debug.Log("[Service] Loading {0} complete. (Scene: {1})".Fmt(GetType().Name, SceneName), this);
-			SRServiceManager.LoadingCount--;
+            OnLoaded();
 
-			OnLoaded();
+            yield break;
 
-			yield break;
+            Error:
 
-			Error:
-
-			SRServiceManager.LoadingCount--;
-			Debug.LogError("[Service] Root object ({0}) not found".Fmt(SceneName), this);
-			enabled = false;
-
-		}
-
-	}
+            SRServiceManager.LoadingCount--;
+            Debug.LogError("[Service] Root object ({0}) not found".Fmt(SceneName), this);
+            enabled = false;
+        }
+    }
 }

@@ -7,136 +7,143 @@ using UnityEngine.UI;
 
 namespace SRF.UI
 {
+    [RequireComponent(typeof (RectTransform))]
+    [ExecuteInEditMode]
+    [AddComponentMenu(ComponentMenuPaths.ContentFitText)]
+    public class ContentFitText : UIBehaviour, ILayoutElement
+    {
+        public SRText CopySource;
+        public Vector2 Padding;
 
-	[RequireComponent(typeof(RectTransform))]
-	[ExecuteInEditMode]
-	[AddComponentMenu(ComponentMenuPaths.ContentFitText)]
-	public class ContentFitText : UIBehaviour, ILayoutElement
-	{
+        public float minWidth
+        {
+            get
+            {
+                if (CopySource == null)
+                {
+                    return -1f;
+                }
+                return LayoutUtility.GetMinWidth(CopySource.rectTransform) + Padding.x;
+            }
+        }
 
-		public SRText CopySource;
+        public float preferredWidth
+        {
+            get
+            {
+                if (CopySource == null)
+                {
+                    return -1f;
+                }
+                return LayoutUtility.GetPreferredWidth(CopySource.rectTransform) + Padding.x;
+            }
+        }
 
-		public Vector2 Padding;
+        public float flexibleWidth
+        {
+            get
+            {
+                if (CopySource == null)
+                {
+                    return -1f;
+                }
+                return LayoutUtility.GetFlexibleWidth(CopySource.rectTransform);
+            }
+        }
 
-		public float minWidth
-		{
-			get
-			{
-				if (CopySource == null)
-					return -1f;
-				return LayoutUtility.GetMinWidth(CopySource.rectTransform) + Padding.x;
-			}
-		}
+        public float minHeight
+        {
+            get
+            {
+                if (CopySource == null)
+                {
+                    return -1f;
+                }
+                return LayoutUtility.GetFlexibleHeight(CopySource.rectTransform) + Padding.y;
+            }
+        }
 
-		public float preferredWidth
-		{
-			get
-			{
-				if (CopySource == null)
-					return -1f;
-				return LayoutUtility.GetPreferredWidth(CopySource.rectTransform) + Padding.x;
-			}
-		}
+        public float preferredHeight
+        {
+            get
+            {
+                if (CopySource == null)
+                {
+                    return -1f;
+                }
+                return LayoutUtility.GetPreferredHeight(CopySource.rectTransform) + Padding.y;
+            }
+        }
 
-		public float flexibleWidth
-		{
-			get
-			{
-				if (CopySource == null)
-					return -1f;
-				return LayoutUtility.GetFlexibleWidth(CopySource.rectTransform);
-			}
-		}
+        public float flexibleHeight
+        {
+            get
+            {
+                if (CopySource == null)
+                {
+                    return -1f;
+                }
+                return LayoutUtility.GetFlexibleHeight(CopySource.rectTransform);
+            }
+        }
 
-		public float minHeight
-		{
-			get
-			{
-				if (CopySource == null)
-					return -1f;
-				return LayoutUtility.GetFlexibleHeight(CopySource.rectTransform) + Padding.y;
-			}
-		}
+        public int layoutPriority
+        {
+            get { return 0; }
+        }
 
-		public float preferredHeight
-		{
-			get
-			{
-				if (CopySource == null)
-					return -1f;
-				return LayoutUtility.GetPreferredHeight(CopySource.rectTransform) + Padding.y;
-			}
-		}
+        public void CalculateLayoutInputHorizontal()
+        {
+            CopySource.CalculateLayoutInputHorizontal();
+        }
 
-		public float flexibleHeight
-		{
-			get
-			{
-				if (CopySource == null)
-					return -1f;
-				return LayoutUtility.GetFlexibleHeight(CopySource.rectTransform);
-			}
-		}
+        public void CalculateLayoutInputVertical()
+        {
+            CopySource.CalculateLayoutInputVertical();
+        }
 
-		public int layoutPriority
-		{
-			get { return 0; }
-		}
+        protected override void OnEnable()
+        {
+            SetDirty();
+            CopySource.LayoutDirty += CopySourceOnLayoutDirty;
+        }
 
+        private void CopySourceOnLayoutDirty(SRText srText)
+        {
+            SetDirty();
+        }
 
-		public void CalculateLayoutInputHorizontal()
-		{
-			CopySource.CalculateLayoutInputHorizontal();
-		}
+        protected override void OnTransformParentChanged()
+        {
+            SetDirty();
+        }
 
-		public void CalculateLayoutInputVertical()
-		{
-			CopySource.CalculateLayoutInputVertical();
-		}
+        protected override void OnDisable()
+        {
+            CopySource.LayoutDirty -= CopySourceOnLayoutDirty;
+            SetDirty();
+        }
 
-		protected override void OnEnable()
-		{
-			SetDirty();
-			CopySource.LayoutDirty += CopySourceOnLayoutDirty;
-		}
+        protected override void OnDidApplyAnimationProperties()
+        {
+            SetDirty();
+        }
 
-		private void CopySourceOnLayoutDirty(SRText srText)
-		{
-			SetDirty();
-		}
+        protected override void OnBeforeTransformParentChanged()
+        {
+            SetDirty();
+        }
 
-		protected override void OnTransformParentChanged()
-		{
-			SetDirty();
-		}
+        protected void SetDirty()
+        {
+            if (!IsActive())
+            {
+                return;
+            }
 
-		protected override void OnDisable()
-		{
-			CopySource.LayoutDirty -= CopySourceOnLayoutDirty;
-			SetDirty();
-		}
-
-		protected override void OnDidApplyAnimationProperties()
-		{
-			SetDirty();
-		}
-
-		protected override void OnBeforeTransformParentChanged()
-		{
-			SetDirty();
-		}
-
-		protected void SetDirty()
-		{
-
-			if (!IsActive())
-				return;
-
-			LayoutRebuilder.MarkLayoutForRebuild(transform as RectTransform);
-
-		}
-
-	}
+            LayoutRebuilder.MarkLayoutForRebuild(transform as RectTransform);
+        }
+    }
 }
 
 #endif

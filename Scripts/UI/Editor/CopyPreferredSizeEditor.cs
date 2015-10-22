@@ -4,45 +4,35 @@ using UnityEditor;
 
 namespace SRF.UI.Editor
 {
+    [CustomEditor(typeof (CopyPreferredSize))]
+    [CanEditMultipleObjects]
+    public class CopyPreferredSizeEditor : UnityEditor.Editor
+    {
+        private SerializedProperty _copySourceProperty;
+        private SerializedProperty _paddingHeightProperty;
+        private SerializedProperty _paddingWidthProperty;
 
-	[CustomEditor(typeof(CopyPreferredSize))]
-	[CanEditMultipleObjects]
-	public class CopyPreferredSizeEditor : UnityEditor.Editor
-	{
+        protected void OnEnable()
+        {
+            _paddingWidthProperty = serializedObject.FindProperty("PaddingWidth");
+            _paddingHeightProperty = serializedObject.FindProperty("PaddingHeight");
+            _copySourceProperty = serializedObject.FindProperty("CopySource");
+        }
 
-		private SerializedProperty _copySourceProperty;
+        public override void OnInspectorGUI()
+        {
+            //base.OnInspectorGUI();
 
-		private SerializedProperty _paddingWidthProperty;
-		private SerializedProperty _paddingHeightProperty;
+            EditorGUILayout.Space();
 
-		protected void OnEnable()
-		{
+            EditorGUILayout.PropertyField(_copySourceProperty);
+            EditorGUILayout.PropertyField(_paddingWidthProperty);
+            EditorGUILayout.PropertyField(_paddingHeightProperty);
+            serializedObject.ApplyModifiedProperties();
 
-			_paddingWidthProperty = serializedObject.FindProperty("PaddingWidth");
-			_paddingHeightProperty = serializedObject.FindProperty("PaddingHeight");
-			_copySourceProperty = serializedObject.FindProperty("CopySource");
-
-		}
-
-		public override void OnInspectorGUI()
-		{
-
-			//base.OnInspectorGUI();
-
-			EditorGUILayout.Space();
-
-			EditorGUILayout.PropertyField(_copySourceProperty);
-			EditorGUILayout.PropertyField(_paddingWidthProperty);
-			EditorGUILayout.PropertyField(_paddingHeightProperty);
-			serializedObject.ApplyModifiedProperties();
-
-			serializedObject.Update();
-
-		}
-
-	}
-
-
+            serializedObject.Update();
+        }
+    }
 }
 
 #endif

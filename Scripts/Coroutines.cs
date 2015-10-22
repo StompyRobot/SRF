@@ -3,20 +3,16 @@ using UnityEngine;
 
 namespace SRF
 {
+    public static class Coroutines
+    {
+        public static IEnumerator WaitForSecondsRealTime(float time)
+        {
+            var endTime = Time.realtimeSinceStartup + time;
 
-	public static class Coroutines
-	{
-
-		public static IEnumerator WaitForSecondsRealTime(float time)
-		{
-
-			var endTime = Time.realtimeSinceStartup + time;
-
-			while (Time.realtimeSinceStartup < endTime)
-				yield return null;
-
-		}
-
-	}
-
+            while (Time.realtimeSinceStartup < endTime)
+            {
+                yield return null;
+            }
+        }
+    }
 }

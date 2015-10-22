@@ -6,111 +6,104 @@ using UnityEngine;
 
 namespace SRF.UI.Editor
 {
+    [CustomEditor(typeof (StyleComponent))]
+    [CanEditMultipleObjects]
+    public class StyleComponentEditor : UnityEditor.Editor
+    {
+        private SerializedProperty _styleKeyProperty;
 
+        protected void OnEnable()
+        {
+            _styleKeyProperty = serializedObject.FindProperty("_styleKey");
+        }
 
-	[CustomEditor(typeof (StyleComponent))]
-	[CanEditMultipleObjects]
-	public class StyleComponentEditor : UnityEditor.Editor
-	{
+        public override void OnInspectorGUI()
+        {
+            base.OnInspectorGUI();
 
-		private SerializedProperty _styleKeyProperty;
+            var styleComponent = serializedObject.targetObject as StyleComponent;
 
-		protected void OnEnable()
-		{
+            if (styleComponent == null)
+            {
+                Debug.LogWarning("Target is null, expected StyleComponent");
+                return;
+            }
 
-			_styleKeyProperty = serializedObject.FindProperty("_styleKey");
+            var styleRoot = styleComponent.GetComponentInParent<StyleRoot>();
 
-		}
+            if (styleRoot == null)
+            {
+                EditorGUILayout.HelpBox("There must be a StyleRoot component above this object in the hierarchy.",
+                    MessageType.Error,
+                    true);
 
+                return;
+            }
 
-		public override void OnInspectorGUI()
-		{
-			
-			base.OnInspectorGUI();
+            var styleSheet = styleRoot.StyleSheet;
 
-			var styleComponent = serializedObject.targetObject as StyleComponent;
+            if (styleSheet == null)
+            {
+                EditorGUILayout.HelpBox("Style Root has no stylesheet set.", MessageType.Warning);
 
-			if (styleComponent == null) {
-				Debug.LogWarning("Target is null, expected StyleComponent");
-				return;
-			}
+                EditorGUILayout.Popup("Key", 0,
+                    new[] {string.IsNullOrEmpty(styleComponent.StyleKey) ? "--" : styleComponent.StyleKey});
 
-			var styleRoot = styleComponent.GetComponentInParent<StyleRoot>();
+                return;
+            }
 
-			if (styleRoot == null) {
+            var options = styleRoot.StyleSheet.GetStyleKeys(true).ToList();
 
-				EditorGUILayout.HelpBox("There must be a StyleRoot component above this object in the hierarchy.", MessageType.Error,
-					true);
+            var index = _styleKeyProperty.hasMultipleDifferentValues
+                ? 0
+                : options.IndexOf(_styleKeyProperty.stringValue) + 1;
 
-				return;
+            options.Insert(0, "--");
 
-			}
+            EditorGUILayout.Separator();
 
-			var styleSheet = styleRoot.StyleSheet;
+            GUI.enabled = _styleKeyProperty.editable;
+            var newIndex = EditorGUILayout.Popup("Key", index, options.ToArray());
+            GUI.enabled = true;
 
-			if (styleSheet == null) {
-				
-				EditorGUILayout.HelpBox("Style Root has no stylesheet set.", MessageType.Warning);
+            if (newIndex != index)
+            {
+                _styleKeyProperty.stringValue = "";
+                _styleKeyProperty.stringValue = newIndex == 0 ? "" : options[newIndex];
+            }
 
-				EditorGUILayout.Popup("Key", 0,
-					new [] {string.IsNullOrEmpty(styleComponent.StyleKey) ? "--" : styleComponent.StyleKey});
+            if (serializedObject.ApplyModifiedProperties())
+            {
+                foreach (var o in serializedObject.targetObjects)
+                {
+                    var c = o as StyleComponent;
+                    c.Refresh(true);
+                }
 
-				return;
+                _styleKeyProperty.serializedObject.Update();
+            }
 
-			}
+            EditorGUILayout.Separator();
 
-			var options = styleRoot.StyleSheet.GetStyleKeys(true).ToList();
+            GUILayout.BeginHorizontal();
 
-			var index = _styleKeyProperty.hasMultipleDifferentValues ? 0 : options.IndexOf(_styleKeyProperty.stringValue) + 1;
+            if (GUILayout.Button("Open StyleSheet"))
+            {
+                Selection.activeObject = styleRoot.StyleSheet;
+            }
 
-			options.Insert(0, "--");
+            EditorGUILayout.Separator();
 
-			EditorGUILayout.Separator();
+            if (GUILayout.Button("Select StyleRoot"))
+            {
+                Selection.activeGameObject = styleRoot.gameObject;
+            }
 
-			GUI.enabled = _styleKeyProperty.editable;
-			var newIndex = EditorGUILayout.Popup("Key", index, options.ToArray());
-			GUI.enabled = true;
+            GUILayout.EndHorizontal();
 
-			if (newIndex != index) {
-
-				_styleKeyProperty.stringValue = "";
-				_styleKeyProperty.stringValue = newIndex == 0 ? "" : options[newIndex];
-
-			}
-
-			if (serializedObject.ApplyModifiedProperties()) {
-
-				foreach (var o in serializedObject.targetObjects) {
-
-					var c = o as StyleComponent;
-					c.Refresh(true);
-
-				}
-
-				_styleKeyProperty.serializedObject.Update();
-
-			}
-
-			EditorGUILayout.Separator();
-
-			GUILayout.BeginHorizontal();
-
-			if (GUILayout.Button("Open StyleSheet"))
-				Selection.activeObject = styleRoot.StyleSheet;
-
-			EditorGUILayout.Separator();
-
-			if (GUILayout.Button("Select StyleRoot"))
-				Selection.activeGameObject = styleRoot.gameObject;
-
-			GUILayout.EndHorizontal();
-
-			EditorGUILayout.Separator();
-
-		}
-
-	}
-
+            EditorGUILayout.Separator();
+        }
+    }
 }
 
 #endif
