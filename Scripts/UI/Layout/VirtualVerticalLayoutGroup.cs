@@ -1,5 +1,4 @@
-﻿#if ENABLE_4_6_FEATURES
-//#define PROFILE
+﻿//#define PROFILE
 
 using System;
 using SRF.Internal;
@@ -627,5 +626,3 @@ namespace SRF.UI.Layout
         #endregion
     }
 }
-
-#endif

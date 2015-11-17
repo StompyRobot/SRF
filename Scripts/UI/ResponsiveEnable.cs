@@ -1,5 +1,4 @@
-﻿#if ENABLE_4_6_FEATURES
-using System;
+﻿using System;
 using SRF.Internal;
 using UnityEngine;
 
@@ -101,5 +100,3 @@ namespace SRF.UI
         }
     }
 }
-
-#endif

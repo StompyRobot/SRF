@@ -1,6 +1,4 @@
-﻿#if ENABLE_4_6_FEATURES
-
-namespace SRF.UI.Editor
+﻿namespace SRF.UI.Editor
 {
     /*[CustomEditor(typeof(CopyLayoutElement))]
 	[CanEditMultipleObjects]
@@ -39,5 +37,3 @@ namespace SRF.UI.Editor
 
 	}*/
 }
-
-#endif

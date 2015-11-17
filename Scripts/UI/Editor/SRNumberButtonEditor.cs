@@ -1,6 +1,4 @@
-﻿#if ENABLE_4_6_FEATURES
-
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEditor.UI;
 
 namespace SRF.UI.Editor
@@ -32,5 +30,3 @@ namespace SRF.UI.Editor
         }
     }
 }
-
-#endif

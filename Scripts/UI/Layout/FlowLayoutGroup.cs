@@ -1,5 +1,4 @@
-﻿#if ENABLE_4_6_FEATURES
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using SRF.Internal;
 using UnityEngine;
 using UnityEngine.UI;
@@ -295,5 +294,3 @@ namespace SRF.UI.Layout
         }
     }
 }
-
-#endif
