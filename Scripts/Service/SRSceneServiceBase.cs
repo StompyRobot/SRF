@@ -56,7 +56,7 @@ namespace SRF.Service
             base.OnDestroy();
         }
 
-        protected virtual void OnLoaded() {}
+        protected virtual void OnLoaded() { }
 
         private IEnumerator LoadCoroutine()
         {
@@ -66,8 +66,11 @@ namespace SRF.Service
             }
 
             SRServiceManager.LoadingCount++;
-
+#if UNITY_4 || UNITY_5_0 || UNITY_5_1 || UNITY_5_2
             if (Application.loadedLevelName == SceneName)
+#else
+            if (UnityEngine.SceneManagement.SceneManager.GetSceneByName(SceneName).isLoaded)
+#endif
             {
                 Log("[Service] Already in service scene {0}. Searching for root object...".Fmt(SceneName), this);
             }
@@ -75,11 +78,15 @@ namespace SRF.Service
             {
                 Log("[Service] Loading scene ({0})".Fmt(SceneName), this);
 
-#if UNITY_PRO_LICENSE
+#if UNITY_PRO_LICENSE || UNITY_5
+#if UNITY_5_0 || UNITY_5_1 || UNITY_5_2
                 yield return Application.LoadLevelAdditiveAsync(SceneName);
 #else
-					Application.LoadLevelAdditive(SceneName);
-					yield return new WaitForEndOfFrame();
+                yield return UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(SceneName, UnityEngine.SceneManagement.LoadSceneMode.Additive);
+#endif
+#else
+                Application.LoadLevelAdditive(SceneName);
+				yield return new WaitForEndOfFrame();
 #endif
 
                 Log("[Service] Scene loaded. Searching for root object...", this);
