@@ -156,8 +156,6 @@ namespace SRF.UI.Layout
 
         private void OnScrollRectValueChanged(Vector2 d)
         {
-            Debug.Log("[SRConsole] ScrollRect value changed: " + d.y);
-
             if (d.y < 0 || d.y > 1)
             {
                 _scrollRect.verticalNormalizedPosition = Mathf.Clamp01(d.y);
