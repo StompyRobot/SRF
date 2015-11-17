@@ -17,7 +17,7 @@ namespace SRF.UI.Layout
     /// <summary>
     /// </summary>
     [AddComponentMenu(ComponentMenuPaths.VirtualVerticalLayoutGroup)]
-    public class VirtualVerticalLayoutGroup : LayoutGroup, IPointerClickHandler, ICanvasElement
+    public class VirtualVerticalLayoutGroup : LayoutGroup, IPointerClickHandler
     {
         private readonly SRList<object> _itemList = new SRList<object>();
         private readonly SRList<int> _visibleItemList = new SRList<int>();
@@ -27,7 +27,8 @@ namespace SRF.UI.Layout
         private int _selectedIndex;
         private object _selectedItem;
 
-        [SerializeField] private SelectedItemChangedEvent _selectedItemChanged;
+        [SerializeField]
+        private SelectedItemChangedEvent _selectedItemChanged;
 
         private Vector2 _velocity;
         private int _visibleItemCount;
@@ -53,6 +54,9 @@ namespace SRF.UI.Layout
         /// If true, the scroll view will stick to the last element when fully scrolled to the bottom and an item is added
         /// </summary>
         public bool StickToBottom = true;
+
+        private bool _isDirty = false;
+        private float _prevScrollPosition;
 
         public SelectedItemChangedEvent SelectedItemChanged
         {
@@ -104,40 +108,8 @@ namespace SRF.UI.Layout
 
         public override float minHeight
         {
-            get { return _itemList.Count*ItemHeight + padding.top + padding.bottom + Spacing*_itemList.Count; }
+            get { return _itemList.Count * ItemHeight + padding.top + padding.bottom + Spacing * _itemList.Count; }
         }
-
-        public void Rebuild(CanvasUpdate executing)
-        {
-            switch (executing)
-            {
-                case CanvasUpdate.Prelayout:
-
-                    _normalisedPosition = ScrollRect.normalizedPosition;
-                    _velocity = ScrollRect.velocity;
-
-                    ScrollUpdate();
-
-                    break;
-
-                case CanvasUpdate.PostLayout:
-
-                    if (StickToBottom && _normalisedPosition.y <= 0.01f)
-                    {
-                        ScrollRect.normalizedPosition = _normalisedPosition;
-                    }
-                    else
-                    {
-                        ScrollRect.velocity = _velocity;
-                    }
-
-                    break;
-            }
-        }
-
-        public void LayoutComplete() {}
-
-        public void GraphicUpdateComplete() {}
 
         public void OnPointerClick(PointerEventData eventData)
         {
@@ -155,7 +127,7 @@ namespace SRF.UI.Layout
 
             var hitPos = hitObject.transform.position;
             var localPos = rectTransform.InverseTransformPoint(hitPos);
-            var row = Mathf.FloorToInt(Mathf.Abs(localPos.y)/ItemHeight);
+            var row = Mathf.FloorToInt(Mathf.Abs(localPos.y) / ItemHeight);
 
             if (row >= 0 && row < _itemList.Count)
             {
@@ -173,7 +145,7 @@ namespace SRF.UI.Layout
 
             ScrollRect.onValueChanged.AddListener(OnScrollRectValueChanged);
 
-            var view = ItemPrefab.GetComponent(typeof (IVirtualView));
+            var view = ItemPrefab.GetComponent(typeof(IVirtualView));
 
             if (view == null)
             {
@@ -184,8 +156,15 @@ namespace SRF.UI.Layout
 
         private void OnScrollRectValueChanged(Vector2 d)
         {
-            //Debug.Log("[SRConsole] ScrollRect value changed");
-            CanvasUpdateRegistry.RegisterCanvasElementForLayoutRebuild(this);
+            Debug.Log("[SRConsole] ScrollRect value changed: " + d.y);
+
+            if (d.y < 0 || d.y > 1)
+            {
+                _scrollRect.verticalNormalizedPosition = Mathf.Clamp01(d.y);
+            }
+
+            //CanvasUpdateRegistry.RegisterCanvasElementForLayoutRebuild(this);
+            SetDirty();
         }
 
         protected override void Start()
@@ -200,12 +179,6 @@ namespace SRF.UI.Layout
             SetDirty();
         }
 
-        protected override void OnDisable()
-        {
-            CanvasUpdateRegistry.UnRegisterCanvasElementForRebuild(this);
-            base.OnDisable();
-        }
-
         protected void Update()
         {
             if (!AlignBottom && !AlignTop)
@@ -217,6 +190,12 @@ namespace SRF.UI.Layout
             if (SelectedItem != null && !_itemList.Contains(SelectedItem))
             {
                 SelectedItem = null;
+            }
+
+            if (_isDirty)
+            {
+                _isDirty = false;
+                ScrollUpdate();
             }
         }
 
@@ -268,11 +247,11 @@ namespace SRF.UI.Layout
             var pos = rectTransform.anchoredPosition;
             var startY = pos.y;
 
-            var viewHeight = ((RectTransform) ScrollRect.transform).rect.height;
+            var viewHeight = ((RectTransform)ScrollRect.transform).rect.height;
 
             // Determine the range of rows that should be visible
-            var rowRangeLower = Mathf.FloorToInt(startY/(ItemHeight + Spacing));
-            var rowRangeHigher = Mathf.CeilToInt((startY + viewHeight)/(ItemHeight + Spacing));
+            var rowRangeLower = Mathf.FloorToInt(startY / (ItemHeight + Spacing));
+            var rowRangeHigher = Mathf.CeilToInt((startY + viewHeight) / (ItemHeight + Spacing));
 
             // Apply padding to reduce pop-in
             rowRangeLower -= RowPadding;
@@ -381,7 +360,7 @@ namespace SRF.UI.Layout
             {
                 var item = _visibleRows[i];
 
-                SetChildAlongAxis(item.Rect, 1, item.Index*ItemHeight + padding.top + Spacing*item.Index, ItemHeight);
+                SetChildAlongAxis(item.Rect, 1, item.Index * ItemHeight + padding.top + Spacing * item.Index, ItemHeight);
             }
         }
 
@@ -394,11 +373,12 @@ namespace SRF.UI.Layout
                 return;
             }
 
-            CanvasUpdateRegistry.RegisterCanvasElementForLayoutRebuild(this);
+            _isDirty = true;
+            //CanvasUpdateRegistry.RegisterCanvasElementForLayoutRebuild(this);
         }
 
         [Serializable]
-        public class SelectedItemChangedEvent : UnityEvent<object> {}
+        public class SelectedItemChangedEvent : UnityEvent<object> { }
 
         [Serializable]
         private class Row
@@ -416,6 +396,9 @@ namespace SRF.UI.Layout
         {
             _itemList.Add(item);
             SetDirty();
+
+            if(StickToBottom && Mathf.Approximately(ScrollRect.verticalNormalizedPosition, 0f))
+                ScrollRect.normalizedPosition = new Vector2(0,0);
         }
 
         public void RemoveItem(object item)
@@ -489,7 +472,7 @@ namespace SRF.UI.Layout
             {
                 if (_itemHeight <= 0)
                 {
-                    var layoutElement = ItemPrefab.GetComponent(typeof (ILayoutElement)) as ILayoutElement;
+                    var layoutElement = ItemPrefab.GetComponent(typeof(ILayoutElement)) as ILayoutElement;
 
                     if (layoutElement != null)
                     {
@@ -532,7 +515,7 @@ namespace SRF.UI.Layout
             Row altRow = null;
 
             // Determine if the row we're looking for is an alt row
-            var target = forIndex%2;
+            var target = forIndex % 2;
 
             // Try and find a row which previously had this data, so we can reuse it
             for (var i = 0; i < _rowCache.Count; i++)
@@ -549,7 +532,7 @@ namespace SRF.UI.Layout
 
                 // Cache a row which is was the same alt state as the row we're looking for, in case
                 // we don't find an exact match.
-                if (row.Index%2 == target)
+                if (row.Index % 2 == target)
                 {
                     altRow = row;
                 }
@@ -599,7 +582,7 @@ namespace SRF.UI.Layout
                 else
                 {
                     // Otherwise just use the stylesheet suitable for the row alt-status
-                    row.Root.StyleSheet = index%2 == 0 ? RowStyleSheet : AltRowStyleSheet;
+                    row.Root.StyleSheet = index % 2 == 0 ? RowStyleSheet : AltRowStyleSheet;
                 }
             }
         }
@@ -610,7 +593,7 @@ namespace SRF.UI.Layout
 
             var row = SRInstantiate.Instantiate(ItemPrefab);
             item.Rect = row;
-            item.View = row.GetComponent(typeof (IVirtualView)) as IVirtualView;
+            item.View = row.GetComponent(typeof(IVirtualView)) as IVirtualView;
 
             if (RowStyleSheet != null || AltRowStyleSheet != null || SelectedRowStyleSheet != null)
             {
