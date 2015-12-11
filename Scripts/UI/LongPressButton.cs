@@ -6,7 +6,7 @@ using UnityEngine.UI;
 namespace SRF.UI
 {
     [AddComponentMenu(ComponentMenuPaths.LongPressButton)]
-    public class LongPressButton : Button
+    public class LongPressButton : UnityEngine.UI.Button
     {
         private bool _handled;
         [SerializeField] private ButtonClickedEvent _onLongPress = new ButtonClickedEvent();
@@ -20,17 +20,17 @@ namespace SRF.UI
             set { _onLongPress = value; }
         }
 
-        public override void OnPointerExit(PointerEventData eventData)
+        public override void OnPointerExit(UnityEngine.EventSystems.PointerEventData eventData)
         {
             base.OnPointerExit(eventData);
             _pressed = false;
         }
 
-        public override void OnPointerDown(PointerEventData eventData)
+        public override void OnPointerDown(UnityEngine.EventSystems.PointerEventData eventData)
         {
             base.OnPointerDown(eventData);
 
-            if (eventData.button != PointerEventData.InputButton.Left)
+            if (eventData.button != UnityEngine.EventSystems.PointerEventData.InputButton.Left)
             {
                 return;
             }
@@ -40,7 +40,7 @@ namespace SRF.UI
             _pressedTime = Time.realtimeSinceStartup;
         }
 
-        public override void OnPointerUp(PointerEventData eventData)
+        public override void OnPointerUp(UnityEngine.EventSystems.PointerEventData eventData)
         {
             if (!_handled)
             {
@@ -50,7 +50,7 @@ namespace SRF.UI
             _pressed = false;
         }
 
-        public override void OnPointerClick(PointerEventData eventData)
+        public override void OnPointerClick(UnityEngine.EventSystems.PointerEventData eventData)
         {
             if (!_handled)
             {

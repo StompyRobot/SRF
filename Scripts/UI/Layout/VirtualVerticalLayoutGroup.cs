@@ -21,7 +21,6 @@ namespace SRF.UI.Layout
     {
         private readonly SRList<object> _itemList = new SRList<object>();
         private readonly SRList<int> _visibleItemList = new SRList<int>();
-        private Vector2 _normalisedPosition;
         private SRList<Row> _rowCache = new SRList<Row>();
         private ScrollRect _scrollRect;
         private int _selectedIndex;
@@ -30,7 +29,6 @@ namespace SRF.UI.Layout
         [SerializeField]
         private SelectedItemChangedEvent _selectedItemChanged;
 
-        private Vector2 _velocity;
         private int _visibleItemCount;
         private SRList<Row> _visibleRows = new SRList<Row>();
         public StyleSheet AltRowStyleSheet;
@@ -56,7 +54,6 @@ namespace SRF.UI.Layout
         public bool StickToBottom = true;
 
         private bool _isDirty = false;
-        private float _prevScrollPosition;
 
         public SelectedItemChangedEvent SelectedItemChanged
         {

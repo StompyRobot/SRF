@@ -6,7 +6,7 @@ using UnityEngine.UI;
 namespace SRF.UI
 {
     [AddComponentMenu(ComponentMenuPaths.NumberButton)]
-    public class SRNumberButton : Button, IPointerClickHandler, IPointerDownHandler, IPointerUpHandler
+    public class SRNumberButton : UnityEngine.UI.Button, IPointerClickHandler, IPointerDownHandler, IPointerUpHandler
     {
         private const float ExtraThreshold = 3f;
         public const float Delay = 0.4f;
