@@ -50,23 +50,7 @@ namespace SRF
         /// <param name="parent"></param>
         public static void SetParentMaintainLocals(this Transform t, Transform parent)
         {
-#if UNITY_4_6
-
 			t.SetParent(parent, false);
-
-#else
-
-            var p = t.localPosition;
-            var r = t.localRotation;
-            var s = t.localScale;
-
-            t.parent = parent;
-
-            t.localPosition = p;
-            t.localRotation = r;
-            t.localScale = s;
-
-#endif
         }
 
         /// <summary>

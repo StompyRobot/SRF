@@ -66,7 +66,7 @@ namespace SRF.Service
             }
 
             SRServiceManager.LoadingCount++;
-#if UNITY_4_6 || UNITY_5_0 || UNITY_5_1 || UNITY_5_2
+#if UNITY_4_6 || UNITY_4_7 || UNITY_5_0 || UNITY_5_1 || UNITY_5_2
             if (Application.loadedLevelName == SceneName)
 #else
             if (UnityEngine.SceneManagement.SceneManager.GetSceneByName(SceneName).isLoaded)
@@ -79,7 +79,7 @@ namespace SRF.Service
                 Log("[Service] Loading scene ({0})".Fmt(SceneName), this);
 
 #if UNITY_PRO_LICENSE || UNITY_5
-#if UNITY_4_6 || UNITY_5_0 || UNITY_5_1 || UNITY_5_2
+#if UNITY_4_6 || UNITY_4_7  || UNITY_5_0 || UNITY_5_1 || UNITY_5_2
                 yield return Application.LoadLevelAdditiveAsync(SceneName);
 #else
                 yield return UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(SceneName, UnityEngine.SceneManagement.LoadSceneMode.Additive);
