@@ -1,9 +1,9 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
-
-namespace SRF.Helpers
+﻿namespace SRF.Helpers
 {
+    using System;
+    using System.Linq;
+    using System.Reflection;
+
     public class PropertyReference
     {
         private readonly PropertyInfo _property;

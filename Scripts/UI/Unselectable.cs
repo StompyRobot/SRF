@@ -1,9 +1,9 @@
-﻿using SRF.Internal;
-using UnityEngine;
-using UnityEngine.EventSystems;
-
-namespace SRF.UI
+﻿namespace SRF.UI
 {
+    using Internal;
+    using UnityEngine;
+    using UnityEngine.EventSystems;
+
     /// <summary>
     /// Do not allow an object to become select (automatically unfocus when receiving selection callback)
     /// </summary>

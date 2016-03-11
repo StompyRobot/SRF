@@ -1,7 +1,7 @@
-﻿using UnityEngine;
-
-namespace SRF.UI
+﻿namespace SRF.UI
 {
+    using UnityEngine;
+
     [ExecuteInEditMode]
     [RequireComponent(typeof (RectTransform))]
     public abstract class ResponsiveBase : SRMonoBehaviour

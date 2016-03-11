@@ -1,8 +1,8 @@
-﻿using System.Collections;
-using UnityEngine;
-
-namespace SRF
+﻿namespace SRF
 {
+    using System.Collections;
+    using UnityEngine;
+
     public static class Coroutines
     {
         public static IEnumerator WaitForSecondsRealTime(float time)

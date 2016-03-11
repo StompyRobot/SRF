@@ -1,11 +1,11 @@
-﻿using System;
-using SRF.Internal;
-using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
-
-namespace SRF.UI
+﻿namespace SRF.UI
 {
+    using System;
+    using Internal;
+    using UnityEngine;
+    using UnityEngine.EventSystems;
+    using UnityEngine.UI;
+
     [AddComponentMenu(ComponentMenuPaths.NumberSpinner)]
     public class SRNumberSpinner : InputField
     {

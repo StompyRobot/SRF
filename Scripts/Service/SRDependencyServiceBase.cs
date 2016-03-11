@@ -1,14 +1,14 @@
 ﻿//#define ENABLE_LOGGING
 
-using System;
-using System.Collections;
-using System.Diagnostics;
-using UnityEngine;
-using Debug = UnityEngine.Debug;
-using Object = UnityEngine.Object;
-
 namespace SRF.Service
 {
+    using System;
+    using System.Collections;
+    using System.Diagnostics;
+    using UnityEngine;
+    using Debug = UnityEngine.Debug;
+    using Object = UnityEngine.Object;
+
     /// <summary>
     /// A service which has async-loading dependencies
     /// </summary>

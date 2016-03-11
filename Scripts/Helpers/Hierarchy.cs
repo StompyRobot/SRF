@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
-
-namespace SRF
+﻿namespace SRF
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using UnityEngine;
+
     public class Hierarchy
     {
         private static readonly char[] Seperator = {'/'};

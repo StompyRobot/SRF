@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using SRF.Internal;
-using UnityEngine;
-using UnityEngine.UI;
-
-namespace SRF.UI.Layout
+﻿namespace SRF.UI.Layout
 {
+    using System.Collections.Generic;
+    using Internal;
+    using UnityEngine;
+    using UnityEngine.UI;
+
     /// <summary>
     /// Layout Group controller that arranges children in rows, fitting as many on a line until total width exceeds parent
     /// bounds

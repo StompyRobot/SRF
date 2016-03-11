@@ -1,10 +1,10 @@
-﻿using SRF.Internal;
-using UnityEngine;
-using UnityEngine.Serialization;
-using UnityEngine.UI;
-
-namespace SRF.UI
+﻿namespace SRF.UI
 {
+    using Internal;
+    using UnityEngine;
+    using UnityEngine.Serialization;
+    using UnityEngine.UI;
+
     [ExecuteInEditMode]
     [AddComponentMenu(ComponentMenuPaths.StyleComponent)]
     public class StyleComponent : SRMonoBehaviour

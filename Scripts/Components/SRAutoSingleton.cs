@@ -1,9 +1,9 @@
-﻿using System.Diagnostics;
-using UnityEngine;
-using Debug = UnityEngine.Debug;
-
-namespace SRF.Components
+﻿namespace SRF.Components
 {
+    using System.Diagnostics;
+    using UnityEngine;
+    using Debug = UnityEngine.Debug;
+
     /// <summary>
     /// Singleton MonoBehaviour class which automatically creates an instance if one does not already exist.
     /// </summary>

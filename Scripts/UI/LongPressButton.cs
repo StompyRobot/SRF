@@ -1,10 +1,8 @@
-﻿using SRF.Internal;
-using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
-
-namespace SRF.UI
+﻿namespace SRF.UI
 {
+    using Internal;
+    using UnityEngine;
+
     [AddComponentMenu(ComponentMenuPaths.LongPressButton)]
     public class LongPressButton : UnityEngine.UI.Button
     {

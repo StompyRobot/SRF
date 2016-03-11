@@ -1,8 +1,8 @@
-﻿using SRF.Internal;
-using UnityEngine;
-
-namespace SRF.UI
+﻿namespace SRF.UI
 {
+    using Internal;
+    using UnityEngine;
+
     [ExecuteInEditMode]
     [AddComponentMenu(ComponentMenuPaths.StyleRoot)]
     public sealed class StyleRoot : SRMonoBehaviour

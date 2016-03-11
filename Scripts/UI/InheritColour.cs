@@ -1,9 +1,9 @@
-﻿using SRF.Internal;
-using UnityEngine;
-using UnityEngine.UI;
-
-namespace SRF.UI
+﻿namespace SRF.UI
 {
+    using Internal;
+    using UnityEngine;
+    using UnityEngine.UI;
+
     [RequireComponent(typeof (Graphic))]
     [ExecuteInEditMode]
     [AddComponentMenu(ComponentMenuPaths.InheritColour)]

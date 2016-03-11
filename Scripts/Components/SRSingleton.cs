@@ -1,10 +1,10 @@
-﻿using System;
-using System.Diagnostics;
-using UnityEngine;
-using Debug = UnityEngine.Debug;
-
-namespace SRF.Components
+﻿namespace SRF.Components
 {
+    using System;
+    using System.Diagnostics;
+    using UnityEngine;
+    using Debug = UnityEngine.Debug;
+
     /// <summary>
     /// Inherit from this component to easily create a singleton gameobject.
     /// </summary>

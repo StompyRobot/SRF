@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace SRF.Service
+﻿namespace SRF.Service
 {
+    using System;
+
     [AttributeUsage(AttributeTargets.Class)]
     public sealed class ServiceAttribute : Attribute
     {

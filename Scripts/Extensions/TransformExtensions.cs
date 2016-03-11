@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
-
-namespace SRF
+﻿namespace SRF
 {
+    using System.Collections.Generic;
+    using UnityEngine;
+
     public static class SRFTransformExtensions
     {
         public static IEnumerable<Transform> GetChildren(this Transform t)
@@ -50,7 +50,7 @@ namespace SRF
         /// <param name="parent"></param>
         public static void SetParentMaintainLocals(this Transform t, Transform parent)
         {
-			t.SetParent(parent, false);
+            t.SetParent(parent, false);
         }
 
         /// <summary>

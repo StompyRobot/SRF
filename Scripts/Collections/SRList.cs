@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using UnityEngine;
-
-namespace SRF
+﻿namespace SRF
 {
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using UnityEngine;
+
     /// <summary>
     /// IList implementation which does not release the buffer when clearing/removing elements. Based on the NGUI BetterList
     /// </summary>

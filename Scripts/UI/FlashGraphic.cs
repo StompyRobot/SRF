@@ -1,10 +1,10 @@
-﻿using SRF.Internal;
-using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
-
-namespace SRF.UI
+﻿namespace SRF.UI
 {
+    using Internal;
+    using UnityEngine;
+    using UnityEngine.EventSystems;
+    using UnityEngine.UI;
+
     /// <summary>
     /// Instantly sets colour to FlashColor on pointer down, then fades back to DefaultColour once pointer is released.
     /// </summary>

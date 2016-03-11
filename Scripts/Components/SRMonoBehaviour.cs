@@ -1,8 +1,8 @@
-﻿using System.Diagnostics;
-using UnityEngine;
-
-namespace SRF
+﻿namespace SRF
 {
+    using System.Diagnostics;
+    using UnityEngine;
+
     /// <summary>
     /// Base MonoBehaviour which provides useful common functionality
     /// </summary>

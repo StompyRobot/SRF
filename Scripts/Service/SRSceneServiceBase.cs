@@ -1,12 +1,12 @@
 ﻿//#define ENABLE_LOGGING
 
-using System.Collections;
-using System.Diagnostics;
-using UnityEngine;
-using Debug = UnityEngine.Debug;
-
 namespace SRF.Service
 {
+    using System.Collections;
+    using System.Diagnostics;
+    using UnityEngine;
+    using Debug = UnityEngine.Debug;
+
     public abstract class SRSceneServiceBase<T, TImpl> : SRServiceBase<T>, IAsyncService
         where T : class
         where TImpl : Component
@@ -56,7 +56,7 @@ namespace SRF.Service
             base.OnDestroy();
         }
 
-        protected virtual void OnLoaded() { }
+        protected virtual void OnLoaded() {}
 
         private IEnumerator LoadCoroutine()
         {

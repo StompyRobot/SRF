@@ -1,14 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using SRF.Helpers;
-using SRF.Service;
-using UnityEngine;
-// ReSharper disable once RedundantUsingDirective
+﻿// ReSharper disable once RedundantUsingDirective
 using System.Linq;
 
 namespace SRF
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Reflection;
+    using Helpers;
+    using Service;
+    using UnityEngine;
+
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Field)]
     public sealed class RequiredFieldAttribute : Attribute
     {

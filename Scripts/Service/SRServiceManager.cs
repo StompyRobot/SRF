@@ -1,18 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using SRF.Components;
-using SRF.Helpers;
-using SRF.Internal;
-using UnityEngine;
-using Object = UnityEngine.Object;
-
-// Disable unreachable code warning caused by DEBUG
+﻿ // Disable unreachable code warning caused by DEBUG
 #pragma warning disable 0162
 
 namespace SRF.Service
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
+    using Components;
+    using Helpers;
+    using Internal;
+    using UnityEngine;
+    using Object = UnityEngine.Object;
+
     [AddComponentMenu(ComponentMenuPaths.SRServiceManager)]
     public class SRServiceManager : SRAutoSingleton<SRServiceManager>
     {

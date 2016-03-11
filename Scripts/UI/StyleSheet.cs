@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using SRF.Helpers;
-using UnityEngine;
-
-namespace SRF.UI
+﻿namespace SRF.UI
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Helpers;
+    using UnityEngine;
+
     [Serializable]
     public class Style
     {

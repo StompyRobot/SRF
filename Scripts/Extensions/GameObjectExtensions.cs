@@ -1,7 +1,7 @@
-﻿using UnityEngine;
-
-namespace SRF
+﻿namespace SRF
 {
+    using UnityEngine;
+
     public static class SRFGameObjectExtensions
     {
         public static T GetIComponent<T>(this GameObject t) where T : class

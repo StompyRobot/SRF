@@ -1,8 +1,8 @@
-﻿using System;
-using System.Reflection;
-
-namespace SRF.Helpers
+﻿namespace SRF.Helpers
 {
+    using System;
+    using System.Reflection;
+
     public static class SRReflection
     {
         public static void SetPropertyValue(object obj, PropertyInfo p, object value)

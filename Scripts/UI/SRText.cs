@@ -1,10 +1,10 @@
-﻿using System;
-using SRF.Internal;
-using UnityEngine;
-using UnityEngine.UI;
-
-namespace SRF.UI
+﻿namespace SRF.UI
 {
+    using System;
+    using Internal;
+    using UnityEngine;
+    using UnityEngine.UI;
+
     /// <summary>
     /// Adds a LayoutDirty callback to the default Text component.
     /// </summary>

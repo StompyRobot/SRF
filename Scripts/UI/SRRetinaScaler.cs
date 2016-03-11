@@ -1,9 +1,9 @@
-﻿using SRF.Internal;
-using UnityEngine;
-using UnityEngine.UI;
-
-namespace SRF.UI
+﻿namespace SRF.UI
 {
+    using Internal;
+    using UnityEngine;
+    using UnityEngine.UI;
+
     /// <summary>
     /// Detects when a screen dpi exceeds what the developer considers
     /// a "retina" level display, and scales the canvas accordingly.

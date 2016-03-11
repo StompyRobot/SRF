@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace SRF
+﻿namespace SRF
 {
+    using System;
+    using System.Collections.Generic;
+
     public static class SRFIListExtensions
     {
         public static T Random<T>(this IList<T> list)

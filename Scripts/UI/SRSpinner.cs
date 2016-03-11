@@ -1,12 +1,12 @@
-﻿using System;
-using SRF.Internal;
-using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
-
-namespace SRF.UI
+﻿namespace SRF.UI
 {
+    using System;
+    using Internal;
+    using UnityEngine;
+    using UnityEngine.Events;
+    using UnityEngine.EventSystems;
+    using UnityEngine.UI;
+
     [AddComponentMenu(ComponentMenuPaths.SRSpinner)]
     public class SRSpinner : Selectable, IDragHandler, IBeginDragHandler
     {

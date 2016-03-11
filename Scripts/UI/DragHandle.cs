@@ -1,10 +1,10 @@
-﻿using System;
-using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
-
-namespace SRF.UI
+﻿namespace SRF.UI
 {
+    using System;
+    using UnityEngine;
+    using UnityEngine.EventSystems;
+    using UnityEngine.UI;
+
     public class DragHandle : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHandler
     {
         private CanvasScaler _canvasScaler;

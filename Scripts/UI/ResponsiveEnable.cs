@@ -1,9 +1,9 @@
-﻿using System;
-using SRF.Internal;
-using UnityEngine;
-
-namespace SRF.UI
+﻿namespace SRF.UI
 {
+    using System;
+    using Internal;
+    using UnityEngine;
+
     [ExecuteInEditMode]
     [RequireComponent(typeof (RectTransform))]
     [AddComponentMenu(ComponentMenuPaths.ResponsiveEnable)]

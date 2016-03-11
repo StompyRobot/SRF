@@ -1,7 +1,7 @@
-﻿using System.Reflection;
-
-namespace SRF.Helpers
+﻿namespace SRF.Helpers
 {
+    using System.Reflection;
+
     public class MethodReference
     {
         private MethodInfo _method;

@@ -1,9 +1,9 @@
-﻿using SRF.Internal;
-using UnityEngine;
-using UnityEngine.UI;
-
-namespace SRF.UI
+﻿namespace SRF.UI
 {
+    using Internal;
+    using UnityEngine;
+    using UnityEngine.UI;
+
     /// <summary>
     /// Copies the preferred size of another layout element (useful for a parent object basing its sizing from a child
     /// element).

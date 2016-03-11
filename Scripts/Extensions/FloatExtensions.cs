@@ -1,7 +1,7 @@
-﻿using UnityEngine;
-
-namespace SRF
+﻿namespace SRF
 {
+    using UnityEngine;
+
     public static class SRFFloatExtensions
     {
         public static float Sqr(this float f)
