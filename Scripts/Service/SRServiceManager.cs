@@ -1,4 +1,4 @@
-﻿ // Disable unreachable code warning caused by DEBUG
+﻿// Disable unreachable code warning caused by DEBUG
 #pragma warning disable 0162
 
 namespace SRF.Service
@@ -34,11 +34,11 @@ namespace SRF.Service
 
         public static T GetService<T>() where T : class
         {
-            var s = GetServiceInternal(typeof (T)) as T;
+            var s = GetServiceInternal(typeof(T)) as T;
 
             if (s == null && (!_hasQuit || EnableLogging))
             {
-                Debug.LogWarning("Service {0} not found. (HasQuit: {1})".Fmt(typeof (T).Name, _hasQuit));
+                Debug.LogWarning("Service {0} not found. (HasQuit: {1})".Fmt(typeof(T).Name, _hasQuit));
             }
 
             return s;
@@ -86,7 +86,7 @@ namespace SRF.Service
 
         public static bool HasService<T>() where T : class
         {
-            return HasService(typeof (T));
+            return HasService(typeof(T));
         }
 
         public static bool HasService(Type t)
@@ -113,7 +113,7 @@ namespace SRF.Service
 
         public static void RegisterService<T>(object service) where T : class
         {
-            RegisterService(typeof (T), service);
+            RegisterService(typeof(T), service);
         }
 
         private static void RegisterService(Type t, object service)
@@ -140,8 +140,7 @@ namespace SRF.Service
                 throw new ArgumentException("service {0} must be assignable from type {1}".Fmt(service.GetType(), t));
             }
 
-            Instance._services.Add(new Service
-            {
+            Instance._services.Add(new Service {
                 Object = service,
                 Type = t
             });
@@ -149,7 +148,7 @@ namespace SRF.Service
 
         public static void UnRegisterService<T>() where T : class
         {
-            UnRegisterService(typeof (T));
+            UnRegisterService(typeof(T));
         }
 
         private static void UnRegisterService(Type t)
@@ -241,52 +240,16 @@ namespace SRF.Service
 
             var types = new List<Type>();
 
-            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+#if NETFX_CORE
+            var assembly = typeof(SRServiceManager).GetTypeInfo().Assembly;
+#else
+            var assembly = typeof(SRServiceManager).Assembly;
+#endif
             {
-                var n = assembly.FullName;
-
-                // Filter down to user assemblies only
-                if (n.StartsWith("mscorlib") ||
-                    n.StartsWith("System") ||
-                    n.StartsWith("UnityEngine") ||
-                    n.StartsWith("Mono.") ||
-                    n.StartsWith("Boo.") ||
-                    n.StartsWith("UnityEditor") ||
-                    n.StartsWith("Unity.") ||
-                    n.StartsWith("UnityScript") ||
-                    n.StartsWith("nunit.") ||
-                    n.StartsWith("I18N") ||
-                    n.StartsWith("ICSharpCode") ||
-                    n.StartsWith("Newtonsoft.Json"))
-                {
-                    continue;
-                }
-
                 try
                 {
-#if !UNITY_WEBPLAYER
-
-                    var found = false;
-
-                    foreach (var b in assembly.GetName().GetPublicKeyToken())
-                    {
-                        if (b > 0)
-                        {
-                            found = true;
-                            break;
-                        }
-                    }
-
-                    if (found)
-                    {
-                        //Debug.Log(string.Format("[SRServiceManager] Ignoring strong-named assembly ({0})", n));
-                        continue;
-                    }
-
-#endif
-
 #if NETFX_CORE
-					types.AddRange(assembly.ExportedTypes);
+                    types.AddRange(assembly.ExportedTypes);
 #else
                     types.AddRange(assembly.GetExportedTypes());
 #endif
@@ -303,11 +266,11 @@ namespace SRF.Service
                 ScanType(type);
             }
 
-            var serviceStrings =
-                _serviceStubs.Select(p => "	{0}".Fmt(p)).ToArray();
-
             if (EnableLogging)
             {
+                var serviceStrings =
+                    _serviceStubs.Select(p => "	{0}".Fmt(p)).ToArray();
+
                 Debug.Log("[SRServiceManager] Services Discovered: {0} \n  {1}".Fmt(serviceStrings.Length,
                     string.Join("\n  ", serviceStrings)));
             }
@@ -367,14 +330,14 @@ namespace SRF.Service
         private static object DefaultServiceConstructor(Type serviceIntType, Type implType)
         {
             // If mono-behaviour based, create a gameobject for this service
-            if (typeof (MonoBehaviour).IsAssignableFrom(implType))
+            if (typeof(MonoBehaviour).IsAssignableFrom(implType))
             {
                 var go = new GameObject("_S_" + serviceIntType.Name);
                 return go.AddComponent(implType);
             }
 
             // If ScriptableObject based, create an instance
-            if (typeof (ScriptableObject).IsAssignableFrom(implType))
+            if (typeof(ScriptableObject).IsAssignableFrom(implType))
             {
                 var obj = ScriptableObject.CreateInstance(implType);
                 return obj;
@@ -392,8 +355,7 @@ namespace SRF.Service
 
             if (attribute != null)
             {
-                _serviceStubs.Add(new ServiceStub
-                {
+                _serviceStubs.Add(new ServiceStub {
                     Type = type,
                     InterfaceType = attribute.ServiceType
                 });
@@ -416,7 +378,7 @@ namespace SRF.Service
                     continue;
                 }
 
-                if (method.ReturnType != typeof (Type))
+                if (method.ReturnType != typeof(Type))
                 {
                     Debug.LogError("ServiceSelector must have return type of Type ({0}.{1}())".Fmt(t.Name, method.Name));
                     continue;
@@ -432,8 +394,7 @@ namespace SRF.Service
 
                 if (stub == null)
                 {
-                    stub = new ServiceStub
-                    {
+                    stub = new ServiceStub {
                         InterfaceType = attrib.ServiceType
                     };
 
@@ -441,9 +402,9 @@ namespace SRF.Service
                 }
 
 #if NETFX_CORE
-				stub.Selector = (Func<Type>) method.CreateDelegate(typeof(Func<Type>));
+                stub.Selector = (Func<Type>)method.CreateDelegate(typeof(Func<Type>));
 #else
-                stub.Selector = (Func<Type>) Delegate.CreateDelegate(typeof (Func<Type>), method);
+                stub.Selector = (Func<Type>)Delegate.CreateDelegate(typeof(Func<Type>), method);
 #endif
             }
         }
@@ -478,15 +439,15 @@ namespace SRF.Service
 
                 if (stub == null)
                 {
-                    stub = new ServiceStub
-                    {
+                    stub = new ServiceStub {
                         InterfaceType = attrib.ServiceType
                     };
 
                     stubs.Add(stub);
                 }
 
-                stub.Constructor = () => method.Invoke(null, null);
+                var m = method;
+                stub.Constructor = () => m.Invoke(null, null);
             }
         }
 
@@ -499,58 +460,9 @@ namespace SRF.Service
 #if !NETFX_CORE
             return t.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
 #else
-			return t.GetTypeInfo().DeclaredMethods.Where(p => p.IsStatic).ToArray();
+            return t.GetTypeInfo().DeclaredMethods.Where(p => p.IsStatic).ToArray();
 #endif
         }
-
-#if NETFX_CORE
-
-		private sealed class AppDomain
-		{
-			public static AppDomain CurrentDomain { get; private set; }
- 
-			static AppDomain()
-			{
-				CurrentDomain = new AppDomain();
-			}
- 
-			public Assembly[] GetAssemblies()
-			{
-				return GetAssemblyListAsync().Result.ToArray();
-			}
- 
-			private async System.Threading.Tasks.Task<IEnumerable<Assembly>> GetAssemblyListAsync()
-			{
-				var folder = Windows.ApplicationModel.Package.Current.InstalledLocation;
- 
-				var assemblies = new List<Assembly>();
-				foreach (var file in await folder.GetFilesAsync())
-				{
-					if (file.FileType == ".dll" || file.FileType == ".exe")
-					{
-
-						System.Diagnostics.Debug.WriteLine("Found: " + file.Path);
-
-						try {
-
-							var name = new AssemblyName() {Name = file.DisplayName};
-							var asm = Assembly.Load(name);
-							assemblies.Add(asm);
-
-						} catch {
-
-							System.Diagnostics.Debug.WriteLine("Error loading " + file.Name);
-
-						}
-
-					}
-				}
- 
-				return assemblies;
-			}
-		}
-
-#endif
 
         #endregion
     }
