@@ -54,6 +54,7 @@
         public const string FlashGraphic = UIRoot + "/Flash Graphic";
         public const string CopyPreferredSize = UIRoot + "/Copy Preferred Size";
         public const string CopyLayoutElement = UIRoot + "/Copy Layout Element";
+        public const string CopySizeIntoLayoutElement = UIRoot + "/Copy Size Into Layout Element";
         public const string SRText = UIRoot + "/SRText";
         public const string Unselectable = UIRoot + "/Unselectable";
         public const string LongPressButton = UIRoot + "/Long Press Button";
