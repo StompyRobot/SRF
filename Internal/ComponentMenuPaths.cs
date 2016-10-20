@@ -58,6 +58,7 @@
         public const string SRText = UIRoot + "/SRText";
         public const string Unselectable = UIRoot + "/Unselectable";
         public const string LongPressButton = UIRoot + "/Long Press Button";
+        public const string ScrollToBottom = UIRoot + "/Scroll To Bottom Behaviour";
 
         public const string FlowLayoutGroup = UIRoot + "/Layout/Flow Layout Group";
         public const string VirtualVerticalLayoutGroup = UIRoot + "/Layout/VerticalLayoutGroup (Virtualizing)";
