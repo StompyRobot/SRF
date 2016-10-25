@@ -58,7 +58,7 @@
 
             var position = _scrollRect.normalizedPosition;
 
-            if (position.y.Approx(0f))
+            if (position.y < 0.001f)
             {
                 SetVisible(false);
             }
