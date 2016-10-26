@@ -16,6 +16,8 @@
 
         [SerializeField] private int _thresholdDpi = 250;
 
+        [SerializeField] private bool _disablePixelPerfect = false;
+
         /// <summary>
         /// Dpi over which to apply scaling
         /// </summary>
@@ -44,6 +46,11 @@
 
                 scaler.uiScaleMode = CanvasScaler.ScaleMode.ConstantPixelSize;
                 scaler.scaleFactor = RetinaScale;
+
+                if (_disablePixelPerfect)
+                {
+                    GetComponent<Canvas>().pixelPerfect = false;
+                }
             }
         }
     }
