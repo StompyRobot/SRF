@@ -1,5 +1,5 @@
 ﻿
-#if !UNITY_5 && UNITY_EDITOR
+#if !UNITY_5 && !UNITY_5_3_OR_NEWER && UNITY_EDITOR
 
 using System;
 using System.Diagnostics;

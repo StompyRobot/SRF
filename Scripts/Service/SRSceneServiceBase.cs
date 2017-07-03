@@ -78,7 +78,7 @@ namespace SRF.Service
             {
                 Log("[Service] Loading scene ({0})".Fmt(SceneName), this);
 
-#if UNITY_PRO_LICENSE || UNITY_5
+#if UNITY_PRO_LICENSE || UNITY_5 || UNITY_5_3_OR_NEWER
 #if UNITY_4_6 || UNITY_4_7  || UNITY_5_0 || UNITY_5_1 || UNITY_5_2
                 yield return Application.LoadLevelAdditiveAsync(SceneName);
 #else
