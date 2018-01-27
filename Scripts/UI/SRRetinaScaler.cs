@@ -45,7 +45,7 @@
                 var scaler = GetComponent<CanvasScaler>();
 
                 scaler.uiScaleMode = CanvasScaler.ScaleMode.ConstantPixelSize;
-                scaler.scaleFactor = RetinaScale;
+                scaler.scaleFactor = scaler.scaleFactor * RetinaScale;
 
                 if (_disablePixelPerfect)
                 {
