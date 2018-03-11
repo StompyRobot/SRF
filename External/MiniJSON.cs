@@ -27,6 +27,8 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+using System.Globalization;
+
 namespace SRF
 {
     using System;
@@ -596,7 +598,7 @@ namespace SRF
                 // Previously floats and doubles lost precision too.
                 if (value is float)
                 {
-                    builder.Append(((float) value).ToString("R"));
+                    builder.Append(((float) value).ToString("R", CultureInfo.InvariantCulture));
                 }
                 else if (value is int
                          || value is uint
@@ -612,7 +614,7 @@ namespace SRF
                 else if (value is double
                          || value is decimal)
                 {
-                    builder.Append(Convert.ToDouble(value).ToString("R"));
+                    builder.Append(Convert.ToDouble(value).ToString("R", CultureInfo.InvariantCulture));
                 }
                 else
                 {
