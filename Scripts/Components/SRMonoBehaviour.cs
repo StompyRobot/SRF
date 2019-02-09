@@ -124,7 +124,7 @@
             get { return CachedTransform; }
         }
 
-#if !UNITY_5
+#if !UNITY_5 && !UNITY_2017_1_OR_NEWER
 
 		public new Collider collider
 		{
