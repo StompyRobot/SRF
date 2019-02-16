@@ -96,7 +96,7 @@
             var workingWidth = rectTransform.rect.width - padding.left - padding.right;
 
             // Accumulates the total height of the rows, including spacing and padding.
-            var yOffset = IsLowerAlign ? padding.bottom : (float) padding.top;
+            var yOffset = IsLowerAlign ? padding.bottom : (float)padding.top;
 
             var currentRowWidth = 0f;
             var currentRowHeight = 0f;
@@ -190,7 +190,7 @@
             }
             else if (IsMiddleAlign)
             {
-                h = groupHeight*0.5f - _layoutHeight*0.5f + yOffset;
+                h = groupHeight * 0.5f - _layoutHeight * 0.5f + yOffset;
             }
             else
             {
@@ -206,7 +206,7 @@
 
             if (!ChildForceExpandWidth && IsCenterAlign)
             {
-                xPos += (maxWidth - rowWidth)*0.5f;
+                xPos += (maxWidth - rowWidth) * 0.5f;
             }
             else if (!ChildForceExpandWidth && IsRightAlign)
             {
@@ -223,13 +223,13 @@
                 {
                     if (LayoutUtility.GetFlexibleWidth(_rowList[i]) > 0f)
                     {
-                        flexibleChildCount ++;
+                        flexibleChildCount++;
                     }
                 }
 
                 if (flexibleChildCount > 0)
                 {
-                    extraWidth = (maxWidth - rowWidth)/flexibleChildCount;
+                    extraWidth = (maxWidth - rowWidth) / flexibleChildCount;
                 }
             }
 
@@ -259,7 +259,7 @@
 
                 if (IsMiddleAlign)
                 {
-                    yPos += (rowHeight - rowChildHeight)*0.5f;
+                    yPos += (rowHeight - rowChildHeight) * 0.5f;
                 }
                 else if (IsLowerAlign)
                 {
@@ -268,11 +268,19 @@
 
                 if (axis == 0)
                 {
+#if UNITY_2019_1_OR_NEWER
+                    SetChildAlongAxis(rowChild, 0, 1f, xPos, rowChildWidth);
+#else
                     SetChildAlongAxis(rowChild, 0, xPos, rowChildWidth);
+#endif
                 }
                 else
                 {
+#if UNITY_2019_1_OR_NEWER
+                    SetChildAlongAxis(rowChild, 1, 1f, yPos, rowChildHeight);
+#else
                     SetChildAlongAxis(rowChild, 1, yPos, rowChildHeight);
+#endif
                 }
 
                 xPos += rowChildWidth + Spacing;
