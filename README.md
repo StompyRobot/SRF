@@ -9,5 +9,4 @@ SRF contains numerious helpful behaviours and components for the Unity3D game en
 Dependencies
 ==
 SRF depends on the following libraries, which are included in the External folder
-* Stateless (SR Fork: https://github.com/StompyRobot/stateless)
 * MiniJSON
