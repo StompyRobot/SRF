@@ -268,7 +268,7 @@
 
                 if (axis == 0)
                 {
-#if UNITY_2019_1_OR_NEWER
+#if UNITY_2019_1
                     SetChildAlongAxis(rowChild, 0, 1f, xPos, rowChildWidth);
 #else
                     SetChildAlongAxis(rowChild, 0, xPos, rowChildWidth);
@@ -276,7 +276,7 @@
                 }
                 else
                 {
-#if UNITY_2019_1_OR_NEWER
+#if UNITY_2019_1
                     SetChildAlongAxis(rowChild, 1, 1f, yPos, rowChildHeight);
 #else
                     SetChildAlongAxis(rowChild, 1, yPos, rowChildHeight);
