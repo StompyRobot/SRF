@@ -23,6 +23,26 @@ namespace SRF.Service
 #endif
 
         /// <summary>
+        /// Register the assembly that contains type <typeparamref name="TType"/> with the service manager.
+        /// </summary>
+        /// <typeparam name="TType"></typeparam>
+        public static void RegisterAssembly<TType>()
+        {
+#if NETFX_CORE
+            var assembly = typeof(TType).GetTypeInfo().Assembly;
+#else
+            var assembly = typeof(TType).Assembly;
+#endif
+
+            if (_assemblies.Contains(assembly))
+            {
+                return;
+            }
+
+            _assemblies.Add(assembly);
+        }
+
+        /// <summary>
         /// Is there a service loading?
         /// </summary>
         public static bool IsLoading
@@ -214,6 +234,8 @@ namespace SRF.Service
             }
         }
 
+        private static readonly List<Assembly> _assemblies = new List<Assembly>(2);
+
         private readonly SRList<Service> _services = new SRList<Service>();
 
         private List<ServiceStub> _serviceStubs;
@@ -236,15 +258,13 @@ namespace SRF.Service
                 return;
             }
 
+            RegisterAssembly<SRServiceManager>();
+          
             _serviceStubs = new List<ServiceStub>();
 
             var types = new List<Type>();
 
-#if NETFX_CORE
-            var assembly = typeof(SRServiceManager).GetTypeInfo().Assembly;
-#else
-            var assembly = typeof(SRServiceManager).Assembly;
-#endif
+            foreach (var assembly in _assemblies)
             {
                 try
                 {
