@@ -1,9 +1,11 @@
-﻿namespace SRF.Service
+﻿using UnityEngine.Scripting;
+
+namespace SRF.Service
 {
     using System;
 
     [AttributeUsage(AttributeTargets.Class)]
-    public sealed class ServiceAttribute : Attribute
+    public sealed class ServiceAttribute : PreserveAttribute
     {
         public ServiceAttribute(Type serviceType)
         {
@@ -14,7 +16,7 @@
     }
 
     [AttributeUsage(AttributeTargets.Method)]
-    public sealed class ServiceSelectorAttribute : Attribute
+    public sealed class ServiceSelectorAttribute : PreserveAttribute
     {
         public ServiceSelectorAttribute(Type serviceType)
         {
@@ -25,7 +27,7 @@
     }
 
     [AttributeUsage(AttributeTargets.Method)]
-    public sealed class ServiceConstructorAttribute : Attribute
+    public sealed class ServiceConstructorAttribute : PreserveAttribute
     {
         public ServiceConstructorAttribute(Type serviceType)
         {
