@@ -354,6 +354,7 @@ namespace SRF.Service
         protected void OnApplicationQuit()
         {
             _hasQuit = true;
+            _assemblies.Clear();
         }
 
         private static object DefaultServiceConstructor(Type serviceIntType, Type implType)
